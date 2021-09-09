@@ -1,0 +1,37 @@
+url: https://psyteachr.github.io/webexercises
+
+home:
+  title: webexercises
+  description: Create Interactive Web Exercises in R Markdown.
+  strip_header: false
+  
+template:
+  opengraph:
+    image:
+      src: man/figures/card.png
+      alt: "Hexagon with the word webexercises"
+    twitter:
+      creator: "@dalejbarr"
+      site: "@psyteachr"
+      card: summary_large_image
+
+reference:
+- title: Widgets
+  desc: ~
+  contents:
+  - '`fitb`'
+  - '`mcq`'
+  - '`torf`'
+  - '`longmcq`'
+  - '`hide`'
+  - '`unhide`'
+  - '`total_correct`'
+  - '`webexercises_default`'
+  - '`style_widgets`'
+- title: Helper Functions
+  desc: ~
+  contents:
+  - '`escape_regex`'
+  - '`round2`'
+  - '`strip_lzero`'
+  - '`add_webexercises_to_bookdown`'
