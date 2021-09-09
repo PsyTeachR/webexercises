@@ -253,9 +253,27 @@ hljs.initHighlightingOnLoad();
 
 <p>Knit the file to HTML to see how it works. <strong>Note: The widgets only function in a JavaScript-enabled browser.</strong></p>
 
+<p>These functions are optimised to be used with inline r code, but you can also use them in code chunks by setting the chunk option <code>results = &#39;asis&#39;</code> and using <code>cat()</code> to display the result of the widget. </p>
+
+<pre><code class="r"># echo = FALSE, results = &#39;asis&#39;
+opts &lt;- c(&quot;install.package&quot;, 
+            &quot;install.packages&quot;, 
+            answer = &quot;library&quot;, 
+            &quot;libraries&quot;)
+
+q1 &lt;- mcq(opts)
+
+cat(&quot;What function loads a package that is already on your computer?&quot;, q1)
+</code></pre>
+
+<p>What function loads a package that is already on your computer? <select class='webex-select'><option value='blank'></option><option value=''>install.package</option><option value=''>install.packages</option><option value='answer'>library</option><option value=''>libraries</option></select></p>
+
 <h3>Total Correct</h3>
 
 <p>The function <code>total_correct()</code> displays a running total of correct responses. Change the <code>elem</code> argument to display in a different style (e.g., <code>h2</code> or <code>h3</code> for header styles). If you&#39;re comfortable with css styles or classes, you can add them with the <code>args</code> argument. </p>
+
+<pre><code class="r">total_correct(elem = &quot;h3&quot;, args = &quot;style=&#39;color:#003366;&#39;&quot;)
+</code></pre>
 
 <h3 style='color:#003366;' id="webex-total_correct"></h3>
 
@@ -263,21 +281,33 @@ hljs.initHighlightingOnLoad();
 
 <p>Create fill-in-the-blank questions using <code>fitb()</code>, providing the answer as the first argument.</p>
 
+<pre><code class="r">fitb(&quot;4&quot;)
+</code></pre>
+
 <ul>
 <li>2 + 2 is <input class='webex-solveme nospaces' size='1' data-answer='["4"]'/></li>
 </ul>
 
-<p>You can also create these questions dynamically, using variables from your R session.</p>
+<p>You can also create these questions dynamically, using variables from your R session (e.g., in a hidden code chunk).</p>
+
+<pre><code class="r">x &lt;- sample(2:8, 1)
+</code></pre>
 
 <ul>
-<li>The square root of 4 is: <input class='webex-solveme nospaces' size='1' data-answer='["2"]'/></li>
+<li>The square root of 16 is: <input class='webex-solveme nospaces' size='1' data-answer='["4"]'/></li>
 </ul>
+
+<pre><code class="r">fitb(x)
+</code></pre>
 
 <p>The blanks are case-sensitive; if you don&#39;t care about case, use the argument <code>ignore_case = TRUE</code>.</p>
 
 <ul>
 <li>What is the letter after D? <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["E"]'/></li>
 </ul>
+
+<pre><code class="r">fitb(&quot;E&quot;, ignore_case = TRUE)
+</code></pre>
 
 <p>If you want to ignore differences in whitespace use, use the argument <code>ignore_ws = TRUE</code> (which is the default) and include spaces in your answer anywhere they could be acceptable.</p>
 
@@ -287,11 +317,17 @@ hljs.initHighlightingOnLoad();
 
 <p>You can set more than one possible correct answer by setting the answers as a vector.</p>
 
+<pre><code class="r">fitb(c(&quot;A&quot;, &quot;E&quot;, &quot;I&quot;, &quot;O&quot; , &quot;U&quot;), ignore_case = TRUE)
+</code></pre>
+
 <ul>
 <li>Type a vowel: <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["A","E","I","O","U"]'/></li>
 </ul>
 
 <p>You can use regular expressions to test answers against more complex rules.</p>
+
+<pre><code class="r">fitb(&quot;^[a-zA-Z]{3}$&quot;, width = 3, regex = TRUE)
+</code></pre>
 
 <ul>
 <li>Type any 3 letters: <input class='webex-solveme nospaces regex' size='3' data-answer='["^[a-zA-Z]{3}$"]'/></li>
@@ -299,12 +335,24 @@ hljs.initHighlightingOnLoad();
 
 <h3>Multiple Choice</h3>
 
+<p>Set up a multiple-choice drop-down menu using <code>mcq()</code>.</p>
+
+<pre><code class="r">mcq(c(&quot;tidyr&quot;, &quot;dplyr&quot;, answer = &quot;readr&quot;, &quot;ggplot2&quot;))
+</code></pre>
+
 <ul>
+<li>What package helps you load CSV files? <select class='webex-select'><option value='blank'></option><option value=''>tidyr</option><option value=''>dplyr</option><option value='answer'>readr</option><option value=''>ggplot2</option></select></li>
 <li>&ldquo;Never gonna give you up, never gonna: <select class='webex-select'><option value='blank'></option><option value=''>let you go</option><option value=''>turn you down</option><option value=''>run away</option><option value='answer'>let you down</option></select>&rdquo;</li>
 <li>&ldquo;I <select class='webex-select'><option value='blank'></option><option value='answer'>bless the rains</option><option value=''>guess it rains</option><option value=''>sense the rain</option></select> down in Africa&rdquo; -Toto</li>
 </ul>
 
 <h3>True or False</h3>
+
+<p>Make quick true/false questions with <code>torf()</code>.</p>
+
+<pre><code class="r">torf(TRUE)
+torf(FALSE)
+</code></pre>
 
 <ul>
 <li>True or False? You can permute values in a vector using <code>sample()</code>. <select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select></li>
@@ -314,19 +362,33 @@ hljs.initHighlightingOnLoad();
 
 <p>When your answers are very long, sometimes a drop-down select box gets formatted oddly. You can use <code>longmcq()</code> to deal with this. Since the answers are long, It&#39;s probably best to set up the options inside an R chunk with <code>echo=FALSE</code>. </p>
 
+<pre><code class="r">opts_p &lt;- c(
+   &quot;the probability that the null hypothesis is true&quot;,
+   answer = &quot;the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true&quot;,
+   &quot;the probability of making an error in your conclusion&quot;
+)
+</code></pre>
+
+<pre><code class="r">longmcq(opts_p)
+</code></pre>
+
 <p><strong>What is a p-value?</strong></p>
 
-<div class='webex-radiogroup' id='radio_WWEDPNWLIG'><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
+<div class='webex-radiogroup' id='radio_MTWGICNFWQ'><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
 
 <p><strong>What is true about a 95% confidence interval of the mean?</strong></p>
 
-<div class='webex-radiogroup' id='radio_EKGUCUZDLQ'><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value=""></input> <span>95% of the data fall within this range</span></label><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label></div>
+<div class='webex-radiogroup' id='radio_GTRUUPFOTI'><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""></input> <span>95% of the data fall within this range</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label></div>
 
 <h3>Hidden solutions and hints</h3>
 
 <p>You can fence off a solution area that will be hidden behind a button using <code>hide()</code> before the solution and <code>unhide()</code> after, each as inline R code.  Pass the text you want to appear on the button to the <code>hide()</code> function.</p>
 
-<p>If the solution is an RMarkdown code chunk, instead of using <code>hide()</code> and <code>unhide()</code>, simply set the <code>webex.hide</code> chunk option to TRUE, or set it to the string you wish to display on the button.</p>
+<pre><code class="r">hide(&quot;Click here to see the solution&quot;)
+unhide()
+</code></pre>
+
+<p>If the solution is an RMarkdown code chunk, instead of using <code>hide()</code> and <code>unhide()</code>, you can set the <code>webex.hide</code> chunk option to TRUE, or set it to the string you wish to display on the button.</p>
 
 <p>How do you load tidyverse?</p>
 

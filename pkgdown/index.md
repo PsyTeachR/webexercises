@@ -51,9 +51,32 @@ rmarkdown::draft("exercises.Rmd", "webexercises", "webexercises")
 
 Knit the file to HTML to see how it works. **Note: The widgets only function in a JavaScript-enabled browser.**
 
+These functions are optimised to be used with inline r code, but you can also use them in code chunks by setting the chunk option `results = 'asis'` and using `cat()` to display the result of the widget. 
+
+
+```r
+# echo = FALSE, results = 'asis'
+opts <- c("install.package", 
+            "install.packages", 
+            answer = "library", 
+            "libraries")
+
+q1 <- mcq(opts)
+
+cat("What function loads a package that is already on your computer?", q1)
+```
+
+What function loads a package that is already on your computer? <select class='webex-select'><option value='blank'></option><option value=''>install.package</option><option value=''>install.packages</option><option value='answer'>library</option><option value=''>libraries</option></select>
+
+
 ### Total Correct 
 
 The function `total_correct()` displays a running total of correct responses. Change the `elem` argument to display in a different style (e.g., `h2` or `h3` for header styles). If you're comfortable with css styles or classes, you can add them with the `args` argument. 
+
+
+```r
+total_correct(elem = "h3", args = "style='color:#003366;'")
+```
 
 <h3 style='color:#003366;' id="webex-total_correct"></h3>
 
@@ -63,17 +86,35 @@ The function `total_correct()` displays a running total of correct responses. Ch
 
 Create fill-in-the-blank questions using `fitb()`, providing the answer as the first argument.
 
+
+```r
+fitb("4")
+```
+
 - 2 + 2 is <input class='webex-solveme nospaces' size='1' data-answer='["4"]'/>
 
-You can also create these questions dynamically, using variables from your R session.
+You can also create these questions dynamically, using variables from your R session (e.g., in a hidden code chunk).
 
 
+```r
+x <- sample(2:8, 1)
+```
 
-- The square root of 4 is: <input class='webex-solveme nospaces' size='1' data-answer='["2"]'/>
+- The square root of 16 is: <input class='webex-solveme nospaces' size='1' data-answer='["4"]'/>
+
+
+```r
+fitb(x)
+```
 
 The blanks are case-sensitive; if you don't care about case, use the argument `ignore_case = TRUE`.
 
 - What is the letter after D? <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["E"]'/>
+
+
+```r
+fitb("E", ignore_case = TRUE)
+```
 
 If you want to ignore differences in whitespace use, use the argument `ignore_ws = TRUE` (which is the default) and include spaces in your answer anywhere they could be acceptable.
 
@@ -81,18 +122,44 @@ If you want to ignore differences in whitespace use, use the argument `ignore_ws
 
 You can set more than one possible correct answer by setting the answers as a vector.
 
+
+```r
+fitb(c("A", "E", "I", "O" , "U"), ignore_case = TRUE)
+```
+
 - Type a vowel: <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["A","E","I","O","U"]'/>
 
 You can use regular expressions to test answers against more complex rules.
+
+
+```r
+fitb("^[a-zA-Z]{3}$", width = 3, regex = TRUE)
+```
 
 - Type any 3 letters: <input class='webex-solveme nospaces regex' size='3' data-answer='["^[a-zA-Z]{3}$"]'/>
 
 ### Multiple Choice
 
+Set up a multiple-choice drop-down menu using `mcq()`.
+
+
+```r
+mcq(c("tidyr", "dplyr", answer = "readr", "ggplot2"))
+```
+
+- What package helps you load CSV files? <select class='webex-select'><option value='blank'></option><option value=''>tidyr</option><option value=''>dplyr</option><option value='answer'>readr</option><option value=''>ggplot2</option></select>
 - "Never gonna give you up, never gonna: <select class='webex-select'><option value='blank'></option><option value=''>let you go</option><option value=''>turn you down</option><option value=''>run away</option><option value='answer'>let you down</option></select>"
 - "I <select class='webex-select'><option value='blank'></option><option value='answer'>bless the rains</option><option value=''>guess it rains</option><option value=''>sense the rain</option></select> down in Africa" -Toto
 
 ### True or False
+
+Make quick true/false questions with `torf()`.
+
+
+```r
+torf(TRUE)
+torf(FALSE)
+```
 
 - True or False? You can permute values in a vector using `sample()`. <select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select>
 
@@ -100,25 +167,43 @@ You can use regular expressions to test answers against more complex rules.
 
 When your answers are very long, sometimes a drop-down select box gets formatted oddly. You can use `longmcq()` to deal with this. Since the answers are long, It's probably best to set up the options inside an R chunk with `echo=FALSE`. 
 
+
+```r
+opts_p <- c(
+   "the probability that the null hypothesis is true",
+   answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
+   "the probability of making an error in your conclusion"
+)
+```
+
+
+```r
+longmcq(opts_p)
+```
+
 **What is a p-value?**
 
-
-
-<div class='webex-radiogroup' id='radio_WWEDPNWLIG'><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
+<div class='webex-radiogroup' id='radio_MTWGICNFWQ'><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
 
 
 **What is true about a 95% confidence interval of the mean?**
 
 
 
-<div class='webex-radiogroup' id='radio_EKGUCUZDLQ'><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value=""></input> <span>95% of the data fall within this range</span></label><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label></div>
+<div class='webex-radiogroup' id='radio_GTRUUPFOTI'><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""></input> <span>95% of the data fall within this range</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label></div>
 
 
 ### Hidden solutions and hints
 
 You can fence off a solution area that will be hidden behind a button using `hide()` before the solution and `unhide()` after, each as inline R code.  Pass the text you want to appear on the button to the `hide()` function.
 
-If the solution is an RMarkdown code chunk, instead of using `hide()` and `unhide()`, simply set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
+
+```r
+hide("Click here to see the solution")
+unhide()
+```
+
+If the solution is an RMarkdown code chunk, instead of using `hide()` and `unhide()`, you can set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
 
 How do you load tidyverse?
 

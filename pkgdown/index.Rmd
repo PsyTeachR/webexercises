@@ -56,9 +56,28 @@ rmarkdown::draft("exercises.Rmd", "webexercises", "webexercises")
 
 Knit the file to HTML to see how it works. **Note: The widgets only function in a JavaScript-enabled browser.**
 
+These functions are optimised to be used with inline r code, but you can also use them in code chunks by setting the chunk option `results = 'asis'` and using `cat()` to display the result of the widget. 
+
+```{r, results = 'asis'}
+# echo = FALSE, results = 'asis'
+opts <- c("install.package", 
+            "install.packages", 
+            answer = "library", 
+            "libraries")
+
+q1 <- mcq(opts)
+
+cat("What function loads a package that is already on your computer?", q1)
+```
+
+
 ### Total Correct 
 
 The function `total_correct()` displays a running total of correct responses. Change the `elem` argument to display in a different style (e.g., `h2` or `h3` for header styles). If you're comfortable with css styles or classes, you can add them with the `args` argument. 
+
+```{r, eval = FALSE}
+total_correct(elem = "h3", args = "style='color:#003366;'")
+```
 
 `r total_correct(elem = "h3", args = "style='color:#003366;'")`
 
@@ -66,19 +85,31 @@ The function `total_correct()` displays a running total of correct responses. Ch
 
 Create fill-in-the-blank questions using `fitb()`, providing the answer as the first argument.
 
+```{r, eval = FALSE}
+fitb("4")
+```
+
 - 2 + 2 is `r fitb("4")`
 
-You can also create these questions dynamically, using variables from your R session.
+You can also create these questions dynamically, using variables from your R session (e.g., in a hidden code chunk).
 
-```{r echo = FALSE}
+```{r echo = TRUE}
 x <- sample(2:8, 1)
 ```
 
 - The square root of `r x^2` is: `r fitb(x)`
 
+```{r, eval = FALSE}
+fitb(x)
+```
+
 The blanks are case-sensitive; if you don't care about case, use the argument `ignore_case = TRUE`.
 
 - What is the letter after D? `r fitb("E", ignore_case = TRUE)`
+
+```{r, eval = FALSE}
+fitb("E", ignore_case = TRUE)
+```
 
 If you want to ignore differences in whitespace use, use the argument `ignore_ws = TRUE` (which is the default) and include spaces in your answer anywhere they could be acceptable.
 
@@ -86,18 +117,40 @@ If you want to ignore differences in whitespace use, use the argument `ignore_ws
 
 You can set more than one possible correct answer by setting the answers as a vector.
 
+```{r, eval = FALSE}
+fitb(c("A", "E", "I", "O" , "U"), ignore_case = TRUE)
+```
+
 - Type a vowel: `r fitb(c("A", "E", "I", "O" , "U"), ignore_case = TRUE)`
 
 You can use regular expressions to test answers against more complex rules.
+
+```{r, eval = FALSE}
+fitb("^[a-zA-Z]{3}$", width = 3, regex = TRUE)
+```
 
 - Type any 3 letters: `r fitb("^[a-zA-Z]{3}$", width = 3, regex = TRUE)`
 
 ### Multiple Choice
 
+Set up a multiple-choice drop-down menu using `mcq()`.
+
+```{r, eval = FALSE}
+mcq(c("tidyr", "dplyr", answer = "readr", "ggplot2"))
+```
+
+- What package helps you load CSV files? `r mcq(c("tidyr", "dplyr", answer = "readr", "ggplot2"))`
 - "Never gonna give you up, never gonna: `r mcq(c("let you go", "turn you down", "run away", answer = "let you down"))`"
 - "I `r mcq(c(answer = "bless the rains", "guess it rains", "sense the rain"))` down in Africa" -Toto
 
 ### True or False
+
+Make quick true/false questions with `torf()`.
+
+```{r, eval = FALSE}
+torf(TRUE)
+torf(FALSE)
+```
 
 - True or False? You can permute values in a vector using `sample()`. `r torf(TRUE)`
 
@@ -105,15 +158,19 @@ You can use regular expressions to test answers against more complex rules.
 
 When your answers are very long, sometimes a drop-down select box gets formatted oddly. You can use `longmcq()` to deal with this. Since the answers are long, It's probably best to set up the options inside an R chunk with `echo=FALSE`. 
 
-**What is a p-value?**
-
-```{r, echo = FALSE}
+```{r, echo = TRUE}
 opts_p <- c(
    "the probability that the null hypothesis is true",
    answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
    "the probability of making an error in your conclusion"
 )
 ```
+
+```{r, eval=FALSE}
+longmcq(opts_p)
+```
+
+**What is a p-value?**
 
 `r longmcq(opts_p)`
 
@@ -134,7 +191,12 @@ opts_ci <- sample(c(
 
 You can fence off a solution area that will be hidden behind a button using `hide()` before the solution and `unhide()` after, each as inline R code.  Pass the text you want to appear on the button to the `hide()` function.
 
-If the solution is an RMarkdown code chunk, instead of using `hide()` and `unhide()`, simply set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
+```{r eval = FALSE}
+hide("Click here to see the solution")
+unhide()
+```
+
+If the solution is an RMarkdown code chunk, instead of using `hide()` and `unhide()`, you can set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
 
 How do you load tidyverse?
 
