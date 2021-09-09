@@ -86,10 +86,10 @@ total_correct(elem = "h3", args = "style='color:#003366;'")
 Create fill-in-the-blank questions using `fitb()`, providing the answer as the first argument.
 
 ```{r, eval = FALSE}
-fitb("4")
+fitb(4)
 ```
 
-- 2 + 2 is `r fitb("4")`
+- 2 + 2 is `r fitb(4)`
 
 You can also create these questions dynamically, using variables from your R session (e.g., in a hidden code chunk).
 
@@ -97,21 +97,29 @@ You can also create these questions dynamically, using variables from your R ses
 x <- sample(2:8, 1)
 ```
 
-- The square root of `r x^2` is: `r fitb(x)`
-
 ```{r, eval = FALSE}
 fitb(x)
 ```
 
-The blanks are case-sensitive; if you don't care about case, use the argument `ignore_case = TRUE`.
+- The square root of `r x^2` is: `r fitb(x)`
 
-- What is the letter after D? `r fitb("E", ignore_case = TRUE)`
+
+
+The blanks are case-sensitive; if you don't care about case, use the argument `ignore_case = TRUE`.
 
 ```{r, eval = FALSE}
 fitb("E", ignore_case = TRUE)
 ```
 
+- What is the letter after D? `r fitb("E", ignore_case = TRUE)`
+
+
+
 If you want to ignore differences in whitespace use, use the argument `ignore_ws = TRUE` (which is the default) and include spaces in your answer anywhere they could be acceptable.
+
+```{r eval = FALSE}
+fitb(c("library( tidyverse )", "library( \"tidyverse\" )", "library( 'tidyverse' )"), ignore_ws = TRUE, width = "20")
+```
 
 - How do you load the tidyverse package? `r fitb(c("library( tidyverse )", "library( \"tidyverse\" )", "library( 'tidyverse' )"), ignore_ws = TRUE, width = "20")`
 

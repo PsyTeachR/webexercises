@@ -178,7 +178,7 @@
 <a href="#fill-in-the-blanks" class="anchor"></a>Fill-In-The-Blanks</h3>
 <p>Create fill-in-the-blank questions using <code><a href="reference/fitb.html">fitb()</a></code>, providing the answer as the first argument.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/fitb.html">fitb</a></span><span class="op">(</span><span class="st">"4"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="reference/fitb.html">fitb</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>2 + 2 is <input class="webex-solveme nospaces" size="1" data-answer='["4"]'>
 </li>
@@ -186,33 +186,35 @@
 <p>You can also create these questions dynamically, using variables from your R session (e.g., in a hidden code chunk).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">8</span>, <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<ul>
-<li>The square root of 16 is: <input class="webex-solveme nospaces" size="1" data-answer='["4"]'>
-</li>
-</ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/fitb.html">fitb</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<ul>
+<li>The square root of 36 is: <input class="webex-solveme nospaces" size="1" data-answer='["6"]'>
+</li>
+</ul>
 <p>The blanks are case-sensitive; if you don’t care about case, use the argument <code>ignore_case = TRUE</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/fitb.html">fitb</a></span><span class="op">(</span><span class="st">"E"</span>, ignore_case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>What is the letter after D? <input class="webex-solveme nospaces ignorecase" size="1" data-answer='["E"]'>
 </li>
 </ul>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/fitb.html">fitb</a></span><span class="op">(</span><span class="st">"E"</span>, ignore_case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>If you want to ignore differences in whitespace use, use the argument <code>ignore_ws = TRUE</code> (which is the default) and include spaces in your answer anywhere they could be acceptable.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/fitb.html">fitb</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"library( tidyverse )"</span>, <span class="st">"library( \"tidyverse\" )"</span>, <span class="st">"library( 'tidyverse' )"</span><span class="op">)</span>, ignore_ws <span class="op">=</span> <span class="cn">TRUE</span>, width <span class="op">=</span> <span class="st">"20"</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>How do you load the tidyverse package? <input class="webex-solveme nospaces" size="20" data-answer="[&quot;library( tidyverse )&quot;,&quot;library( \&quot;tidyverse\&quot; )&quot;,&quot;library( 'tidyverse' )&quot;]">
 </li>
 </ul>
 <p>You can set more than one possible correct answer by setting the answers as a vector.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/fitb.html">fitb</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"E"</span>, <span class="st">"I"</span>, <span class="st">"O"</span> , <span class="st">"U"</span><span class="op">)</span>, ignore_case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>Type a vowel: <input class="webex-solveme nospaces ignorecase" size="1" data-answer='["A","E","I","O","U"]'>
 </li>
 </ul>
 <p>You can use regular expressions to test answers against more complex rules.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/fitb.html">fitb</a></span><span class="op">(</span><span class="st">"^[a-zA-Z]{3}$"</span>, width <span class="op">=</span> <span class="fl">3</span>, regex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>Type any 3 letters: <input class="webex-solveme nospaces regex" size="3" data-answer='["^[a-zA-Z]{3}$"]'>
@@ -223,7 +225,7 @@
 <h3 class="hasAnchor">
 <a href="#multiple-choice" class="anchor"></a>Multiple Choice</h3>
 <p>Set up a multiple-choice drop-down menu using <code><a href="reference/mcq.html">mcq()</a></code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/mcq.html">mcq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tidyr"</span>, <span class="st">"dplyr"</span>, answer <span class="op">=</span> <span class="st">"readr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>What package helps you load CSV files? <select class="webex-select"><option value="blank"></option>
@@ -247,7 +249,7 @@
 <h3 class="hasAnchor">
 <a href="#true-or-false" class="anchor"></a>True or False</h3>
 <p>Make quick true/false questions with <code><a href="reference/torf.html">torf()</a></code>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/torf.html">torf</a></span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="reference/torf.html">torf</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <ul>
@@ -261,28 +263,28 @@
 <h3 class="hasAnchor">
 <a href="#longer-mcqs" class="anchor"></a>Longer MCQs</h3>
 <p>When your answers are very long, sometimes a drop-down select box gets formatted oddly. You can use <code><a href="reference/longmcq.html">longmcq()</a></code> to deal with this. Since the answers are long, It’s probably best to set up the options inside an R chunk with <code>echo=FALSE</code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">opts_p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
    <span class="st">"the probability that the null hypothesis is true"</span>,
    answer <span class="op">=</span> <span class="st">"the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true"</span>,
    <span class="st">"the probability of making an error in your conclusion"</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/longmcq.html">longmcq</a></span><span class="op">(</span><span class="va">opts_p</span><span class="op">)</span></code></pre></div>
 <p><strong>What is a p-value?</strong></p>
-<div id="radio_MTWGICNFWQ" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""><span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value="answer"><span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""><span>the probability of making an error in your conclusion</span></label>
+<div id="radio_SUZRKPLKKX" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value=""><span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value="answer"><span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value=""><span>the probability of making an error in your conclusion</span></label>
 </div>
 <p><strong>What is true about a 95% confidence interval of the mean?</strong></p>
-<div id="radio_GTRUUPFOTI" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""><span>95% of the data fall within this range</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value="answer"><span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""><span>there is a 95% probability that the true mean lies within this range</span></label>
+<div id="radio_UHWJVDBBYO" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value=""><span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value="answer"><span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value=""><span>95% of the data fall within this range</span></label>
 </div>
 </div>
 <div id="hidden-solutions-and-hints" class="section level3">
 <h3 class="hasAnchor">
 <a href="#hidden-solutions-and-hints" class="anchor"></a>Hidden solutions and hints</h3>
 <p>You can fence off a solution area that will be hidden behind a button using <code><a href="reference/hide.html">hide()</a></code> before the solution and <code><a href="reference/unhide.html">unhide()</a></code> after, each as inline R code. Pass the text you want to appear on the button to the <code><a href="reference/hide.html">hide()</a></code> function.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/hide.html">hide</a></span><span class="op">(</span><span class="st">"Click here to see the solution"</span><span class="op">)</span>
 <span class="fu"><a href="reference/unhide.html">unhide</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>If the solution is an RMarkdown code chunk, instead of using <code><a href="reference/hide.html">hide()</a></code> and <code><a href="reference/unhide.html">unhide()</a></code>, you can set the <code>webex.hide</code> chunk option to TRUE, or set it to the string you wish to display on the button.</p>
@@ -291,7 +293,7 @@
 <button>
 Click here to see the solution
 </button>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></code></pre></div>
 </div>
 </div>
@@ -300,7 +302,7 @@ Click here to see the solution
 <h2 class="hasAnchor">
 <a href="#bookdown" class="anchor"></a>Bookdown</h2>
 <p>You can add webexercises to a bookdown project or start a new bookdown project using <code><a href="reference/add_to_bookdown.html">add_to_bookdown()</a></code>.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># create a new book</span>
 <span class="co"># use default includes and scripts directories (include and R)</span>
 <span class="fu"><a href="reference/add_to_bookdown.html">add_to_bookdown</a></span><span class="op">(</span>bookdown_dir <span class="op">=</span> <span class="st">"demo_bs4"</span>,

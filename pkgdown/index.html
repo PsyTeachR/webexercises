@@ -281,7 +281,7 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 
 <p>Create fill-in-the-blank questions using <code>fitb()</code>, providing the answer as the first argument.</p>
 
-<pre><code class="r">fitb(&quot;4&quot;)
+<pre><code class="r">fitb(4)
 </code></pre>
 
 <ul>
@@ -293,23 +293,26 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 <pre><code class="r">x &lt;- sample(2:8, 1)
 </code></pre>
 
-<ul>
-<li>The square root of 16 is: <input class='webex-solveme nospaces' size='1' data-answer='["4"]'/></li>
-</ul>
-
 <pre><code class="r">fitb(x)
 </code></pre>
 
+<ul>
+<li>The square root of 36 is: <input class='webex-solveme nospaces' size='1' data-answer='["6"]'/></li>
+</ul>
+
 <p>The blanks are case-sensitive; if you don&#39;t care about case, use the argument <code>ignore_case = TRUE</code>.</p>
+
+<pre><code class="r">fitb(&quot;E&quot;, ignore_case = TRUE)
+</code></pre>
 
 <ul>
 <li>What is the letter after D? <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["E"]'/></li>
 </ul>
 
-<pre><code class="r">fitb(&quot;E&quot;, ignore_case = TRUE)
-</code></pre>
-
 <p>If you want to ignore differences in whitespace use, use the argument <code>ignore_ws = TRUE</code> (which is the default) and include spaces in your answer anywhere they could be acceptable.</p>
+
+<pre><code class="r">fitb(c(&quot;library( tidyverse )&quot;, &quot;library( \&quot;tidyverse\&quot; )&quot;, &quot;library( &#39;tidyverse&#39; )&quot;), ignore_ws = TRUE, width = &quot;20&quot;)
+</code></pre>
 
 <ul>
 <li>How do you load the tidyverse package? <input class='webex-solveme nospaces' size='20' data-answer='["library( tidyverse )","library( \"tidyverse\" )","library( &apos;tidyverse&apos; )"]'/></li>
@@ -374,11 +377,11 @@ torf(FALSE)
 
 <p><strong>What is a p-value?</strong></p>
 
-<div class='webex-radiogroup' id='radio_MTWGICNFWQ'><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
+<div class='webex-radiogroup' id='radio_SUZRKPLKKX'><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
 
 <p><strong>What is true about a 95% confidence interval of the mean?</strong></p>
 
-<div class='webex-radiogroup' id='radio_GTRUUPFOTI'><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""></input> <span>95% of the data fall within this range</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label></div>
+<div class='webex-radiogroup' id='radio_UHWJVDBBYO'><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value=""></input> <span>95% of the data fall within this range</span></label></div>
 
 <h3>Hidden solutions and hints</h3>
 

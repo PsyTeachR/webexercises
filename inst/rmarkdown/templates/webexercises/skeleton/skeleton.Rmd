@@ -28,7 +28,7 @@ The function `total_correct()` displays a running total of correct responses. Ch
 
 Create fill-in-the-blank questions using `fitb()`, providing the answer as the first argument.
 
-- 2 + 2 is `r fitb("4")`
+- 2 + 2 is `r fitb(4)`
 
 You can also create these questions dynamically, using variables from your R session.
 
