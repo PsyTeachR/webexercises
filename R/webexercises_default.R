@@ -42,17 +42,11 @@ webexercises_default <- function(...) {
     }
   })
   
-  # smart quotes changed in rmarkdown 2.2
-  rmd_version <- unlist(utils::packageVersion("rmarkdown"))
-  if (rmd_version[1] < 2 || (rmd_version[1] == 2 && rmd_version[2] < 2)) {
-    rmarkdown::html_document(css = css,
-                             includes = rmarkdown::includes(after_body = js), 
-                             smart = FALSE,
-                             ...)
-  } else {
-    rmarkdown::html_document(css = css,
-                             includes = rmarkdown::includes(after_body = js), 
-                             md_extensions = "-smart",
-                             ...)
-  }
+  # smart quotes changed in rmarkdown 2.2 / pandoc 2.0.6
+  rmarkdown::pandoc_available(version = "2.0.6", error = TRUE)
+  
+  rmarkdown::html_document(css = css,
+                           includes = rmarkdown::includes(after_body = js), 
+                           md_extensions = "-smart",
+                           ...)
 }

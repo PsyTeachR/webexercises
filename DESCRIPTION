@@ -15,10 +15,10 @@ URL: https://github.com/psyteachr/webexercises
 Depends: R (>= 3.1.2)
 Imports:
     jsonlite,
-    rmarkdown,
     knitr,
     yaml,
-    utils
+    utils,
+    rmarkdown (>= 2.2)
 License: CC BY-SA 4.0
 RoxygenNote: 7.1.1
 Suggests: 

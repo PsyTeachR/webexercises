@@ -22,12 +22,15 @@
 #' @return NULL
 #' @export
 #'
-add_webexercises_to_bookdown <- function(bookdown_dir = ".", 
-                                         include_dir = "include", 
-                                         script_dir = "R",
-                                         output_format = c("bs4_book", "gitbook", "html_book", "tufte_html_book"),
+add_to_bookdown <- function(bookdown_dir = ".", 
+                            include_dir = "include", 
+                            script_dir = "R",
+                            output_format = c("bs4_book", 
+                                              "gitbook", 
+                                              "html_book", 
+                                              "tufte_html_book"),
                                   
-                                  render = FALSE) {
+                            render = FALSE) {
   # check inputs
   if (bookdown_dir == "") bookdown_dir <- "."
   if (include_dir == "") include_dir <- "."

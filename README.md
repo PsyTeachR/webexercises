@@ -2,10 +2,11 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <link href="inst/reports/default/webex.css" rel="stylesheet" />
+<link href="inst/reports/default/webex.js"  />
 
 # The `{webexercises}` package
 
-<img src="https://raw.githubusercontent.com/PsyTeachR/misc/master/img/webexercises.001.png" style="float:right; max-width:280px; width: 25%;" />
+<img src="man/figures/logo.png" style="float:right; max-width:280px; width: 25%;" />
 
 The goal of `{webexercises}` is to enable instructors to easily create
 interactive web pages that students can use in self-guided learning.
@@ -39,7 +40,7 @@ code](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf).
 These functions are:
 
 | function                | widget         | description                    |
-| :---------------------- | :------------- | :----------------------------- |
+|:------------------------|:---------------|:-------------------------------|
 | `fitb()`                | text box       | fill-in-the-blank question     |
 | `mcq()`                 | pull-down menu | multiple choice question       |
 | `torf()`                | pull-down menu | TRUE or FALSE question         |
@@ -53,9 +54,9 @@ users enter the correct answer. Answers can be either static or dynamic
 `style_widgets()`.
 
 Examples are provided in the **Web Exercises** R Markdown template. To
-create a file from the webexercises template in RStudio, click `File ->
-New File... -> RMarkdown` and in the dialog box that appears, select
-`From Template` and choose `Web Exercises`.
+create a file from the webexercises template in RStudio, click
+`File -> New File... -> RMarkdown` and in the dialog box that appears,
+select `From Template` and choose `Web Exercises`.
 
 Alternatively (or if you’re not using RStudio) use:
 
@@ -69,32 +70,32 @@ function in a JavaScript-enabled browser.**
 ## Bookdown
 
 You can add webexercises to a bookdown project or start a new bookdown
-project using `add_webex_to_bookdown()`.
+project using `add_to_bookdown()`.
 
 ``` r
 # create a new book
 # use default includes and scripts directories (include and R)
-add_webexercises_to_bookdown(bookdown_dir = "demo_bs4",
-                             output_format = "bs4_book",
-                             render = TRUE)
+add_to_bookdown(bookdown_dir = "demo_bs4",
+                output_format = "bs4_book",
+                render = TRUE)
 
-add_webexercises_to_bookdown(bookdown_dir = "demo_git",
-                             output_format = "gitbook",
-                             render = TRUE)
+add_to_bookdown(bookdown_dir = "demo_git",
+                output_format = "gitbook",
+                render = TRUE)
 
-add_webexercises_to_bookdown(bookdown_dir = "demo_html",
-                             output_format = "html_book",
-                             render = TRUE)
+add_to_bookdown(bookdown_dir = "demo_html",
+                output_format = "html_book",
+                render = TRUE)
 
-add_webexercises_to_bookdown(bookdown_dir = "demo_tufte",
-                             output_format = "tufte_html_book",
-                             render = TRUE)
+add_to_bookdown(bookdown_dir = "demo_tufte",
+                output_format = "tufte_html_book",
+                render = TRUE)
 
 # update an existing book with custom include and script directories
-add_webexercises_to_bookdown(bookdown_dir = ".",
-                             include_dir = "www",
-                             script_dir = "scripts",
-                             output_format = "gitbook")
+add_to_bookdown(bookdown_dir = ".",
+                include_dir = "www",
+                script_dir = "scripts",
+                output_format = "gitbook")
 ```
 
 <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This
