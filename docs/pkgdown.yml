@@ -1,8 +1,8 @@
-pandoc: '2.5'
+pandoc: '2.13'
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2021-09-09T07:16Z
+last_built: 2021-09-09T08:35Z
 urls:
   reference: https://psyteachr.github.io/webexercises/reference
   article: https://psyteachr.github.io/webexercises/articles

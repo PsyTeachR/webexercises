@@ -1,7 +1,0 @@
-all : pkgdocs README.md
-
-README.md : README.Rmd
-	Rscript -e "rmarkdown::render('README.Rmd')"
-
-pkgdocs :
-	Rscript -e "pkgdown::build_site()"

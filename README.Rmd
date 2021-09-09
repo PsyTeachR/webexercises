@@ -10,14 +10,14 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
+  fig.path = "man/figures/",
   out.width = "100%"
 )
 ```
 
 # The `{webexercises}` package
 
-<img src="../logo.png" style="float:right; max-width:280px; width: 25%;" />
+<img src="man/figures/logo.png" style="float:right; max-width:280px; width: 25%;" />
 
 The goal of `{webexercises}` is to enable instructors to easily create interactive web pages that students can use in self-guided learning. Although `{webexercises}` has fewer features than RStudio's [learnr](https://rstudio.github.io/learnr/) package, it is more lightweight: whereas `{learnr}` tutorials must be either hosted on a shiny server or run locally, `{webexercises}` creates standalone HTML files that require only a JavaScript-enabled browser. It is also extremely simple to use.
 
