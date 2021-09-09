@@ -88,7 +88,7 @@ Create fill-in-the-blank questions using `fitb()`, providing the answer as the f
 
 
 ```r
-fitb("4")
+fitb(4)
 ```
 
 - 2 + 2 is <input class='webex-solveme nospaces' size='1' data-answer='["4"]'/>
@@ -100,23 +100,32 @@ You can also create these questions dynamically, using variables from your R ses
 x <- sample(2:8, 1)
 ```
 
-- The square root of 16 is: <input class='webex-solveme nospaces' size='1' data-answer='["4"]'/>
-
 
 ```r
 fitb(x)
 ```
 
-The blanks are case-sensitive; if you don't care about case, use the argument `ignore_case = TRUE`.
+- The square root of 36 is: <input class='webex-solveme nospaces' size='1' data-answer='["6"]'/>
 
-- What is the letter after D? <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["E"]'/>
+
+
+The blanks are case-sensitive; if you don't care about case, use the argument `ignore_case = TRUE`.
 
 
 ```r
 fitb("E", ignore_case = TRUE)
 ```
 
+- What is the letter after D? <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["E"]'/>
+
+
+
 If you want to ignore differences in whitespace use, use the argument `ignore_ws = TRUE` (which is the default) and include spaces in your answer anywhere they could be acceptable.
+
+
+```r
+fitb(c("library( tidyverse )", "library( \"tidyverse\" )", "library( 'tidyverse' )"), ignore_ws = TRUE, width = "20")
+```
 
 - How do you load the tidyverse package? <input class='webex-solveme nospaces' size='20' data-answer='["library( tidyverse )","library( \"tidyverse\" )","library( &apos;tidyverse&apos; )"]'/>
 
@@ -183,14 +192,14 @@ longmcq(opts_p)
 
 **What is a p-value?**
 
-<div class='webex-radiogroup' id='radio_MTWGICNFWQ'><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_MTWGICNFWQ" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
+<div class='webex-radiogroup' id='radio_SUZRKPLKKX'><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
 
 
 **What is true about a 95% confidence interval of the mean?**
 
 
 
-<div class='webex-radiogroup' id='radio_GTRUUPFOTI'><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""></input> <span>95% of the data fall within this range</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_GTRUUPFOTI" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label></div>
+<div class='webex-radiogroup' id='radio_UHWJVDBBYO'><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value=""></input> <span>95% of the data fall within this range</span></label></div>
 
 
 ### Hidden solutions and hints

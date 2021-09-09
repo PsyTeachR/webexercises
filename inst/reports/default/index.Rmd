@@ -29,6 +29,20 @@ The `{webexercises}` package provides a number of functions that you use in [inl
 
 ## Example Questions
 
+These functions are optimised to be used with inline r code, but you can also use them in code chunks by setting the chunk option `results = 'asis'` and using `cat()` to display the result of the widget. 
+
+```{r, results = 'asis'}
+# echo = FALSE, results = 'asis'
+opts <- c("install.package", 
+            "install.packages", 
+            answer = "library", 
+            "libraries")
+
+q1 <- mcq(opts)
+
+cat("What function loads a package that is already on your computer?", q1)
+```
+
 ### Total Correct (`total_correct()`)
 
 The function `total_correct()` displays a running total of correct responses. Change the `elem` argument to display in a different style (e.g., `h2` or `h3` for header styles). If you're comfortable with css styles or classes, you can add them with the `args` argument. 
@@ -39,7 +53,7 @@ The function `total_correct()` displays a running total of correct responses. Ch
 
 Create fill-in-the-blank questions using `fitb()`, providing the answer as the first argument.
 
-- 2 + 2 is `r fitb("4")`
+- 2 + 2 is `r fitb(4)`
 
 You can also create these questions dynamically, using variables from your R session.
 
