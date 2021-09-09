@@ -2,8 +2,6 @@
 
 /* update total correct if #webex-total_correct exists */
 update_total_correct = function() {
-  console.log("webex: update total_correct");
-
   if (t = document.getElementById("webex-total_correct")) {
     var correct = document.getElementsByClassName("webex-correct").length;
     var solvemes = document.getElementsByClassName("webex-solveme").length;
@@ -16,8 +14,6 @@ update_total_correct = function() {
 
 /* webex-solution button toggling function */
 b_func = function() {
-  console.log("webex: toggle hide");
-  
   var cl = this.parentElement.classList;
   if (cl.contains('open')) {
     cl.remove("open");
@@ -28,8 +24,6 @@ b_func = function() {
 
 /* function for checking solveme answers */
 solveme_func = function(e) {
-  console.log("webex: check solveme");
-
   var real_answers = JSON.parse(this.dataset.answer);
   var my_answer = this.value;
   var cl = this.classList;
@@ -75,8 +69,6 @@ solveme_func = function(e) {
 
 /* function for checking select answers */
 select_func = function(e) {
-  console.log("webex: check select");
-  
   var cl = this.classList
   
   /* add style */
@@ -93,8 +85,6 @@ select_func = function(e) {
 
 /* function for checking radiogroups answers */
 radiogroups_func = function(e) {
-  console.log("webex: check radiogroups");
-
   var checked_button = document.querySelector('input[name=' + this.id + ']:checked');
   var cl = checked_button.parentElement.classList;
   var labels = checked_button.parentElement.parentElement.children;
@@ -115,7 +105,7 @@ radiogroups_func = function(e) {
   update_total_correct();
 }
 
-window.onload = function() {
+$(function() {
   console.log("onload");
   /* set up solution buttons */
   var buttons = document.getElementsByTagName("button");

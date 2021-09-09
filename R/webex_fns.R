@@ -131,6 +131,7 @@ torf <- function(answer) {
 #'                  "under the assumption that the null-hypothesis is true"),
 #'   "the probability of making an error in your conclusion"
 #' )
+#' 
 #' longmcq(opts)
 #'
 #' @export

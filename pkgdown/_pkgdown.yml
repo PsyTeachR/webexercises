@@ -26,12 +26,13 @@ reference:
   - '`hide`'
   - '`unhide`'
   - '`total_correct`'
-  - '`webexercises_default`'
-  - '`style_widgets`'
 - title: Helper Functions
   desc: ~
   contents:
+  - '`webexercises_default`'
+  - '`add_to_bookdown`'
+  - '`style_widgets`'
   - '`escape_regex`'
   - '`round2`'
   - '`strip_lzero`'
-  - '`add_webexercises_to_bookdown`'
+  

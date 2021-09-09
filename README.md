@@ -2,6 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <link href="inst/reports/default/webex.css" rel="stylesheet" />
+<link href="inst/reports/default/webex.js"  />
 
 # The `{webexercises}` package
 
@@ -69,32 +70,32 @@ function in a JavaScript-enabled browser.**
 ## Bookdown
 
 You can add webexercises to a bookdown project or start a new bookdown
-project using `add_webex_to_bookdown()`.
+project using `add_to_bookdown()`.
 
 ``` r
 # create a new book
 # use default includes and scripts directories (include and R)
-add_webexercises_to_bookdown(bookdown_dir = "demo_bs4",
-                             output_format = "bs4_book",
-                             render = TRUE)
+add_to_bookdown(bookdown_dir = "demo_bs4",
+                output_format = "bs4_book",
+                render = TRUE)
 
-add_webexercises_to_bookdown(bookdown_dir = "demo_git",
-                             output_format = "gitbook",
-                             render = TRUE)
+add_to_bookdown(bookdown_dir = "demo_git",
+                output_format = "gitbook",
+                render = TRUE)
 
-add_webexercises_to_bookdown(bookdown_dir = "demo_html",
-                             output_format = "html_book",
-                             render = TRUE)
+add_to_bookdown(bookdown_dir = "demo_html",
+                output_format = "html_book",
+                render = TRUE)
 
-add_webexercises_to_bookdown(bookdown_dir = "demo_tufte",
-                             output_format = "tufte_html_book",
-                             render = TRUE)
+add_to_bookdown(bookdown_dir = "demo_tufte",
+                output_format = "tufte_html_book",
+                render = TRUE)
 
 # update an existing book with custom include and script directories
-add_webexercises_to_bookdown(bookdown_dir = ".",
-                             include_dir = "www",
-                             script_dir = "scripts",
-                             output_format = "gitbook")
+add_to_bookdown(bookdown_dir = ".",
+                include_dir = "www",
+                script_dir = "scripts",
+                output_format = "gitbook")
 ```
 
 <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This
