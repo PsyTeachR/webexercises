@@ -85,7 +85,7 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#webexercises" class="anchor"></a>webexercises</h1></div>
 <!-- rmarkdown v1 -->
-<p><img src="../man/figures/logo.png" style="float:right; max-width:280px; width: 25%;"></p>
+<p><img src="logo.png" style="float:right; max-width:280px; width: 25%;"></p>
 <p>The goal of <a href="https://github.com/psyteachr/webexercises">webexercises</a> is to enable instructors to easily create interactive web pages that students can use in self-guided learning. Although <a href="https://github.com/psyteachr/webexercises">webexercises</a> has fewer features than RStudio’s <a href="https://rstudio.github.io/learnr/">learnr</a> package, it is more lightweight: whereas <code>{learnr}</code> tutorials must be either hosted on a shiny server or run locally, <a href="https://github.com/psyteachr/webexercises">webexercises</a> creates standalone HTML files that require only a JavaScript-enabled browser. It is also extremely simple to use.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -165,7 +165,7 @@
 </ul>
 <p>You can also create these questions dynamically, using variables from your R session.</p>
 <ul>
-<li>The square root of 25 is: <input class="webex-solveme nospaces" size="1" data-answer='["5"]'>
+<li>The square root of 4 is: <input class="webex-solveme nospaces" size="1" data-answer='["2"]'>
 </li>
 </ul>
 <p>The blanks are case-sensitive; if you don’t care about case, use the argument <code>ignore_case = TRUE</code>.</p>
@@ -219,12 +219,12 @@
 <a href="#longer-mcqs" class="anchor"></a>Longer MCQs</h3>
 <p>When your answers are very long, sometimes a drop-down select box gets formatted oddly. You can use <code><a href="reference/longmcq.html">longmcq()</a></code> to deal with this. Since the answers are long, It’s probably best to set up the options inside an R chunk with <code>echo=FALSE</code>.</p>
 <p><strong>What is a p-value?</strong></p>
-<div id="radio_YCIYOSVUNR" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_YCIYOSVUNR" value=""><span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_YCIYOSVUNR" value="answer"><span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_YCIYOSVUNR" value=""><span>the probability of making an error in your conclusion</span></label>
+<div id="radio_WWEDPNWLIG" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value=""><span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value="answer"><span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value=""><span>the probability of making an error in your conclusion</span></label>
 </div>
 <p><strong>What is true about a 95% confidence interval of the mean?</strong></p>
-<div id="radio_YLKDOVSDAF" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_YLKDOVSDAF" value="answer"><span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_YLKDOVSDAF" value=""><span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_YLKDOVSDAF" value=""><span>95% of the data fall within this range</span></label>
+<div id="radio_EKGUCUZDLQ" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value=""><span>95% of the data fall within this range</span></label><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value=""><span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value="answer"><span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label>
 </div>
 </div>
 <div id="hidden-solutions-and-hints" class="section level3">

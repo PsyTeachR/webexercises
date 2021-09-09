@@ -2,7 +2,7 @@
 
 <!-- rmarkdown v1 -->
 
-<img src="../man/figures/logo.png" style="float:right; max-width:280px; width: 25%;" />
+<img src="logo.png" style="float:right; max-width:280px; width: 25%;" />
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(

@@ -2,7 +2,7 @@
 
 <!-- rmarkdown v1 -->
 
-<img src="../man/figures/logo.png" style="float:right; max-width:280px; width: 25%;" />
+<img src="logo.png" style="float:right; max-width:280px; width: 25%;" />
 
 
 
@@ -69,7 +69,7 @@ You can also create these questions dynamically, using variables from your R ses
 
 
 
-- The square root of 25 is: <input class='webex-solveme nospaces' size='1' data-answer='["5"]'/>
+- The square root of 4 is: <input class='webex-solveme nospaces' size='1' data-answer='["2"]'/>
 
 The blanks are case-sensitive; if you don't care about case, use the argument `ignore_case = TRUE`.
 
@@ -104,14 +104,14 @@ When your answers are very long, sometimes a drop-down select box gets formatted
 
 
 
-<div class='webex-radiogroup' id='radio_YCIYOSVUNR'><label><input type="radio" autocomplete="off" name="radio_YCIYOSVUNR" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_YCIYOSVUNR" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_YCIYOSVUNR" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
+<div class='webex-radiogroup' id='radio_WWEDPNWLIG'><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WWEDPNWLIG" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
 
 
 **What is true about a 95% confidence interval of the mean?**
 
 
 
-<div class='webex-radiogroup' id='radio_YLKDOVSDAF'><label><input type="radio" autocomplete="off" name="radio_YLKDOVSDAF" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_YLKDOVSDAF" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_YLKDOVSDAF" value=""></input> <span>95% of the data fall within this range</span></label></div>
+<div class='webex-radiogroup' id='radio_EKGUCUZDLQ'><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value=""></input> <span>95% of the data fall within this range</span></label><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_EKGUCUZDLQ" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label></div>
 
 
 ### Hidden solutions and hints
