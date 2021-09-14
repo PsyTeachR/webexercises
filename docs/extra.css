@@ -8,12 +8,14 @@
 }
 
 /* styles for webex-solveme */
-.webex-incorrect {
+.webex-incorrect,
+.webex-radiogroup label.webex-incorrect{
     border: 2px dotted var(--pink);
     background-color: #edaddd;
     border-radius: 0.25em;
 }
-.webex-correct {
+.webex-correct,
+.webex-radiogroup label.webex-correct {
     border: 2px solid var(--green);
     background-color: #c0edc2;
     border-radius: 0.25em;
@@ -45,7 +47,7 @@
 .webex-radiogroup label {
   margin-left: 2em;
   text-indent: -1em;
-  padding-left: 1em;
+  padding-left: 0.5em;
   font-weight: 400;
   display: block;
   border: 2px solid rgba(255, 255, 255, 1);

@@ -126,7 +126,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Change webexercises widget style</h1>
-    <small class="dont-index">Source: <a href='https://github.com/psyteachr/webexercises/blob/master/R/webex_fns.R'><code>R/webex_fns.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/psyteachr/webexercises/blob/master/R/webexercises_fns.R'><code>R/webexercises_fns.R</code></a></small>
     <div class="hidden name"><code>style_widgets.Rd</code></div>
     </div>
 
@@ -141,17 +141,25 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>default</th>
-      <td><p>The colour of the widgets when the correct answer is not filled in (defaults to blue).</p></td>
+      <td><p>The colour of the widgets when the correct answer is
+not filled in (defaults to blue).</p></td>
     </tr>
     <tr>
       <th>correct</th>
-      <td><p>The colour of the widgets when the correct answer not filled in (defaults to red).</p></td>
+      <td><p>The colour of the widgets when the correct answer
+not filled in (defaults to red).</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A character string containing HTML code to change the CSS
+  style values for widgets.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Call this function inline in an RMarkdown document to change the default and correct colours using any valid CSS colour word (e.g., red, rgb(255,0,0), hsl(0, 100<!-- %, 50%) or #FF0000). --></p>
+    <p>Call this function inline in an RMarkdown document to
+  change the default and correct colours using any valid CSS colour
+  word (e.g., red, rgb(255,0,0), hsl(0, 100<!-- %, 50%) or #FF0000). --></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># change to green when correct</span>
