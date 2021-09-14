@@ -19,7 +19,7 @@
 #' 
 #' @param render Whether to render the book after updating (defaults to FALSE).
 #'
-#' @return NULL
+#' @return No return value, called for side effects.
 #' @export
 #'
 add_to_bookdown <- function(bookdown_dir = ".", 
@@ -164,5 +164,7 @@ add_to_bookdown <- function(bookdown_dir = ".",
     
     utils::browseURL(local_path)
   }
+
+  invisible(NULL)
 }
 

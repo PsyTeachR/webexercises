@@ -27,6 +27,9 @@ default HTML format in the _output.yml file.}
 
 \item{render}{Whether to render the book after updating (defaults to FALSE).}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Adds the necessary helper files to an existing bookdown project and
 edits the _output.yml and _bookdown.yml files accordingly. If the

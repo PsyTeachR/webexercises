@@ -10,6 +10,8 @@
 #' 
 #' @param ... Additional function arguments to pass to
 #'   \code{\link[rmarkdown]{html_document}}.
+#'
+#' @return R Markdown output format to pass to 'render'.
 #' 
 #' @seealso \code{\link[rmarkdown]{render}}, \code{\link[rmarkdown]{html_document}}
 #' 

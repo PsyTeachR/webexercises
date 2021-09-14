@@ -10,6 +10,9 @@ webexercises_default(...)
 \item{...}{Additional function arguments to pass to
 \code{\link[rmarkdown]{html_document}}.}
 }
+\value{
+R Markdown output format to pass to 'render'.
+}
 \description{
 This function wraps \code{rmarkdown::html_document} to configure
 compilation to embed the default webexercises CSS and JavaScript files in

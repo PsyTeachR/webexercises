@@ -18,6 +18,9 @@
 #'   this function inline in an RMarkdown document. See the Web
 #'   Exercises RMarkdown template for examples of its use in
 #'   RMarkdown.
+#' 
+#' @return A character string with HTML code to generate an input box.
+#' 
 #' @examples
 #' # What is 2 + 2?
 #' fitb(4, num = TRUE)
@@ -76,6 +79,10 @@ fitb <- function(answer,
 #' @details Writes html code that creates an option box widget, with one or 
 #'   more correct answers. Call this function inline in an RMarkdown document. 
 #'   See the Web Exercises RMarkdown template for further examples.
+#'
+#' @return A character string with HTML code to generate a pull-down
+#'   menu.
+#' 
 #' @examples
 #' # How many planets orbit closer to the sun than the Earth?
 #' mcq(c(1, answer = 2, 3))
@@ -98,6 +105,10 @@ mcq <- function(opts) {
 #'
 #' @param answer Logical value TRUE or FALSE, corresponding to the correct answer.
 #' @details Writes html code that creates an option box widget with TRUE or FALSE as alternatives. Call this function inline in an RMarkdown document. See the Web Exercises RMarkdown template for further examples.
+#'
+#' @return A character string with HTML code to generate a pull-down
+#'   menu with elements TRUE and FALSE.
+#'
 #' @examples
 #' # True or False? 2 + 2 = 4
 #' torf(TRUE)
@@ -123,6 +134,10 @@ torf <- function(answer) {
 #'   single correct answer. This is more suitable for longer answers. Call this function inline in an RMarkdown
 #'   document. See the Web Exercises RMarkdown template for further
 #'   examples.
+#'
+#' @return A character string containing HTML code to create a set of
+#'   radio buttons.
+#' 
 #' @examples
 #' # What is a p-value?
 #' opts <- c(
@@ -157,7 +172,17 @@ longmcq <- function(opts) {
 #'
 #' @param button_text Text to appear on the button that reveals the hidden content.
 #' @seealso \code{unhide}
-#' @details Writes HTML to create a content that is revealed by a button press. Call this function inline in an RMarkdown document. Any content appearing after this call up to an inline call to \code{unhide()} will only be revealed when the user clicks the button. See the Web Exercises RMarkdown Template for examples.
+#' 
+#' @details Writes HTML to create a content that is revealed by a
+#'   button press. Call this function inline in an RMarkdown
+#'   document. Any content appearing after this call up to an inline
+#'   call to \code{unhide()} will only be revealed when the user
+#'   clicks the button. See the Web Exercises RMarkdown Template for
+#'   examples.
+#'
+#' @return A character string containing HTML code to create a button
+#'   that reveals hidden content.
+#' 
 #' @examples
 #' # default behavior is to generate a button that says "Solution"
 #' hide()
@@ -172,7 +197,14 @@ hide <- function(button_text = "Solution") {
 #' End hidden HTML content
 #'
 #' @seealso \code{hide}
-#' @details Call this function inline in an RMarkdown document to mark the end of hidden content (see the Web Exercises RMarkdown Template for examples).
+#'
+#' @details Call this function inline in an RMarkdown document to mark
+#'   the end of hidden content (see the Web Exercises RMarkdown
+#'   Template for examples).
+#'
+#' @return A character string containing HTML code marking the end of
+#'   hiddent content.
+#' 
 #' @examples
 #' # just produce the closing </div> 
 #' unhide()
@@ -183,9 +215,19 @@ unhide <- function() {
 
 #' Change webexercises widget style
 #'
-#' @param default The colour of the widgets when the correct answer is not filled in (defaults to blue).
-#' @param correct The colour of the widgets when the correct answer not filled in (defaults to red).
-#' @details Call this function inline in an RMarkdown document to change the default and correct colours using any valid CSS colour word (e.g., red, rgb(255,0,0), hsl(0, 100%, 50%) or #FF0000).
+#' @param default The colour of the widgets when the correct answer is
+#'   not filled in (defaults to blue).
+#' 
+#' @param correct The colour of the widgets when the correct answer
+#'   not filled in (defaults to red).
+#'
+#' @return A character string containing HTML code to change the CSS
+#'   style values for widgets.
+#' 
+#' @details Call this function inline in an RMarkdown document to
+#'   change the default and correct colours using any valid CSS colour
+#'   word (e.g., red, rgb(255,0,0), hsl(0, 100%, 50%) or #FF0000).
+#' 
 #' @examples
 #' # change to green when correct
 #' style_widgets(correct = "green")
@@ -207,7 +249,8 @@ style_widgets <- function(default = "red", correct = "blue") {
 #' @param elem The html element to display (e.g., div, h3, p, span)
 #' @param args Optional arguments for css classes or styles
 #'
-#' @return A string with the html for displaying a total correct element
+#' @return A string with the html for displaying a total correct element.
+#' 
 #' @export
 #'
 #' @examples
@@ -222,9 +265,18 @@ total_correct <- function(elem = "span", args = "") {
 
 #' Round up from .5
 #'
-#' @param x A numeric string (or number that can be converted to a string).
+#' @param x A vector of numeric values.
+#' 
 #' @param digits Integer indicating the number of decimal places (`round`) or significant digits (`signif`) to be used.
-#' @details Implements rounding using the "round up from .5" rule, which is more conventional than the "round to even" rule implemented by R's built-in \code{\link{round}} function. This implementation was taken from \url{https://stackoverflow.com/a/12688836}.
+#'
+#' @details Implements rounding using the "round up from .5" rule,
+#'   which is more conventional than the "round to even" rule
+#'   implemented by R's built-in \code{\link{round}} function. This
+#'   implementation was taken from
+#'   \url{https://stackoverflow.com/a/12688836}.
+#'
+#' @return A vector of rounded numeric values.
+#' 
 #' @examples
 #' round2(c(2, 2.5))
 #' 
@@ -232,6 +284,7 @@ total_correct <- function(elem = "span", args = "") {
 #' round(c(2, 2.5))
 #' @export
 round2 <- function(x, digits = 0) {
+  
   posneg = sign(x)
   z = abs(x)*10^digits
   z = z + 0.5
@@ -243,7 +296,9 @@ round2 <- function(x, digits = 0) {
 #' Strip leading zero from numeric string
 #'
 #' @param x A numeric string (or number that can be converted to a string).
+#' 
 #' @return A string with leading zero removed.
+#' 
 #' @examples
 #' strip_lzero("0.05")
 #' @export
@@ -253,9 +308,9 @@ strip_lzero <- function(x) {
 
 #' Escape a string for regex
 #'
-#' @param string A string to escape
+#' @param string A string to escape.
 #'
-#' @return A string 
+#' @return A string with escaped characters.
 #' @export
 #'
 #' @examples
