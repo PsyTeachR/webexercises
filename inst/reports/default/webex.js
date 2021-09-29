@@ -8,9 +8,10 @@ update_total_correct = function() {
     var correct = document.getElementsByClassName("webex-correct").length;
     var solvemes = document.getElementsByClassName("webex-solveme").length;
     var radiogroups = document.getElementsByClassName("webex-radiogroup").length;
+    var checkboxes = document.getElementsByClassName("webex-checkbox").length;
     var selects = document.getElementsByClassName("webex-select").length;
     
-    t.innerHTML = correct + " of " + (solvemes + radiogroups + selects) + " correct";
+    t.innerHTML = correct + " of " + (solvemes + radiogroups + checkboxes + selects) + " correct";
   }
 }
 
@@ -99,6 +100,7 @@ radiogroups_func = function(e) {
   var cl = checked_button.parentElement.classList;
   var labels = checked_button.parentElement.parentElement.children;
   
+  
   /* get rid of styles */
   for (i = 0; i < labels.length; i++) {
     labels[i].classList.remove("webex-incorrect");
@@ -112,6 +114,31 @@ radiogroups_func = function(e) {
     cl.add("webex-incorrect");
   }
   
+  update_total_correct();
+}
+
+/* function for checking checkboxes answers */
+checkboxes_func = function(e) {
+  console.log("webex: check checkboxes");
+
+  var current_button = document.querySelector('input[name=' + this.id + ']');
+  var cl = current_button.parentElement.classList;
+  /*var labels = current_button.parentElement.parentElement.children;
+  labels.style.fontWeight = 'normal';*/
+
+/* add style when checked, remove when unchecked */
+  if (current_button.checked) {
+        if (current_button.value == "answer") {
+      cl.add("webex-correct");
+    } else {
+      cl.add("webex-incorrect");
+    }
+    
+  } else {
+     cl.remove("webex-incorrect");
+   cl.remove("webex-correct");
+  }
+
   update_total_correct();
 }
 
@@ -158,6 +185,18 @@ window.onload = function() {
   for (var i = 0; i < radiogroups.length; i++) {
     radiogroups[i].onchange = radiogroups_func;
   }
+  
+    /* set up checkboxes */
+  var checkboxes = document.getElementsByClassName("webex-checkbox");
+  
+  for (var i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].onchange = checkboxes_func;
+  }
+
+  
+  
+
+
   
   /* set up selects */
   var selects = document.getElementsByClassName("webex-select");
