@@ -20,6 +20,22 @@
     background-color: #c0edc2;
     border-radius: 0.25em;
 }
+
+.webex-incorrect,
+.webex-checkbox label.webex-incorrect{
+    border: 2px dotted var(--pink);
+    background-color: #edaddd;
+    border-radius: 0.25em;
+}
+
+.webex-correct,
+.webex-checkbox label.webex-correct {
+    border: 2px solid var(--green);
+    background-color: #c0edc2;
+    border-radius: 0.25em;
+}
+
+
 /* styles for hidden solutions */
 .webex-solution {
     height: 2.5em;
@@ -55,6 +71,21 @@
 }
 
 .webex-radiogroup label input {
+  position: relative;
+  left: -1em;
+}
+
+.webex-checkbox label {
+  margin-left: 2em;
+  text-indent: -1em;
+  padding-left: 0.5em;
+  font-weight: 400;
+  display: block;
+  border: 2px solid rgba(255, 255, 255, 1);
+  border-radius: 0.25em;
+}
+
+.webex-checkbox label input {
   position: relative;
   left: -1em;
 }
