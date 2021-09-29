@@ -126,7 +126,7 @@ torf <- function(answer) {
 }
 
 
-#' Longer MCQs with Radio Buttons
+#' Longer MCQs with Radio Buttons and Checkboxes
 #'
 #' @param opts Vector of alternatives. The correct answer is the
 #'   element(s) of this vector named 'answer'.
@@ -136,7 +136,8 @@ torf <- function(answer) {
 #'   examples.
 #'
 #' @return A character string containing HTML code to create a set of
-#'   radio buttons.
+#'   radio buttons (if there is only one answer) or a set of 
+#'   checkboxes (if there is two answers or more).
 #' 
 #' @examples
 #' # What is a p-value?
@@ -150,21 +151,31 @@ torf <- function(answer) {
 #' longmcq(opts)
 #'
 #' @export
-longmcq <- function(opts) {
-  ix <- which(names(opts) == "answer")
-  if (length(ix) == 0) {
-    stop("The question has no correct answer")
-  }
+longmcq <- function (opts) {
+    ix <- which(names(opts) == "answer")
+    opts2 <- gsub("'", "&apos;", opts, fixed = TRUE)
+    
+   if (length(ix) == 0) {
+        stop("The question has no correct answer")
+    
+    } else if (length(ix) == 1) {
+    qname <- paste0("radio_", paste(sample(LETTERS, 10, 
+        T), collapse = ""))
+    options <- sprintf("<label><input type=\"radio\" autocomplete=\"off\" name=\"%s\" value=\"%s\"></input> <span>%s</span></label>", 
+        qname, names(opts), opts2)
+    paste0("<div class='webex-radiogroup' id='", qname, 
+        "'>", paste(options, collapse = ""), "</div>\n")
+    
+    } else { #lenght >= 2
+    qname <-
+    lapply(opts2,
+           function(element) paste0("check_",
+                                    paste(sample(LETTERS, 10, TRUE), collapse = "")))
+    options <- sprintf("<div class='webex-checkbox' id =\"%s\"><label><input type=\"checkbox\" name=\"%s\" value=\"%s\"> </input><span>%s</span></label> </div>\n", 
+       qname, qname, names(opts), opts2)
+    paste0(options, collapse = "")
+    }
 
-  opts2 <- gsub("\'", "&apos;", opts, fixed = TRUE)
-  
-  # make up a name to group them
-  qname <- paste0("radio_", paste(sample(LETTERS, 10, T), collapse = ""))
-  options <- sprintf('<label><input type="radio" autocomplete="off" name="%s" value="%s"></input> <span>%s</span></label>', qname, names(opts), opts2)
-  
-  paste0("<div class='webex-radiogroup' id='", qname, "'>", 
-         paste(options, collapse = ""), 
-         "</div>\n")
 }
 
 
