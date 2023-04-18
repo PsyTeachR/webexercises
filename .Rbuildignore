@@ -12,3 +12,4 @@
 ^cran-comments\.md$
 ^README\.html$
 ^Makefile$
+^webexercises\.Rproj$

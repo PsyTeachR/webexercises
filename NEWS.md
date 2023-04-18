@@ -1,3 +1,8 @@
+# webexercises 1.1.0
+
+* quarto updates
+* fenced check sections
+
 # webexercises 1.0.0
 
 * new package name: webexercises
