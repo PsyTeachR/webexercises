@@ -18,25 +18,25 @@
 #'   this function inline in an RMarkdown document. See the Web
 #'   Exercises RMarkdown template for examples of its use in
 #'   RMarkdown.
-#' 
+#'
 #' @return A character string with HTML code to generate an input box.
-#' 
+#'
 #' @examples
 #' # What is 2 + 2?
 #' fitb(4, num = TRUE)
-#' 
+#'
 #' # What was the name of the Beatles drummer?
 #' fitb(c("Ringo", "Ringo Starr"), ignore_case = TRUE)
 #'
 #' # What is pi to three decimal places?
 #' fitb(pi, num = TRUE, tol = .001)
 #' @export
-fitb <- function(answer, 
-                 width = calculated_width, 
+fitb <- function(answer,
+                 width = calculated_width,
                  num = NULL,
                  ignore_case = FALSE,
                  tol = NULL,
-                 ignore_ws = TRUE, 
+                 ignore_ws = TRUE,
                  regex = FALSE) {
   # make sure answer is a numeric or character vector
   answer <- unlist(answer)
@@ -44,10 +44,10 @@ fitb <- function(answer,
       (!is.numeric(answer) && !is.character(answer))) {
     stop("The answer must be a vector of characters or numbers.")
   }
-  
+
   # set numeric based on data type if num is NULL
   if (is.null(num)) num <- is.numeric(answer)
-  
+
   # if tol is set, assume numeric
   if (!is.null(tol)) num <- TRUE
 
@@ -56,13 +56,13 @@ fitb <- function(answer,
     answer2 <- strip_lzero(answer)
     answer <- union(answer, answer2)
   }
-  
+
   # if width not set, calculate it from max length answer, up to limit of 100
   calculated_width <- min(100, max(nchar(answer)))
-  
+
   answers <- jsonlite::toJSON(as.character(answer))
   answers <- gsub("\'", "&apos;", answers, fixed = TRUE)
-  
+
   paste0("<input class='webex-solveme",
          ifelse(ignore_ws, " nospaces", ""),
          ifelse(!is.null(tol), paste0("' data-tol='", tol, ""), ""),
@@ -76,13 +76,13 @@ fitb <- function(answer,
 #'
 #' @param opts Vector of alternatives. The correct answer is the
 #'   element(s) of this vector named 'answer'.
-#' @details Writes html code that creates an option box widget, with one or 
-#'   more correct answers. Call this function inline in an RMarkdown document. 
+#' @details Writes html code that creates an option box widget, with one or
+#'   more correct answers. Call this function inline in an RMarkdown document.
 #'   See the Web Exercises RMarkdown template for further examples.
 #'
 #' @return A character string with HTML code to generate a pull-down
 #'   menu.
-#' 
+#'
 #' @examples
 #' # How many planets orbit closer to the sun than the Earth?
 #' mcq(c(1, answer = 2, 3))
@@ -95,9 +95,9 @@ mcq <- function(opts) {
   if (length(ix) == 0) {
     stop("MCQ has no correct answer")
   }
-  
-  options <- sprintf("<option value='%s'>%s</option>", names(opts), opts) 
-  sprintf("<select class='webex-select'><option value='blank'></option>%s</select>", 
+
+  options <- sprintf("<option value='%s'>%s</option>", names(opts), opts)
+  sprintf("<select class='webex-select'><option value='blank'></option>%s</select>",
           paste(options, collapse = ""))
 }
 
@@ -137,7 +137,7 @@ torf <- function(answer) {
 #'
 #' @return A character string containing HTML code to create a set of
 #'   radio buttons.
-#' 
+#'
 #' @examples
 #' # What is a p-value?
 #' opts <- c(
@@ -146,7 +146,7 @@ torf <- function(answer) {
 #'                  "under the assumption that the null-hypothesis is true"),
 #'   "the probability of making an error in your conclusion"
 #' )
-#' 
+#'
 #' longmcq(opts)
 #'
 #' @export
@@ -157,13 +157,13 @@ longmcq <- function(opts) {
   }
 
   opts2 <- gsub("\'", "&apos;", opts, fixed = TRUE)
-  
+
   # make up a name to group them
   qname <- paste0("radio_", paste(sample(LETTERS, 10, T), collapse = ""))
   options <- sprintf('<label><input type="radio" autocomplete="off" name="%s" value="%s"></input> <span>%s</span></label>', qname, names(opts), opts2)
-  
-  paste0("<div class='webex-radiogroup' id='", qname, "'>", 
-         paste(options, collapse = ""), 
+
+  paste0("<div class='webex-radiogroup' id='", qname, "'>",
+         paste(options, collapse = ""),
          "</div>\n")
 }
 
@@ -172,7 +172,7 @@ longmcq <- function(opts) {
 #'
 #' @param button_text Text to appear on the button that reveals the hidden content.
 #' @seealso \code{unhide}
-#' 
+#'
 #' @details Writes HTML to create a content that is revealed by a
 #'   button press. Call this function inline in an RMarkdown
 #'   document. Any content appearing after this call up to an inline
@@ -182,7 +182,7 @@ longmcq <- function(opts) {
 #'
 #' @return A character string containing HTML code to create a button
 #'   that reveals hidden content.
-#' 
+#'
 #' @examples
 #' # default behavior is to generate a button that says "Solution"
 #' hide()
@@ -191,7 +191,14 @@ longmcq <- function(opts) {
 #' hide("Click here for a hint")
 #' @export
 hide <- function(button_text = "Solution") {
-  paste0("\n<div class='webex-solution'><button>", button_text, "</button>\n")
+  rmd <- !is.null(getOption("knitr.in.progress"))
+
+  if (rmd) {
+    paste0("\n<div class='webex-solution'><button>", button_text, "</button>\n")
+  } else {
+    paste0("\n::: {.callout-note collapse='true'}\n## ", button_text, "\n\n")
+  }
+
 }
 
 #' End hidden HTML content
@@ -204,30 +211,36 @@ hide <- function(button_text = "Solution") {
 #'
 #' @return A character string containing HTML code marking the end of
 #'   hiddent content.
-#' 
+#'
 #' @examples
-#' # just produce the closing </div> 
+#' # just produce the closing </div>
 #' unhide()
 #' @export
 unhide <- function() {
-  paste0("\n</div>\n")
+  rmd <- !is.null(getOption("knitr.in.progress"))
+
+  if (rmd) {
+    "\n</div>\n"
+  } else {
+    "\n:::\n\n"
+  }
 }
 
 #' Change webexercises widget style
 #'
 #' @param default The colour of the widgets when the correct answer is
 #'   not filled in (defaults to blue).
-#' 
+#'
 #' @param correct The colour of the widgets when the correct answer
 #'   not filled in (defaults to red).
 #'
 #' @return A character string containing HTML code to change the CSS
 #'   style values for widgets.
-#' 
+#'
 #' @details Call this function inline in an RMarkdown document to
 #'   change the default and correct colours using any valid CSS colour
 #'   word (e.g., red, rgb(255,0,0), hsl(0, 100%, 50%) or #FF0000).
-#' 
+#'
 #' @examples
 #' # change to green when correct
 #' style_widgets(correct = "green")
@@ -250,7 +263,7 @@ style_widgets <- function(default = "red", correct = "blue") {
 #' @param args Optional arguments for css classes or styles
 #'
 #' @return A string with the html for displaying a total correct element.
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -259,14 +272,15 @@ style_widgets <- function(default = "red", correct = "blue") {
 #' total_correct("p", "style='color: red;'")
 #' total_correct("div", "class='customclass'")
 total_correct <- function(elem = "span", args = "") {
-  sprintf("<%s %s id=\"webex-total_correct\"></%s>\n\n", 
-              elem, args, elem)
+  message("This function is deperecated. Use sections with the class 'webex-check' to set up self-cecking mini-quizzes with total correct.")
+  #sprintf("<%s %s class=\"webex-total_correct\"></%s>\n\n",
+  #            elem, args, elem)
 }
 
 #' Round up from .5
 #'
 #' @param x A vector of numeric values.
-#' 
+#'
 #' @param digits Integer indicating the number of decimal places (`round`) or significant digits (`signif`) to be used.
 #'
 #' @details Implements rounding using the "round up from .5" rule,
@@ -276,15 +290,15 @@ total_correct <- function(elem = "span", args = "") {
 #'   \url{https://stackoverflow.com/a/12688836}.
 #'
 #' @return A vector of rounded numeric values.
-#' 
+#'
 #' @examples
 #' round2(c(2, 2.5))
-#' 
+#'
 #' # compare to:
 #' round(c(2, 2.5))
 #' @export
 round2 <- function(x, digits = 0) {
-  
+
   posneg = sign(x)
   z = abs(x)*10^digits
   z = z + 0.5
@@ -296,9 +310,9 @@ round2 <- function(x, digits = 0) {
 #' Strip leading zero from numeric string
 #'
 #' @param x A numeric string (or number that can be converted to a string).
-#' 
+#'
 #' @return A string with leading zero removed.
-#' 
+#'
 #' @examples
 #' strip_lzero("0.05")
 #' @export

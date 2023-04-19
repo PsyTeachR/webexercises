@@ -18,11 +18,13 @@ Imports:
     knitr,
     yaml,
     utils,
+    rstudioapi,
     rmarkdown (>= 2.2)
 License: CC BY-SA 4.0
 RoxygenNote: 7.2.1
 Suggests: 
     testthat,
     bookdown,
+    quarto,
     xfun
 Encoding: UTF-8
