@@ -4,21 +4,20 @@
 \alias{style_widgets}
 \title{Change webexercises widget style}
 \usage{
-style_widgets(default = "red", correct = "blue")
+style_widgets(incorrect = "orchid3", correct = "lightgreen")
 }
 \arguments{
-\item{default}{The colour of the widgets when the correct answer is
-not filled in (defaults to blue).}
+\item{incorrect}{The colour of the widgets when the answer is incorrect (defaults to orchid3).}
 
 \item{correct}{The colour of the widgets when the correct answer
-not filled in (defaults to red).}
+not filled in (defaults to lightgreen).}
 }
 \value{
 A character string containing HTML code to change the CSS
   style values for widgets.
 }
 \description{
-Change webexercises widget style
+Change default colours using R colour names (see `colours()`) or hexadecimal notation
 }
 \details{
 Call this function inline in an RMarkdown document to
@@ -26,9 +25,5 @@ Call this function inline in an RMarkdown document to
   word (e.g., red, rgb(255,0,0), hsl(0, 100%, 50%) or #FF0000).
 }
 \examples{
-# change to green when correct
-style_widgets(correct = "green")
-
-# yellow when unfilled, pink when correct
-style_widgets("#FFFF00", "#FF3399")
+style_widgets("yellow", "purple")
 }

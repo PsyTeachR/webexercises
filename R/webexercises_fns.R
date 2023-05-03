@@ -228,33 +228,61 @@ unhide <- function() {
 
 #' Change webexercises widget style
 #'
-#' @param default The colour of the widgets when the correct answer is
-#'   not filled in (defaults to blue).
+#' @param incorrect The colour of the widgets when the answer is incorrect (defaults to orchid3).
 #'
 #' @param correct The colour of the widgets when the correct answer
-#'   not filled in (defaults to red).
+#'   not filled in (defaults to lightgreen).
 #'
 #' @return A character string containing HTML code to change the CSS
 #'   style values for widgets.
 #'
-#' @details Call this function inline in an RMarkdown document to
-#'   change the default and correct colours using any valid CSS colour
-#'   word (e.g., red, rgb(255,0,0), hsl(0, 100%, 50%) or #FF0000).
+#' @details Call this function in an RMarkdown document to
+#'   change the feedback colours using R colour names (see `colours()`)
+#'   or any valid CSS colour word (e.g., red, rgb(255,0,0),
+#'   hsl(0, 100%, 50%) or #FF0000).
 #'
 #' @examples
-#' # change to green when correct
-#' style_widgets(correct = "green")
-#'
-#' # yellow when unfilled, pink when correct
-#' style_widgets("#FFFF00", "#FF3399")
+#' style_widgets("goldenrod", "purple")
 #' @export
-style_widgets <- function(default = "red", correct = "blue") {
-  paste0(
+style_widgets <- function(incorrect = "orchid3", correct = "lightgreen") {
+  # default if not R colour or hex
+  d_border <- incorrect
+  d_bg <- incorrect
+  c_border <- correct
+  c_bg <- correct
+
+  if (incorrect %in% colours()) {
+    drgb <- grDevices::col2rgb(incorrect, alpha = FALSE)
+    d_border <- paste0("rgb(", paste(drgb, collapse = ", "), ")")
+    d_bg <- paste0("rgba(", paste(drgb, collapse = ", "), ", 0.25)")
+  } else if (substr(incorrect, 1, 1) == "#") {
+    d_bg <- paste0(incorrect, "DD")
+  }
+
+  if (correct %in% colours()) {
+    crgb <- grDevices::col2rgb(correct, alpha = FALSE)
+    c_border <- paste0("rgb(", paste(crgb, collapse = ", "), ")")
+    c_bg <- paste0("rgba(", paste(crgb, collapse = ", "), ", 0.25)")
+  } else if (substr(correct, 1, 1) == "#") {
+    c_bg <- paste0(correct, "DD")
+  }
+
+  style <- paste0(
     "\n<style>\n",
-    "    .webex-solveme { border-color: ", default,"; }\n",
-    "    .webex-solveme.webex-correct { border-color: ", correct,"; }\n",
+    "  .webex-incorrect, input.webex-solveme.webex-incorrect,\n",
+    "  .webex-radiogroup label.webex-incorrect {\n",
+    "    border: 2px dotted ", d_border, ";\n",
+    "    background-color: ", d_bg, ";\n",
+    "  }\n",
+    "  .webex-correct, input.webex-solveme.webex-correct,\n",
+    "  .webex-radiogroup label.webex-correct {\n",
+    "    border: 2px dotted ", c_border, ";\n",
+    "    background-color: ", c_bg, ";\n",
+    "  }\n",
     "</style>\n\n"
   )
+
+  cat(style)
 }
 
 #' Display total correct

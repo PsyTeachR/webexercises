@@ -31,13 +31,6 @@
   background-color: white !important;
 }
 
-.unchecked .webex-incorrect span::before,
-.unchecked .webex-incorrect + .webex-icon::after,
-.unchecked .webex-correct span::before,
-.unchecked .webex-correct + .webex-icon::after {
-  content: "";
-}
-
 /* styles for webex-solveme */
 .webex-select, input.webex-solveme,
 .unchecked .webex-radiogroup label.webex-incorrect,
@@ -62,6 +55,13 @@ input.webex-solveme.webex-correct,
     background-color: #c0edc2;
     color: black;
     border-radius: 0.25em;
+}
+
+.unchecked .webex-incorrect span::before,
+.unchecked .webex-incorrect + .webex-icon::after,
+.unchecked .webex-correct span::before,
+.unchecked .webex-correct + .webex-icon::after {
+  content: "  ";
 }
 
 .webex-incorrect span::before,

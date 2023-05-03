@@ -11,6 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 source("webex.R") # adds webexercise functions
 ```
 
+```{r, results='asis'}
+# Uncomment to change widget colours:
+#style_widgets(incorrect = "goldenrod", correct = "purple")
+```
+
 This is a Web Exercise template created by the [psychology teaching team at the University of Glasgow](http://www.psy.gla.ac.uk), based on ideas from [Software Carpentry](https://software-carpentry.org/lessons/). This template shows how instructors can easily create interactive web documents that students can use in self-guided learning.
 
 The `{webexercises}` package provides a number of functions that you use in [inline R code](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf)or through code chunk options to create HTML widgets (text boxes, pull down menus, buttons that reveal hidden content). Examples are given below. Render this file to HTML to see how it works.
@@ -25,7 +30,7 @@ Create fill-in-the-blank questions using `fitb()`, providing the answer as the f
 
 You can also create these questions dynamically, using variables from your R session.
 
-```{r echo = FALSE}
+```{r}
 x <- sample(2:8, 1)
 ```
 
@@ -62,7 +67,7 @@ When your answers are very long, sometimes a drop-down select box gets formatted
 
 **What is a p-value?**
 
-```{r, echo = FALSE}
+```{r}
 opts_p <- c(
    "the probability that the null hypothesis is true",
    answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
@@ -74,7 +79,7 @@ opts_p <- c(
 
 **What is true about a 95% confidence interval of the mean?**
 
-```{r, echo = FALSE}
+```{r}
 # use sample() to randomise the order
 opts_ci <- sample(c(
   answer = "if you repeated the process many times, 95% of intervals calculated in this way contain the true mean",
@@ -93,7 +98,7 @@ Create sections with the class `webex-check` to add a button that hides feedback
 
 I am going to learn a lot: `r torf(TRUE)`
 
-```{r, echo=FALSE, results='asis'}
+```{r, results='asis'}
 opts <- c(
    "the probability that the null hypothesis is true",
    answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
@@ -115,7 +120,7 @@ If the solution is a code chunk, instead of using `hide()` and `unhide()`, simpl
 
 **Recreate the scatterplot below, using the built-in `cars` dataset.**
 
-```{r echo = FALSE}
+```{r}
 with(cars, plot(speed, dist))
 ```
 
@@ -132,11 +137,3 @@ See the documentation for `plot()` (`?plot`)
 ```{r eval = FALSE, webex.hide="Click here to see the solution"}
 plot(cars$speed, cars$dist)
 ```
-
-<!-- TO CHANGE WIDGET COLOURS:
-  move command below out of this HTML comment area
-  and then re-compile;
-  unfilled becomes yellow, correct becomes pink 
-     
-`r style_widgets("#FFFF00", "#FF3399")`
--->

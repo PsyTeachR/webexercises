@@ -17,3 +17,4 @@ knitr::knit_hooks$set(webex.hide = function(before, options, envir) {
     unhide()
   }
 })
+

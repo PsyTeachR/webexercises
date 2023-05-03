@@ -18,6 +18,7 @@ Imports:
     knitr,
     yaml,
     utils,
+    grDevices,
     rstudioapi,
     rmarkdown (>= 2.2)
 License: CC BY-SA 4.0
