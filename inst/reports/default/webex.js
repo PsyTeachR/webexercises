@@ -1,5 +1,3 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-
 <script>
 
 /* update total correct if #webex-total_correct exists */
@@ -186,7 +184,7 @@ window.onload = function() {
     solveme[i].onkeyup = solveme_func;
     solveme[i].onchange = solveme_func;
 
-    $(solveme[i]).after(" <span class='webex-icon'></span>");
+    solveme[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
   }
 
   /* set up radiogroups */
@@ -199,7 +197,7 @@ window.onload = function() {
   var selects = document.getElementsByClassName("webex-select");
   for (var i = 0; i < selects.length; i++) {
     selects[i].onchange = select_func;
-    $(selects[i]).after(" <span class='webex-icon'></span>");
+    selects[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
   }
 
   update_total_correct();

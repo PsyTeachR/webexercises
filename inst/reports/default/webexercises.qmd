@@ -1,53 +1,21 @@
---- 
-title: "My Book"
-author: "Me"
-date: "`r Sys.Date()`"
-site: bookdown::bookdown_site
-documentclass: book
-bibliography: packages.bib
-link-citations: yes
-description: |
-  This book ...
+---
+title: "Webexercises"
 ---
 
-```{r cite-packages, include = FALSE}
-# automatically create a bib database for R packages
-# add any packages you want to cite here
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'webexercises'
-), 'packages.bib')
-
-```
-
 ```{r, echo = FALSE, results='asis'}
+knitr::opts_chunk$set(echo = FALSE)
+
 # Uncomment to change widget colours:
 #style_widgets(incorrect = "goldenrod", correct = "purple", highlight = "firebrick")
 ```
 
-# Webexercises {-}
+This is a Web Exercise template created by the [psychology teaching team at the University of Glasgow](http://www.psy.gla.ac.uk), based on ideas from [Software Carpentry](https://software-carpentry.org/lessons/). This template shows how instructors can easily create interactive web documents that students can use in self-guided learning.
 
-This is a Web Exercise template created by the [psychology teaching team at the University of Glasgow](http://www.psy.gla.ac.uk), based on ideas from [Software Carpentry](https://software-carpentry.org/lessons/). This template shows how instructors can easily create lightweight, interactive web documents that students can use in self-guided learning.
+The `{webexercises}` package provides a number of functions that you use in [inline R code](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf) or through code chunk options to create HTML widgets (text boxes, pull down menus, buttons that reveal hidden content). Examples are given below. Render this file to HTML to see how it works.
 
-The `{webexercises}` package provides a number of functions that you use in [inline R code](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf) to create HTML widgets (text boxes, pull down menus, buttons that reveal hidden content). Examples are given next. Render the book to see how they work.
-
-**NOTE: To use the widgets in the compiled HTML files, you need to have a JavaScript-enabled browser.**
+**NOTE: To use the widgets in the compiled HTML file, you need to have a JavaScript-enabled browser.**
 
 ## Example Questions
-
-These functions are optimised to be used with inline r code, but you can also use them in code chunks by setting the chunk option `results = 'asis'` and using `cat()` to display the result of the widget. 
-
-```{r, results = 'asis'}
-# echo = FALSE, results = 'asis'
-opts <- c("install.package", 
-            "install.packages", 
-            answer = "library", 
-            "libraries")
-
-q1 <- mcq(opts)
-
-cat("What function loads a package that is already on your computer?", q1)
-```
-
 
 ### Fill-In-The-Blanks (`fitb()`)
 
@@ -57,7 +25,7 @@ Create fill-in-the-blank questions using `fitb()`, providing the answer as the f
 
 You can also create these questions dynamically, using variables from your R session.
 
-```{r echo = FALSE}
+```{r}
 x <- sample(2:8, 1)
 ```
 
@@ -94,7 +62,7 @@ When your answers are very long, sometimes a drop-down select box gets formatted
 
 **What is a p-value?**
 
-```{r, echo = FALSE}
+```{r}
 opts_p <- c(
    "the probability that the null hypothesis is true",
    answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
@@ -106,7 +74,7 @@ opts_p <- c(
 
 **What is true about a 95% confidence interval of the mean?**
 
-```{r, echo = FALSE}
+```{r}
 # use sample() to randomise the order
 opts_ci <- sample(c(
   answer = "if you repeated the process many times, 95% of intervals calculated in this way contain the true mean",
@@ -125,7 +93,7 @@ Create sections with the class `webex-check` to add a button that hides feedback
 
 I am going to learn a lot: `r torf(TRUE)`
 
-```{r, echo=FALSE, results='asis'}
+```{r, results='asis'}
 opts <- c(
    "the probability that the null hypothesis is true",
    answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
@@ -137,15 +105,17 @@ cat("What is a p-value?", longmcq(opts))
 
 :::
 
+
+
 ## Hidden solutions and hints
 
 You can fence off a solution area that will be hidden behind a button using `hide()` before the solution and `unhide()` after, each as inline R code.  Pass the text you want to appear on the button to the `hide()` function.
 
-If the solution is an RMarkdown code chunk, instead of using `hide()` and `unhide()`, simply set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
+If the solution is a code chunk, instead of using `hide()` and `unhide()`, simply set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
 
 **Recreate the scatterplot below, using the built-in `cars` dataset.**
 
-```{r echo = FALSE}
+```{r}
 with(cars, plot(speed, dist))
 ```
 
@@ -156,10 +126,9 @@ See the documentation for `plot()` (`?plot`)
 
 `r unhide()`
 
-
 <!-- note: you could also just set webex.hide to TRUE -->
 
-```{r eval = FALSE, webex.hide="Click here to see the solution"}
+```{r, echo = TRUE, eval = FALSE}
+#| webex.hide: "Click here to see the solution"
 plot(cars$speed, cars$dist)
 ```
-

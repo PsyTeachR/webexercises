@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://psyteachr.github.io/webexercises/404.html</loc>
+  </url>
+  <url>
+    <loc>https://psyteachr.github.io/webexercises/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://psyteachr.github.io/webexercises/authors.html</loc>
+  </url>
+  <url>
     <loc>https://psyteachr.github.io/webexercises/index.html</loc>
   </url>
   <url>
+    <loc>https://psyteachr.github.io/webexercises/news/index.html</loc>
+  </url>
+  <url>
     <loc>https://psyteachr.github.io/webexercises/reference/add_to_bookdown.html</loc>
+  </url>
+  <url>
+    <loc>https://psyteachr.github.io/webexercises/reference/add_to_quarto.html</loc>
+  </url>
+  <url>
+    <loc>https://psyteachr.github.io/webexercises/reference/add_webexercises_to_bookdown.html</loc>
+  </url>
+  <url>
+    <loc>https://psyteachr.github.io/webexercises/reference/create_quarto_doc.html</loc>
   </url>
   <url>
     <loc>https://psyteachr.github.io/webexercises/reference/escape_regex.html</loc>
@@ -14,6 +35,9 @@
   </url>
   <url>
     <loc>https://psyteachr.github.io/webexercises/reference/hide.html</loc>
+  </url>
+  <url>
+    <loc>https://psyteachr.github.io/webexercises/reference/index.html</loc>
   </url>
   <url>
     <loc>https://psyteachr.github.io/webexercises/reference/longmcq.html</loc>

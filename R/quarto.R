@@ -16,12 +16,10 @@ create_quarto_doc <- function(name = "Untitled", open = interactive()) {
   # get helper files
   css <- system.file("reports/default/webex.css", package = "webexercises")
   js <- system.file("reports/default/webex.js", package = "webexercises")
-  script <- system.file("reports/default/webex.R", package = "webexercises")
   index <- system.file("reports/default/index.qmd", package = "webexercises")
 
   file.copy(css, path)
   file.copy(js, path)
-  file.copy(script, path)
   file.copy(index, filepath)
 
   if (open) rstudioapi::documentOpen(filepath)

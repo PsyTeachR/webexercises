@@ -4,26 +4,37 @@
 \alias{style_widgets}
 \title{Change webexercises widget style}
 \usage{
-style_widgets(incorrect = "orchid3", correct = "lightgreen")
+style_widgets(
+  incorrect = "#983E82",
+  correct = "#59935B",
+  highlight = "#467AAC"
+)
 }
 \arguments{
-\item{incorrect}{The colour of the widgets when the answer is incorrect (defaults to orchid3).}
+\item{incorrect}{The colour of the widgets when the answer is incorrect (defaults to pink #983E82).}
 
 \item{correct}{The colour of the widgets when the correct answer
-not filled in (defaults to lightgreen).}
+not filled in (defaults to green #59935B).}
+
+\item{highlight}{The colour of the borders around hidden blocks and
+checked sections (deafults to blue #467AAC).}
 }
 \value{
 A character string containing HTML code to change the CSS
   style values for widgets.
 }
 \description{
-Change default colours using R colour names (see `colours()`) or hexadecimal notation
+Change webexercises widget style
 }
 \details{
-Call this function inline in an RMarkdown document to
-  change the default and correct colours using any valid CSS colour
-  word (e.g., red, rgb(255,0,0), hsl(0, 100%, 50%) or #FF0000).
+Call this function in an RMarkdown document to
+  change the feedback colours using R colour names (see `colours()`)
+  or any valid CSS colour specification (e.g., red, rgb(255,0,0),
+  hsl(0, 100%, 50%) or #FF0000).
+
+If you want more control over the widget styles, please edit the
+  webex.css file directly.
 }
 \examples{
-style_widgets("yellow", "purple")
+style_widgets("goldenrod", "purple")
 }

@@ -9,7 +9,7 @@ library(webexercises)
 ```
 
 
-```{r, results='asis', echo = FALSE}
+```{r, echo = FALSE, results='asis'}
 # Uncomment to change widget colours:
 #style_widgets(incorrect = "goldenrod", correct = "purple")
 ```

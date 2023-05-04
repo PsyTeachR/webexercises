@@ -228,38 +228,52 @@ unhide <- function() {
 
 #' Change webexercises widget style
 #'
-#' @param incorrect The colour of the widgets when the answer is incorrect (defaults to orchid3).
+#' @param incorrect The colour of the widgets when the answer is incorrect (defaults to pink #983E82).
 #'
 #' @param correct The colour of the widgets when the correct answer
-#'   not filled in (defaults to lightgreen).
+#'   not filled in (defaults to green #59935B).
+#'
+#' @param highlight The colour of the borders around hidden blocks and
+#'   checked sections (defaults to blue #467AAC).
 #'
 #' @return A character string containing HTML code to change the CSS
 #'   style values for widgets.
 #'
 #' @details Call this function in an RMarkdown document to
 #'   change the feedback colours using R colour names (see `colours()`)
-#'   or any valid CSS colour word (e.g., red, rgb(255,0,0),
+#'   or any valid CSS colour specification (e.g., red, rgb(255,0,0),
 #'   hsl(0, 100%, 50%) or #FF0000).
+#'
+#' If you want more control over the widget styles, please edit the
+#'   webex.css file directly.
 #'
 #' @examples
 #' style_widgets("goldenrod", "purple")
 #' @export
-style_widgets <- function(incorrect = "orchid3", correct = "lightgreen") {
+style_widgets <- function(incorrect = "#983E82",
+                          correct = "#59935B",
+                          highlight = "#467AAC") {
   # default if not R colour or hex
-  d_border <- incorrect
-  d_bg <- incorrect
+  i_border <- incorrect
+  i_bg <- incorrect
   c_border <- correct
   c_bg <- correct
+  h_border <- highlight
 
-  if (incorrect %in% colours()) {
-    drgb <- grDevices::col2rgb(incorrect, alpha = FALSE)
-    d_border <- paste0("rgb(", paste(drgb, collapse = ", "), ")")
-    d_bg <- paste0("rgba(", paste(drgb, collapse = ", "), ", 0.25)")
+  if (highlight %in% grDevices::colours()) {
+    hrgb <- grDevices::col2rgb(highlight, alpha = FALSE)
+    h_border <- paste0("rgb(", paste(hrgb, collapse = ", "), ")")
+  }
+
+  if (incorrect %in% grDevices::colours()) {
+    irgb <- grDevices::col2rgb(incorrect, alpha = FALSE)
+    i_border <- paste0("rgb(", paste(irgb, collapse = ", "), ")")
+    i_bg <- paste0("rgba(", paste(irgb, collapse = ", "), ", 0.25)")
   } else if (substr(incorrect, 1, 1) == "#") {
     d_bg <- paste0(incorrect, "DD")
   }
 
-  if (correct %in% colours()) {
+  if (correct %in% grDevices::colours()) {
     crgb <- grDevices::col2rgb(correct, alpha = FALSE)
     c_border <- paste0("rgb(", paste(crgb, collapse = ", "), ")")
     c_bg <- paste0("rgba(", paste(crgb, collapse = ", "), ", 0.25)")
@@ -269,15 +283,28 @@ style_widgets <- function(incorrect = "orchid3", correct = "lightgreen") {
 
   style <- paste0(
     "\n<style>\n",
+    ":root {\n",
+    "    --incorrect: ", i_border, ";\n",
+    "    --incorrect_alpha: ", i_bg, ";\n",
+    "    --correct: ", c_border, ";\n",
+    "    --correct_alpha: ", c_bg, ";\n",
+    "    --highlight: ", h_border, ";\n",
+    "}\n",
     "  .webex-incorrect, input.webex-solveme.webex-incorrect,\n",
     "  .webex-radiogroup label.webex-incorrect {\n",
-    "    border: 2px dotted ", d_border, ";\n",
-    "    background-color: ", d_bg, ";\n",
+    "    border: 2px dotted var(--incorrect);\n",
+    "    background-color: var(--incorrect_alpha);\n",
     "  }\n",
     "  .webex-correct, input.webex-solveme.webex-correct,\n",
     "  .webex-radiogroup label.webex-correct {\n",
-    "    border: 2px dotted ", c_border, ";\n",
-    "    background-color: ", c_bg, ";\n",
+    "    border: 2px dotted var(--correct);\n",
+    "    background-color: var(--correct_alpha);\n",
+    "  }\n",
+    "  .webex-box, .webex-solution.open {\n",
+    "    border: 2px solid var(--highlight);n",
+    "  }\n",
+    "  .webex-solution button, .webex-check-button {\n",
+    "    background-color: var(--highlight);\n",
     "  }\n",
     "</style>\n\n"
   )
@@ -293,14 +320,12 @@ style_widgets <- function(incorrect = "orchid3", correct = "lightgreen") {
 #' @return A string with the html for displaying a total correct element.
 #'
 #' @export
-#'
-#' @examples
-#' total_correct()     # <div  id="total_correct"></div>
-#' total_correct("h3") # <h3  id="total_correct"></h3>
-#' total_correct("p", "style='color: red;'")
-#' total_correct("div", "class='customclass'")
+
 total_correct <- function(elem = "span", args = "") {
-  message("This function is deperecated. Use sections with the class 'webex-check' to set up self-cecking mini-quizzes with total correct.")
+  .Deprecated(".webex-check sections",
+              package = "webexercises",
+              old = "total_correct",
+              msg = "The function webexercises::total_correct() is deprecated. Use sections with the class 'webex-check' to set up self-checking mini-quizzes with total correct.")
   #sprintf("<%s %s class=\"webex-total_correct\"></%s>\n\n",
   #            elem, args, elem)
 }

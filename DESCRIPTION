@@ -7,7 +7,7 @@ Description: Functions for easily creating interactive web pages using
 Authors@R: c(
     person("Dale","Barr",
            email = "dalejbarr@protonmail.com",
-	   role = c("aut", "cre")),
+	         role = c("aut", "cre")),
     person("Lisa", "DeBruine",
            email = "lisa.debruine@glasgow.ac.uk",
            role = "aut"))

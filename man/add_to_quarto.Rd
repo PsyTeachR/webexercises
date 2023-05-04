@@ -7,9 +7,7 @@
 add_to_quarto(
   quarto_dir = ".",
   include_dir = "include",
-  script_dir = "R",
-  output_format = c("html"),
-  render = FALSE
+  output_format = c("html")
 )
 }
 \arguments{
@@ -18,13 +16,8 @@ add_to_quarto(
 \item{include_dir}{The directory where you want to put the css and
 js files (defaults to "include")}
 
-\item{script_dir}{The directory where you want to put the .R script
-(defaults to "R")}
-
 \item{output_format}{The format you want to add
 webexercises to (only html for now)}
-
-\item{render}{Whether to render the book after updating (defaults to FALSE).}
 }
 \value{
 No return value, called for side effects.

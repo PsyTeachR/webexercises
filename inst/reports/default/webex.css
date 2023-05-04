@@ -1,16 +1,15 @@
 :root {
-  --pink: #983E82;   /* hsl(315, 42%, 42%) */
-  --orange: #E2A458; /* hsl( 33, 70%, 62%) */
-  --yellow: #F5DC70; /* hsl( 49, 87%, 70%) */
-  --green: #59935B;  /* hsl(122, 25%, 46%) */
-  --blue: #467AAC;   /* hsl(209, 42%, 47%) */
-  --purple: #61589C; /* hsl(248, 28%, 48%) */
+  --incorrect: #983E82;
+  --incorrect_alpha: #edaddd;
+  --correct: #59935B;
+  --correct_alpha: #c0edc2;
+  --highlight: #467AAC;
 }
 
 .webex-check {}
 
 .webex-box {
-  border: 2px solid var(--blue);
+  border: 2px solid var(--highlight);
   padding: 0.5em 0.25em;
   margin: 1em 0;
   border-radius: .25em;
@@ -43,16 +42,16 @@
 .webex-incorrect,
 input.webex-solveme.webex-incorrect,
 .webex-radiogroup label.webex-incorrect {
-    border: 2px dotted var(--pink);
-    background-color: #edaddd;
+    border: 2px dotted var(--incorrect);
+    background-color: var(--incorrect_alpha);
     color: black;
     border-radius: 0.25em;
 }
 .webex-correct,
 input.webex-solveme.webex-correct,
 .webex-radiogroup label.webex-correct {
-    border: 2px solid var(--green);
-    background-color: #c0edc2;
+    border: 2px solid var(--correct);
+    background-color: var(--correct_alpha);
     color: black;
     border-radius: 0.25em;
 }
@@ -84,19 +83,19 @@ input.webex-solveme.webex-correct,
 }
 .webex-solution.open {
     height: auto;
-    border: 2px solid var(--blue);
+    border: 2px solid var(--highlight);
     border-radius: 5px;
 }
 .webex-solution button, .webex-check-button {
     height: 2em;
     margin-bottom: 0.5em;
     border-radius: 0.5em;
-    background-color: var(--blue);
+    background-color: var(--highlight);
     color: white;
     padding: 0 0.5em;
 }
 .webex-solution pre.sourceCode {
-    border-color: var(--green);
+    border-color: var(--correct);
 }
 
 .webex-radiogroup label {

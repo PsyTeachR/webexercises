@@ -1,7 +1,10 @@
 # webexercises 1.1.0
 
-* quarto updates
-* fenced check sections
+* quarto support (`create_quarto_doc()` and `add_to_quarto()`)
+* fenced .webex-check sections for self-checking quizzes
+* webex.hide knit hooks get set up .onLoad instead of in webex.R
+* remove js dependency on jquery
+* `total_correct()` deprecated
 
 # webexercises 1.0.0
 
