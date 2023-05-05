@@ -17,9 +17,3 @@ A string with the html for displaying a total correct element.
 \description{
 Display total correct
 }
-\examples{
-total_correct()     # <div  id="total_correct"></div>
-total_correct("h3") # <h3  id="total_correct"></h3>
-total_correct("p", "style='color: red;'")
-total_correct("div", "class='customclass'")
-}

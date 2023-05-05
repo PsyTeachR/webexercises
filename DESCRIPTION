@@ -1,13 +1,13 @@
 Package: webexercises
-Version: 1.0.0
-Date: 2021-09-06
+Version: 1.1.0
+Date: 2023-04-18
 Title: Create Interactive Web Exercises in 'R Markdown' (Formerly 'webex')
 Description: Functions for easily creating interactive web pages using
     'R Markdown' that students can use in self-guided learning.
 Authors@R: c(
     person("Dale","Barr",
            email = "dalejbarr@protonmail.com",
-	   role = c("aut", "cre")),
+	         role = c("aut", "cre")),
     person("Lisa", "DeBruine",
            email = "lisa.debruine@glasgow.ac.uk",
            role = "aut"))
@@ -18,11 +18,14 @@ Imports:
     knitr,
     yaml,
     utils,
+    grDevices,
+    rstudioapi,
     rmarkdown (>= 2.2)
 License: CC BY-SA 4.0
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Suggests: 
     testthat,
     bookdown,
+    quarto,
     xfun
 Encoding: UTF-8

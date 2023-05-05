@@ -199,6 +199,41 @@ hljs.initHighlightingOnLoad();
 <pre><code class="r">devtools::install_github(&quot;psyteachr/webexercises&quot;)
 </code></pre>
 
+<h2>Setup</h2>
+
+<h3>RMarkdown</h3>
+
+<p>Examples are provided in templates. To create an RMarkdown file from the webexercises template in RStudio, click <code>File -&gt; New File... -&gt; RMarkdown</code> and in the dialog box that appears, select <code>From Template</code> and choose <code>Web Exercises</code>.</p>
+
+<p>Alternatively (or if you&#39;re not using RStudio) use:</p>
+
+<pre><code class="r">rmarkdown::draft(&quot;exercises.Rmd&quot;, &quot;webexercises&quot;, &quot;webexercises&quot;)
+</code></pre>
+
+<p>Knit the file to HTML to see how it works. <strong>Note: The widgets only function in a JavaScript-enabled browser.</strong></p>
+
+<h3>Quarto</h3>
+
+<p>You can set up a single template quarto file with the function <code>create_quarto_doc()</code>, or add the necessary files and setup to include webexercises in a quarto project with <code>add_to_quarto()</code>.</p>
+
+<h3>Bookdown</h3>
+
+<p>You can add webexercises to a bookdown project or start a new bookdown project using <code>add_to_bookdown()</code>.</p>
+
+<pre><code class="r"># create a new book
+# use default includes and scripts directories (include and R)
+# output_format can be bs4_book, gitbook, html_book or tufte_html_book
+add_to_bookdown(bookdown_dir = &quot;demo_bs4&quot;,
+                output_format = &quot;bs4_book&quot;,
+                render = TRUE)
+
+# update an existing book with custom include and script directories
+add_to_bookdown(bookdown_dir = &quot;.&quot;,
+                include_dir = &quot;www&quot;,
+                script_dir = &quot;scripts&quot;,
+                output_format = &quot;gitbook&quot;)
+</code></pre>
+
 <h2>Creating interactive widgets with inline code</h2>
 
 <p>The webexercises package provides functions that create HTML widgets using <a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">inline R code</a>.  These functions are:</p>
@@ -235,23 +270,9 @@ hljs.initHighlightingOnLoad();
 <td align="left">button</td>
 <td align="left">solution revealed when clicked</td>
 </tr>
-<tr>
-<td align="left"><code>total_correct()</code></td>
-<td align="left">text</td>
-<td align="left">updating total correct</td>
-</tr>
 </tbody></table>
 
 <p>The appearance of the text box and pull-down menu widgets changes when users enter the correct answer. Answers can be either static or dynamic (i.e., specified using R code). Widget styles can be changed using <code>style_widgets()</code>.</p>
-
-<p>Examples are provided in the <strong>Web Exercises</strong> R Markdown template. To create a file from the webexercises template in RStudio, click <code>File -&gt; New File... -&gt; RMarkdown</code> and in the dialog box that appears, select <code>From Template</code> and choose <code>Web Exercises</code>.</p>
-
-<p>Alternatively (or if you&#39;re not using RStudio) use:</p>
-
-<pre><code class="r">rmarkdown::draft(&quot;exercises.Rmd&quot;, &quot;webexercises&quot;, &quot;webexercises&quot;)
-</code></pre>
-
-<p>Knit the file to HTML to see how it works. <strong>Note: The widgets only function in a JavaScript-enabled browser.</strong></p>
 
 <p>These functions are optimised to be used with inline r code, but you can also use them in code chunks by setting the chunk option <code>results = &#39;asis&#39;</code> and using <code>cat()</code> to display the result of the widget. </p>
 
@@ -267,15 +288,6 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 </code></pre>
 
 <p>What function loads a package that is already on your computer? <select class='webex-select'><option value='blank'></option><option value=''>install.package</option><option value=''>install.packages</option><option value='answer'>library</option><option value=''>libraries</option></select></p>
-
-<h3>Total Correct</h3>
-
-<p>The function <code>total_correct()</code> displays a running total of correct responses. Change the <code>elem</code> argument to display in a different style (e.g., <code>h2</code> or <code>h3</code> for header styles). If you&#39;re comfortable with css styles or classes, you can add them with the <code>args</code> argument. </p>
-
-<pre><code class="r">total_correct(elem = &quot;h3&quot;, args = &quot;style=&#39;color:#003366;&#39;&quot;)
-</code></pre>
-
-<h3 style='color:#003366;' id="webex-total_correct"></h3>
 
 <h3>Fill-In-The-Blanks</h3>
 
@@ -297,7 +309,7 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 </code></pre>
 
 <ul>
-<li>The square root of 36 is: <input class='webex-solveme nospaces' size='1' data-answer='["6"]'/></li>
+<li>The square root of 64 is: <input class='webex-solveme nospaces' size='1' data-answer='["8"]'/></li>
 </ul>
 
 <p>The blanks are case-sensitive; if you don&#39;t care about case, use the argument <code>ignore_case = TRUE</code>.</p>
@@ -377,63 +389,86 @@ torf(FALSE)
 
 <p><strong>What is a p-value?</strong></p>
 
-<div class='webex-radiogroup' id='radio_SUZRKPLKKX'><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_SUZRKPLKKX" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
+<div class='webex-radiogroup' id='radio_BXNUQHYFVH'><label><input type="radio" autocomplete="off" name="radio_BXNUQHYFVH" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_BXNUQHYFVH" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_BXNUQHYFVH" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
 
 <p><strong>What is true about a 95% confidence interval of the mean?</strong></p>
 
-<div class='webex-radiogroup' id='radio_UHWJVDBBYO'><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_UHWJVDBBYO" value=""></input> <span>95% of the data fall within this range</span></label></div>
+<div class='webex-radiogroup' id='radio_ZBJROQGGSC'><label><input type="radio" autocomplete="off" name="radio_ZBJROQGGSC" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_ZBJROQGGSC" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_ZBJROQGGSC" value=""></input> <span>95% of the data fall within this range</span></label></div>
 
-<h3>Hidden solutions and hints</h3>
+<h2>Checked sections</h2>
 
-<p>You can fence off a solution area that will be hidden behind a button using <code>hide()</code> before the solution and <code>unhide()</code> after, each as inline R code.  Pass the text you want to appear on the button to the <code>hide()</code> function.</p>
+<p>Create sections with the class <code>webex-check</code> to add a button that hides feedback until it is pressed. Add the class <code>webex-box</code> to draw a box around the section (or use your own styles).</p>
 
-<pre><code class="r">hide(&quot;Click here to see the solution&quot;)
-unhide()
+<pre><code class="default">::: {.webex-check .webex-box}
+
+I am going to learn a lot: `r torf(TRUE)`
+
+```{r, results=&#39;asis&#39;, echo = FALSE}
+opts &lt;- c(
+   &quot;the probability that the null hypothesis is true&quot;,
+   answer = &quot;the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true&quot;,
+   &quot;the probability of making an error in your conclusion&quot;
+)
+
+cat(&quot;What is a p-value?&quot;, longmcq(opts))
 </code></pre>
+
+<p>:::</p>
+
+<pre><code>
+::: {.webex-check .webex-box}
+
+I am going to learn a lot: &lt;select class=&#39;webex-select&#39;&gt;&lt;option value=&#39;blank&#39;&gt;&lt;/option&gt;&lt;option value=&#39;answer&#39;&gt;TRUE&lt;/option&gt;&lt;option value=&#39;&#39;&gt;FALSE&lt;/option&gt;&lt;/select&gt;
+
+What is a p-value? &lt;div class=&#39;webex-radiogroup&#39; id=&#39;radio_WNZTIYKBKN&#39;&gt;&lt;label&gt;&lt;input type=&quot;radio&quot; autocomplete=&quot;off&quot; name=&quot;radio_WNZTIYKBKN&quot; value=&quot;&quot;&gt;&lt;/input&gt; &lt;span&gt;the probability that the null hypothesis is true&lt;/span&gt;&lt;/label&gt;&lt;label&gt;&lt;input type=&quot;radio&quot; autocomplete=&quot;off&quot; name=&quot;radio_WNZTIYKBKN&quot; value=&quot;answer&quot;&gt;&lt;/input&gt; &lt;span&gt;the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true&lt;/span&gt;&lt;/label&gt;&lt;label&gt;&lt;input type=&quot;radio&quot; autocomplete=&quot;off&quot; name=&quot;radio_WNZTIYKBKN&quot; value=&quot;&quot;&gt;&lt;/input&gt; &lt;span&gt;the probability of making an error in your conclusion&lt;/span&gt;&lt;/label&gt;&lt;/div&gt;
+
+:::
+
+
+
+## Hidden solutions and hints
+
+You can fence off a solution area that will be hidden behind a button using `hide()` before the solution and `unhide()` after, each as inline R code.  Pass the text you want to appear on the button to the `hide()` function.
+
+
+````default
+`r hide(&quot;Click here to see the solution&quot;)`
+
+```{r eval = FALSE}
+library(tidyverse)
+</code></pre>
+
+<p><code>r unhide()</code></p>
+
+<pre><code>
+How do you load tidyverse?
+
+
+&lt;div class=&#39;webex-solution&#39;&gt;&lt;button&gt;Click here to see the solution&lt;/button&gt;
+
+
+
+```r
+library(tidyverse)
+</code></pre>
+
+<p></div></p>
 
 <p>If the solution is an RMarkdown code chunk, instead of using <code>hide()</code> and <code>unhide()</code>, you can set the <code>webex.hide</code> chunk option to TRUE, or set it to the string you wish to display on the button.</p>
 
-<p>How do you load tidyverse?</p>
-
-<div class='webex-solution'><button>Click here to see the solution</button>
-
-
-
-&ldquo;r
-library(tidyverse)
-&rdquo;
-
-
-</div>
-
-<h2>Bookdown</h2>
-
-<p>You can add webexercises to a bookdown project or start a new bookdown project using <code>add_to_bookdown()</code>.</p>
-
-<pre><code class="r"># create a new book
-# use default includes and scripts directories (include and R)
-add_to_bookdown(bookdown_dir = &quot;demo_bs4&quot;,
-                output_format = &quot;bs4_book&quot;,
-                render = TRUE)
-
-add_to_bookdown(bookdown_dir = &quot;demo_git&quot;,
-                output_format = &quot;gitbook&quot;,
-                render = TRUE)
-
-add_to_bookdown(bookdown_dir = &quot;demo_html&quot;,
-                output_format = &quot;html_book&quot;,
-                render = TRUE)
-
-add_to_bookdown(bookdown_dir = &quot;demo_tufte&quot;,
-                output_format = &quot;tufte_html_book&quot;,
-                render = TRUE)
-
-# update an existing book with custom include and script directories
-add_to_bookdown(bookdown_dir = &quot;.&quot;,
-                include_dir = &quot;www&quot;,
-                script_dir = &quot;scripts&quot;,
-                output_format = &quot;gitbook&quot;)
+<pre><code class="default">```{r, echo = TRUE, eval = FALSE, webex.hide = &quot;See a hint&quot;}
+?plot
 </code></pre>
+
+<pre><code>
+
+&lt;div class=&#39;webex-solution&#39;&gt;&lt;button&gt;See a hint&lt;/button&gt;
+
+```r
+?plot
+</code></pre>
+
+<p></div></p>
 
 <p><a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
 
@@ -443,25 +478,41 @@ add_to_bookdown(bookdown_dir = &quot;.&quot;,
 update_total_correct = function() {
   console.log("webex: update total_correct");
 
-  if (t = document.getElementById("webex-total_correct")) {
-    var correct = document.getElementsByClassName("webex-correct").length;
-    var solvemes = document.getElementsByClassName("webex-solveme").length;
-    var radiogroups = document.getElementsByClassName("webex-radiogroup").length;
-    var selects = document.getElementsByClassName("webex-select").length;
-    
-    t.innerHTML = correct + " of " + (solvemes + radiogroups + selects) + " correct";
+  var t = document.getElementsByClassName("webex-total_correct");
+  for (var i = 0; i < t.length; i++) {
+    p = t[i].parentElement;
+    var correct = p.getElementsByClassName("webex-correct").length;
+    var solvemes = p.getElementsByClassName("webex-solveme").length;
+    var radiogroups = p.getElementsByClassName("webex-radiogroup").length;
+    var selects = p.getElementsByClassName("webex-select").length;
+
+    t[i].innerHTML = correct + " of " + (solvemes + radiogroups + selects) + " correct";
   }
 }
 
 /* webex-solution button toggling function */
 b_func = function() {
   console.log("webex: toggle hide");
-  
+
   var cl = this.parentElement.classList;
   if (cl.contains('open')) {
     cl.remove("open");
   } else {
     cl.add("open");
+  }
+}
+
+/* check answers */
+check_func = function() {
+  console.log("webex: check answers");
+
+  var cl = this.parentElement.classList;
+  if (cl.contains('unchecked')) {
+    cl.remove("unchecked");
+    this.innerHTML = "Hide Answers";
+  } else {
+    cl.add("unchecked");
+    this.innerHTML = "Show Answers";
   }
 }
 
@@ -515,9 +566,9 @@ solveme_func = function(e) {
 /* function for checking select answers */
 select_func = function(e) {
   console.log("webex: check select");
-  
+
   var cl = this.classList
-  
+
   /* add style */
   cl.remove("webex-incorrect");
   cl.remove("webex-correct");
@@ -526,7 +577,7 @@ select_func = function(e) {
   } else if (this.value != "blank") {
     cl.add("webex-incorrect");
   }
-  
+
   update_total_correct();
 }
 
@@ -537,25 +588,25 @@ radiogroups_func = function(e) {
   var checked_button = document.querySelector('input[name=' + this.id + ']:checked');
   var cl = checked_button.parentElement.classList;
   var labels = checked_button.parentElement.parentElement.children;
-  
+
   /* get rid of styles */
   for (i = 0; i < labels.length; i++) {
     labels[i].classList.remove("webex-incorrect");
     labels[i].classList.remove("webex-correct");
   }
-  
+
   /* add style */
   if (checked_button.value == "answer") {
     cl.add("webex-correct");
   } else {
     cl.add("webex-incorrect");
   }
-  
+
   update_total_correct();
 }
 
 window.onload = function() {
-  console.log("onload");
+  console.log("webex onload");
   /* set up solution buttons */
   var buttons = document.getElementsByTagName("button");
 
@@ -563,6 +614,22 @@ window.onload = function() {
     if (buttons[i].parentElement.classList.contains('webex-solution')) {
       buttons[i].onclick = b_func;
     }
+  }
+
+  var check_sections = document.getElementsByClassName("webex-check");
+  console.log("check:", check_sections.length);
+  for (var i = 0; i < check_sections.length; i++) {
+    check_sections[i].classList.add("unchecked");
+
+    let btn = document.createElement("button");
+    btn.innerHTML = "Show Answers";
+    btn.classList.add("webex-check-button");
+    btn.onclick = check_func;
+    check_sections[i].appendChild(btn);
+
+    let spn = document.createElement("span");
+    spn.classList.add("webex-total_correct");
+    check_sections[i].appendChild(spn);
   }
 
   /* set up webex-solveme inputs */
@@ -590,18 +657,21 @@ window.onload = function() {
     /* attach checking function */
     solveme[i].onkeyup = solveme_func;
     solveme[i].onchange = solveme_func;
+
+    solveme[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
   }
-  
+
   /* set up radiogroups */
   var radiogroups = document.getElementsByClassName("webex-radiogroup");
   for (var i = 0; i < radiogroups.length; i++) {
     radiogroups[i].onchange = radiogroups_func;
   }
-  
+
   /* set up selects */
   var selects = document.getElementsByClassName("webex-select");
   for (var i = 0; i < selects.length; i++) {
     selects[i].onchange = select_func;
+    selects[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
   }
 
   update_total_correct();

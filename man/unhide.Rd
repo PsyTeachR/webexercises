@@ -19,7 +19,7 @@ Call this function inline in an RMarkdown document to mark
   Template for examples).
 }
 \examples{
-# just produce the closing </div> 
+# just produce the closing </div>
 unhide()
 }
 \seealso{

@@ -18,8 +18,8 @@ A character string with HTML code to generate a pull-down
 Create a multiple-choice question
 }
 \details{
-Writes html code that creates an option box widget, with one or 
-  more correct answers. Call this function inline in an RMarkdown document. 
+Writes html code that creates an option box widget, with one or
+  more correct answers. Call this function inline in an RMarkdown document.
   See the Web Exercises RMarkdown template for further examples.
 }
 \examples{

@@ -4,7 +4,7 @@ home:
   title: webexercises
   description: Create Interactive Web Exercises in R Markdown.
   strip_header: false
-  
+
 template:
   opengraph:
     image:
@@ -25,14 +25,15 @@ reference:
   - '`longmcq`'
   - '`hide`'
   - '`unhide`'
-  - '`total_correct`'
 - title: Helper Functions
   desc: ~
   contents:
   - '`webexercises_default`'
   - '`add_to_bookdown`'
+  - '`add_to_quarto`'
+  - '`create_quarto_doc`'
   - '`style_widgets`'
   - '`escape_regex`'
   - '`round2`'
   - '`strip_lzero`'
-  
+

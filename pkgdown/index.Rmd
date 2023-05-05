@@ -31,22 +31,11 @@ You can install the development version from [GitHub](https://github.com/PsyTeac
 devtools::install_github("psyteachr/webexercises")
 ```
 
-## Creating interactive widgets with inline code
+## Setup
 
-The webexercises package provides functions that create HTML widgets using [inline R code](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf).  These functions are:
+### RMarkdown
 
-| function                | widget         | description                    |
-|:------------------------|:---------------|:-------------------------------|
-| `fitb()`                | text box       | fill-in-the-blank question     |
-| `mcq()`                 | pull-down menu | multiple choice question       |
-| `torf()`                | pull-down menu | TRUE or FALSE question         |
-| `longmcq()`             | radio buttons  | MCQs with long answers         |
-| `hide()` and `unhide()` | button         | solution revealed when clicked |
-| `total_correct()`       | text           | updating total correct         |
-
-The appearance of the text box and pull-down menu widgets changes when users enter the correct answer. Answers can be either static or dynamic (i.e., specified using R code). Widget styles can be changed using `style_widgets()`.
-
-Examples are provided in the **Web Exercises** R Markdown template. To create a file from the webexercises template in RStudio, click `File -> New File... -> RMarkdown` and in the dialog box that appears, select `From Template` and choose `Web Exercises`.
+Examples are provided in templates. To create an RMarkdown file from the webexercises template in RStudio, click `File -> New File... -> RMarkdown` and in the dialog box that appears, select `From Template` and choose `Web Exercises`.
 
 Alternatively (or if you're not using RStudio) use:
 
@@ -55,6 +44,44 @@ rmarkdown::draft("exercises.Rmd", "webexercises", "webexercises")
 ```
 
 Knit the file to HTML to see how it works. **Note: The widgets only function in a JavaScript-enabled browser.**
+
+### Quarto
+
+You can set up a single template quarto file with the function `create_quarto_doc()`, or add the necessary files and setup to include webexercises in a quarto project with `add_to_quarto()`.
+
+### Bookdown
+
+You can add webexercises to a bookdown project or start a new bookdown project using `add_to_bookdown()`.
+
+```{r, eval = FALSE}
+# create a new book
+# use default includes and scripts directories (include and R)
+# output_format can be bs4_book, gitbook, html_book or tufte_html_book
+add_to_bookdown(bookdown_dir = "demo_bs4",
+                output_format = "bs4_book",
+                render = TRUE)
+
+# update an existing book with custom include and script directories
+add_to_bookdown(bookdown_dir = ".",
+                include_dir = "www",
+                script_dir = "scripts",
+                output_format = "gitbook")
+```
+
+
+## Creating interactive widgets with inline code
+
+The webexercises package provides functions that create HTML widgets using [inline R code](https://github.com/rstudio/cheatsheets/raw/main/rmarkdown.pdf).  These functions are:
+
+| function                | widget         | description                    |
+|:------------------------|:---------------|:-------------------------------|
+| `fitb()`                | text box       | fill-in-the-blank question     |
+| `mcq()`                 | pull-down menu | multiple choice question       |
+| `torf()`                | pull-down menu | TRUE or FALSE question         |
+| `longmcq()`             | radio buttons  | MCQs with long answers         |
+| `hide()` and `unhide()` | button         | solution revealed when clicked |
+
+The appearance of the text box and pull-down menu widgets changes when users enter the correct answer. Answers can be either static or dynamic (i.e., specified using R code). Widget styles can be changed using `style_widgets()`.
 
 These functions are optimised to be used with inline r code, but you can also use them in code chunks by setting the chunk option `results = 'asis'` and using `cat()` to display the result of the widget. 
 
@@ -69,17 +96,6 @@ q1 <- mcq(opts)
 
 cat("What function loads a package that is already on your computer?", q1)
 ```
-
-
-### Total Correct 
-
-The function `total_correct()` displays a running total of correct responses. Change the `elem` argument to display in a different style (e.g., `h2` or `h3` for header styles). If you're comfortable with css styles or classes, you can add them with the `args` argument. 
-
-```{r, eval = FALSE}
-total_correct(elem = "h3", args = "style='color:#003366;'")
-```
-
-`r total_correct(elem = "h3", args = "style='color:#003366;'")`
 
 ### Fill-In-The-Blanks
 
@@ -195,16 +211,61 @@ opts_ci <- sample(c(
 
 `r longmcq(opts_ci)`
 
-### Hidden solutions and hints
+
+## Checked sections
+
+Create sections with the class `webex-check` to add a button that hides feedback until it is pressed. Add the class `webex-box` to draw a box around the section (or use your own styles).
+
+
+````{verbatim}
+::: {.webex-check .webex-box}
+
+I am going to learn a lot: `r torf(TRUE)`
+
+```{r, results='asis', echo = FALSE}
+opts <- c(
+   "the probability that the null hypothesis is true",
+   answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
+   "the probability of making an error in your conclusion"
+)
+
+cat("What is a p-value?", longmcq(opts))
+```
+
+:::
+````
+
+::: {.webex-check .webex-box}
+
+I am going to learn a lot: `r torf(TRUE)`
+
+```{r, results='asis', echo = FALSE}
+opts <- c(
+   "the probability that the null hypothesis is true",
+   answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
+   "the probability of making an error in your conclusion"
+)
+
+cat("What is a p-value?", longmcq(opts))
+```
+
+:::
+
+
+
+## Hidden solutions and hints
 
 You can fence off a solution area that will be hidden behind a button using `hide()` before the solution and `unhide()` after, each as inline R code.  Pass the text you want to appear on the button to the `hide()` function.
 
+````{verbatim}
+`r hide("Click here to see the solution")`
+
 ```{r eval = FALSE}
-hide("Click here to see the solution")
-unhide()
+library(tidyverse)
 ```
 
-If the solution is an RMarkdown code chunk, instead of using `hide()` and `unhide()`, you can set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
+`r unhide()`
+````
 
 How do you load tidyverse?
 
@@ -216,34 +277,16 @@ library(tidyverse)
 
 `r unhide()`
 
-## Bookdown
+If the solution is an RMarkdown code chunk, instead of using `hide()` and `unhide()`, you can set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
 
-You can add webexercises to a bookdown project or start a new bookdown project using `add_to_bookdown()`.
+````{verbatim}
+```{r, echo = TRUE, eval = FALSE, webex.hide = "See a hint"}
+?plot
+```
+````
 
-```{r, eval = FALSE}
-# create a new book
-# use default includes and scripts directories (include and R)
-add_to_bookdown(bookdown_dir = "demo_bs4",
-                output_format = "bs4_book",
-                render = TRUE)
-
-add_to_bookdown(bookdown_dir = "demo_git",
-                output_format = "gitbook",
-                render = TRUE)
-
-add_to_bookdown(bookdown_dir = "demo_html",
-                output_format = "html_book",
-                render = TRUE)
-
-add_to_bookdown(bookdown_dir = "demo_tufte",
-                output_format = "tufte_html_book",
-                render = TRUE)
-
-# update an existing book with custom include and script directories
-add_to_bookdown(bookdown_dir = ".",
-                include_dir = "www",
-                script_dir = "scripts",
-                output_format = "gitbook")
+```{r, echo = TRUE, eval = FALSE, webex.hide = "See a hint"}
+?plot
 ```
 
 
