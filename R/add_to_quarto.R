@@ -17,7 +17,7 @@ add_to_quarto <- function(quarto_dir = ".",
                           include_dir = "include",
                           output_format = c("html")) {
   # check inputs
-  if (quarto_dir == "") bookdown_dir <- "."
+  if (quarto_dir == "") quarto_dir <- "."
   if (include_dir == "") include_dir <- "."
   output_format <- match.arg(output_format)
 
@@ -73,7 +73,14 @@ add_to_quarto <- function(quarto_dir = ".",
   yml$format[[output_format]]$`include-after-body` <- union(old_js, js_path)
 
   # write to _quarto.yml
-  yaml::write_yaml(yml, quarto_file)
+  # custom handler to stop converting boolean values to yes and no
+  yaml::write_yaml(yml, quarto_file, handlers = list(
+    logical = function(x) {
+      result <- ifelse(x, "true", "false")
+      class(result) <- "verbatim"
+      return(result)
+    }
+  ))
   message(quarto_file, " updated")
 
   # update .Rprofile

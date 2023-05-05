@@ -17,7 +17,7 @@ style_widgets(
 not filled in (defaults to green #59935B).}
 
 \item{highlight}{The colour of the borders around hidden blocks and
-checked sections (deafults to blue #467AAC).}
+checked sections (defaults to blue #467AAC).}
 }
 \value{
 A character string containing HTML code to change the CSS
