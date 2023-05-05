@@ -12,7 +12,9 @@ Although `{webexercises}` has fewer features than RStudio’s
 lightweight: whereas `{learnr}` tutorials must be either hosted on a
 shiny server or run locally, `{webexercises}` creates standalone HTML
 files that require only a JavaScript-enabled browser. It is also
-extremely simple to use.
+extremely simple to use. See the [webexercises
+website](https://psyteachr.github.io/webexercises/) for demos and
+instructions.
 
 ## Installation
 
@@ -28,10 +30,6 @@ You can install the development version from
 ``` r
 devtools::install_github("psyteachr/webexercises")
 ```
-
-See the [webexercises
-website](https://psyteachr.github.io/webexercises/) for demos and
-instructions.
 
 <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This
 work is licensed under a

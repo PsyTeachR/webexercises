@@ -5,6 +5,7 @@
 * webex.hide knit hooks get set up .onLoad instead of in webex.R
 * remove js dependency on jquery
 * `total_correct()` deprecated
+* PDF rendering is better (but webexercises is really built for HTML)
 
 # webexercises 1.0.0
 

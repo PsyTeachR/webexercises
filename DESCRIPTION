@@ -7,10 +7,10 @@ Description: Functions for easily creating interactive web pages using
 Authors@R: c(
     person("Dale","Barr",
            email = "dalejbarr@protonmail.com",
-	         role = c("aut", "cre")),
+	         role = c("aut")),
     person("Lisa", "DeBruine",
-           email = "lisa.debruine@glasgow.ac.uk",
-           role = "aut"))
+           email = "debruine@gmail.com",
+           role = c("aut", "cre")))
 URL: https://github.com/psyteachr/webexercises
 Depends: R (>= 3.1.2)
 Imports:
