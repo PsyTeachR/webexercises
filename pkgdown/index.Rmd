@@ -71,7 +71,7 @@ add_to_bookdown(bookdown_dir = ".",
 
 ## Creating interactive widgets with inline code
 
-The webexercises package provides functions that create HTML widgets using [inline R code](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf).  These functions are:
+The webexercises package provides functions that create HTML widgets using [inline R code](https://github.com/rstudio/cheatsheets/raw/main/rmarkdown.pdf).  These functions are:
 
 | function                | widget         | description                    |
 |:------------------------|:---------------|:-------------------------------|
