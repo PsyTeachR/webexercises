@@ -15,7 +15,7 @@ test_that("untitled doc", {
   expect_true(file.exists(css))
   expect_true(file.exists(js))
 
-  skip_on_cran()
+  skip_on_cran() # not all CRAN installations have pandoc
   if (requireNamespace("quarto", quietly = TRUE)) {
     # render
     quarto::quarto_render(path, quiet = TRUE)
