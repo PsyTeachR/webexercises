@@ -236,7 +236,7 @@ add_to_bookdown(bookdown_dir = &quot;.&quot;,
 
 <h2>Creating interactive widgets with inline code</h2>
 
-<p>The webexercises package provides functions that create HTML widgets using <a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">inline R code</a>.  These functions are:</p>
+<p>The webexercises package provides functions that create HTML widgets using <a href="https://github.com/rstudio/cheatsheets/raw/main/rmarkdown.pdf">inline R code</a>.  These functions are:</p>
 
 <table><thead>
 <tr>
@@ -287,7 +287,14 @@ q1 &lt;- mcq(opts)
 cat(&quot;What function loads a package that is already on your computer?&quot;, q1)
 </code></pre>
 
-<p>What function loads a package that is already on your computer? <select class='webex-select'><option value='blank'></option><option value=''>install.package</option><option value=''>install.packages</option><option value='answer'>library</option><option value=''>libraries</option></select></p>
+<p>What function loads a package that is already on your computer? </p>
+
+<ul>
+<li>(A) install.package<br/></li>
+<li>(B) install.packages<br/></li>
+<li>&copy; library<br/></li>
+<li>(D) libraries<br/></li>
+</ul>
 
 <h3>Fill-In-The-Blanks</h3>
 
@@ -297,7 +304,7 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 </code></pre>
 
 <ul>
-<li>2 + 2 is <input class='webex-solveme nospaces' size='1' data-answer='["4"]'/></li>
+<li>2 + 2 is _</li>
 </ul>
 
 <p>You can also create these questions dynamically, using variables from your R session (e.g., in a hidden code chunk).</p>
@@ -309,7 +316,7 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 </code></pre>
 
 <ul>
-<li>The square root of 64 is: <input class='webex-solveme nospaces' size='1' data-answer='["8"]'/></li>
+<li>The square root of 49 is: _</li>
 </ul>
 
 <p>The blanks are case-sensitive; if you don&#39;t care about case, use the argument <code>ignore_case = TRUE</code>.</p>
@@ -318,7 +325,7 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 </code></pre>
 
 <ul>
-<li>What is the letter after D? <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["E"]'/></li>
+<li>What is the letter after D? _</li>
 </ul>
 
 <p>If you want to ignore differences in whitespace use, use the argument <code>ignore_ws = TRUE</code> (which is the default) and include spaces in your answer anywhere they could be acceptable.</p>
@@ -327,7 +334,7 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 </code></pre>
 
 <ul>
-<li>How do you load the tidyverse package? <input class='webex-solveme nospaces' size='20' data-answer='["library( tidyverse )","library( \"tidyverse\" )","library( &apos;tidyverse&apos; )"]'/></li>
+<li>How do you load the tidyverse package? ____________________</li>
 </ul>
 
 <p>You can set more than one possible correct answer by setting the answers as a vector.</p>
@@ -336,7 +343,7 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 </code></pre>
 
 <ul>
-<li>Type a vowel: <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["A","E","I","O","U"]'/></li>
+<li>Type a vowel: _</li>
 </ul>
 
 <p>You can use regular expressions to test answers against more complex rules.</p>
@@ -345,7 +352,7 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 </code></pre>
 
 <ul>
-<li>Type any 3 letters: <input class='webex-solveme nospaces regex' size='3' data-answer='["^[a-zA-Z]{3}$"]'/></li>
+<li>Type any 3 letters: ___</li>
 </ul>
 
 <h3>Multiple Choice</h3>
@@ -356,9 +363,27 @@ cat(&quot;What function loads a package that is already on your computer?&quot;,
 </code></pre>
 
 <ul>
-<li>What package helps you load CSV files? <select class='webex-select'><option value='blank'></option><option value=''>tidyr</option><option value=''>dplyr</option><option value='answer'>readr</option><option value=''>ggplot2</option></select></li>
-<li>&ldquo;Never gonna give you up, never gonna: <select class='webex-select'><option value='blank'></option><option value=''>let you go</option><option value=''>turn you down</option><option value=''>run away</option><option value='answer'>let you down</option></select>&rdquo;</li>
-<li>&ldquo;I <select class='webex-select'><option value='blank'></option><option value='answer'>bless the rains</option><option value=''>guess it rains</option><option value=''>sense the rain</option></select> down in Africa&rdquo; -Toto</li>
+<li><p>What package helps you load CSV files? </p></li>
+<li><p>(A) tidyr  </p></li>
+<li><p>(B) dplyr  </p></li>
+<li><p>&copy; readr  </p></li>
+<li><p>(D) ggplot2  </p></li>
+<li><p>&ldquo;Never gonna give you up, never gonna: </p></li>
+<li><p>(A) let you go  </p></li>
+<li><p>(B) turn you down  </p></li>
+<li><p>&copy; run away  </p></li>
+<li><p>(D) let you down  </p></li>
+</ul>
+
+<p>&rdquo;</p>
+
+<ul>
+<li><p>&ldquo;I </p></li>
+<li><p>(A) bless the rains  </p></li>
+<li><p>(B) guess it rains  </p></li>
+<li><p>&copy; sense the rain  </p>
+
+<p>down in Africa&rdquo; -Toto</p></li>
 </ul>
 
 <h3>True or False</h3>
@@ -370,7 +395,7 @@ torf(FALSE)
 </code></pre>
 
 <ul>
-<li>True or False? You can permute values in a vector using <code>sample()</code>. <select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select></li>
+<li>True or False? You can permute values in a vector using <code>sample()</code>. TRUE / FALSE</li>
 </ul>
 
 <h3>Longer MCQs</h3>
@@ -389,11 +414,19 @@ torf(FALSE)
 
 <p><strong>What is a p-value?</strong></p>
 
-<div class='webex-radiogroup' id='radio_BXNUQHYFVH'><label><input type="radio" autocomplete="off" name="radio_BXNUQHYFVH" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_BXNUQHYFVH" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_BXNUQHYFVH" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
+<ul>
+<li>(A) the probability that the null hypothesis is true<br/></li>
+<li>(B) the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true<br/></li>
+<li>&copy; the probability of making an error in your conclusion<br/></li>
+</ul>
 
 <p><strong>What is true about a 95% confidence interval of the mean?</strong></p>
 
-<div class='webex-radiogroup' id='radio_ZBJROQGGSC'><label><input type="radio" autocomplete="off" name="radio_ZBJROQGGSC" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_ZBJROQGGSC" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_ZBJROQGGSC" value=""></input> <span>95% of the data fall within this range</span></label></div>
+<ul>
+<li>(A) 95% of the data fall within this range<br/></li>
+<li>(B) there is a 95% probability that the true mean lies within this range<br/></li>
+<li>&copy; if you repeated the process many times, 95% of intervals calculated in this way contain the true mean<br/></li>
+</ul>
 
 <h2>Checked sections</h2>
 
@@ -418,9 +451,13 @@ cat(&quot;What is a p-value?&quot;, longmcq(opts))
 <pre><code>
 ::: {.webex-check .webex-box}
 
-I am going to learn a lot: &lt;select class=&#39;webex-select&#39;&gt;&lt;option value=&#39;blank&#39;&gt;&lt;/option&gt;&lt;option value=&#39;answer&#39;&gt;TRUE&lt;/option&gt;&lt;option value=&#39;&#39;&gt;FALSE&lt;/option&gt;&lt;/select&gt;
+I am going to learn a lot: TRUE / FALSE
 
-What is a p-value? &lt;div class=&#39;webex-radiogroup&#39; id=&#39;radio_WNZTIYKBKN&#39;&gt;&lt;label&gt;&lt;input type=&quot;radio&quot; autocomplete=&quot;off&quot; name=&quot;radio_WNZTIYKBKN&quot; value=&quot;&quot;&gt;&lt;/input&gt; &lt;span&gt;the probability that the null hypothesis is true&lt;/span&gt;&lt;/label&gt;&lt;label&gt;&lt;input type=&quot;radio&quot; autocomplete=&quot;off&quot; name=&quot;radio_WNZTIYKBKN&quot; value=&quot;answer&quot;&gt;&lt;/input&gt; &lt;span&gt;the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true&lt;/span&gt;&lt;/label&gt;&lt;label&gt;&lt;input type=&quot;radio&quot; autocomplete=&quot;off&quot; name=&quot;radio_WNZTIYKBKN&quot; value=&quot;&quot;&gt;&lt;/input&gt; &lt;span&gt;the probability of making an error in your conclusion&lt;/span&gt;&lt;/label&gt;&lt;/div&gt;
+What is a p-value? 
+
+* (A) the probability that the null hypothesis is true  
+* (B) the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true  
+* (C) the probability of making an error in your conclusion  
 
 :::
 
@@ -434,29 +471,30 @@ You can fence off a solution area that will be hidden behind a button using `hid
 ````default
 `r hide(&quot;Click here to see the solution&quot;)`
 
-```{r eval = FALSE}
-library(tidyverse)
+```{r, echo = FALSE}
+hist(rnorm(1000))
 </code></pre>
 
 <p><code>r unhide()</code></p>
 
 <pre><code>
-How do you load tidyverse?
+Plot a histogram of 1000 values from a random normal distribution.
 
 
 &lt;div class=&#39;webex-solution&#39;&gt;&lt;button&gt;Click here to see the solution&lt;/button&gt;
 
 
+&lt;img src=&quot;man/figures/unnamed-chunk-18-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-18&quot; width=&quot;100%&quot; /&gt;
 
-```r
-library(tidyverse)
-</code></pre>
 
-<p></div></p>
+&lt;/div&gt;
 
-<p>If the solution is an RMarkdown code chunk, instead of using <code>hide()</code> and <code>unhide()</code>, you can set the <code>webex.hide</code> chunk option to TRUE, or set it to the string you wish to display on the button.</p>
 
-<pre><code class="default">```{r, echo = TRUE, eval = FALSE, webex.hide = &quot;See a hint&quot;}
+If the solution is an RMarkdown code chunk, instead of using `hide()` and `unhide()`, you can set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
+
+
+````default
+```{r, echo = TRUE, eval = FALSE, webex.hide = &quot;See a hint&quot;}
 ?plot
 </code></pre>
 

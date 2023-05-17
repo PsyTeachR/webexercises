@@ -67,7 +67,7 @@ add_to_bookdown(bookdown_dir = ".",
 
 ## Creating interactive widgets with inline code
 
-The webexercises package provides functions that create HTML widgets using [inline R code](https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf).  These functions are:
+The webexercises package provides functions that create HTML widgets using [inline R code](https://github.com/rstudio/cheatsheets/raw/main/rmarkdown.pdf).  These functions are:
 
 | function                | widget         | description                    |
 |:------------------------|:---------------|:-------------------------------|
@@ -94,7 +94,12 @@ q1 <- mcq(opts)
 cat("What function loads a package that is already on your computer?", q1)
 ```
 
-What function loads a package that is already on your computer? <select class='webex-select'><option value='blank'></option><option value=''>install.package</option><option value=''>install.packages</option><option value='answer'>library</option><option value=''>libraries</option></select>
+What function loads a package that is already on your computer? 
+
+* (A) install.package  
+* (B) install.packages  
+* (C) library  
+* (D) libraries  
 
 ### Fill-In-The-Blanks
 
@@ -105,7 +110,7 @@ Create fill-in-the-blank questions using `fitb()`, providing the answer as the f
 fitb(4)
 ```
 
-- 2 + 2 is <input class='webex-solveme nospaces' size='1' data-answer='["4"]'/>
+- 2 + 2 is _
 
 You can also create these questions dynamically, using variables from your R session (e.g., in a hidden code chunk).
 
@@ -119,7 +124,7 @@ x <- sample(2:8, 1)
 fitb(x)
 ```
 
-- The square root of 64 is: <input class='webex-solveme nospaces' size='1' data-answer='["8"]'/>
+- The square root of 49 is: _
 
 
 
@@ -130,7 +135,7 @@ The blanks are case-sensitive; if you don't care about case, use the argument `i
 fitb("E", ignore_case = TRUE)
 ```
 
-- What is the letter after D? <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["E"]'/>
+- What is the letter after D? _
 
 
 
@@ -141,7 +146,7 @@ If you want to ignore differences in whitespace use, use the argument `ignore_ws
 fitb(c("library( tidyverse )", "library( \"tidyverse\" )", "library( 'tidyverse' )"), ignore_ws = TRUE, width = "20")
 ```
 
-- How do you load the tidyverse package? <input class='webex-solveme nospaces' size='20' data-answer='["library( tidyverse )","library( \"tidyverse\" )","library( &apos;tidyverse&apos; )"]'/>
+- How do you load the tidyverse package? ____________________
 
 You can set more than one possible correct answer by setting the answers as a vector.
 
@@ -150,7 +155,7 @@ You can set more than one possible correct answer by setting the answers as a ve
 fitb(c("A", "E", "I", "O" , "U"), ignore_case = TRUE)
 ```
 
-- Type a vowel: <input class='webex-solveme nospaces ignorecase' size='1' data-answer='["A","E","I","O","U"]'/>
+- Type a vowel: _
 
 You can use regular expressions to test answers against more complex rules.
 
@@ -159,7 +164,7 @@ You can use regular expressions to test answers against more complex rules.
 fitb("^[a-zA-Z]{3}$", width = 3, regex = TRUE)
 ```
 
-- Type any 3 letters: <input class='webex-solveme nospaces regex' size='3' data-answer='["^[a-zA-Z]{3}$"]'/>
+- Type any 3 letters: ___
 
 ### Multiple Choice
 
@@ -170,9 +175,29 @@ Set up a multiple-choice drop-down menu using `mcq()`.
 mcq(c("tidyr", "dplyr", answer = "readr", "ggplot2"))
 ```
 
-- What package helps you load CSV files? <select class='webex-select'><option value='blank'></option><option value=''>tidyr</option><option value=''>dplyr</option><option value='answer'>readr</option><option value=''>ggplot2</option></select>
-- "Never gonna give you up, never gonna: <select class='webex-select'><option value='blank'></option><option value=''>let you go</option><option value=''>turn you down</option><option value=''>run away</option><option value='answer'>let you down</option></select>"
-- "I <select class='webex-select'><option value='blank'></option><option value='answer'>bless the rains</option><option value=''>guess it rains</option><option value=''>sense the rain</option></select> down in Africa" -Toto
+- What package helps you load CSV files? 
+
+* (A) tidyr  
+* (B) dplyr  
+* (C) readr  
+* (D) ggplot2  
+
+
+- "Never gonna give you up, never gonna: 
+
+* (A) let you go  
+* (B) turn you down  
+* (C) run away  
+* (D) let you down  
+
+"
+- "I 
+
+* (A) bless the rains  
+* (B) guess it rains  
+* (C) sense the rain  
+
+ down in Africa" -Toto
 
 ### True or False
 
@@ -184,7 +209,7 @@ torf(TRUE)
 torf(FALSE)
 ```
 
-- True or False? You can permute values in a vector using `sample()`. <select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select>
+- True or False? You can permute values in a vector using `sample()`. TRUE / FALSE
 
 ### Longer MCQs
 
@@ -206,14 +231,24 @@ longmcq(opts_p)
 
 **What is a p-value?**
 
-<div class='webex-radiogroup' id='radio_BXNUQHYFVH'><label><input type="radio" autocomplete="off" name="radio_BXNUQHYFVH" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_BXNUQHYFVH" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_BXNUQHYFVH" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
+
+
+* (A) the probability that the null hypothesis is true  
+* (B) the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true  
+* (C) the probability of making an error in your conclusion  
+
 
 
 **What is true about a 95% confidence interval of the mean?**
 
 
 
-<div class='webex-radiogroup' id='radio_ZBJROQGGSC'><label><input type="radio" autocomplete="off" name="radio_ZBJROQGGSC" value=""></input> <span>there is a 95% probability that the true mean lies within this range</span></label><label><input type="radio" autocomplete="off" name="radio_ZBJROQGGSC" value="answer"></input> <span>if you repeated the process many times, 95% of intervals calculated in this way contain the true mean</span></label><label><input type="radio" autocomplete="off" name="radio_ZBJROQGGSC" value=""></input> <span>95% of the data fall within this range</span></label></div>
+
+
+* (A) 95% of the data fall within this range  
+* (B) there is a 95% probability that the true mean lies within this range  
+* (C) if you repeated the process many times, 95% of intervals calculated in this way contain the true mean  
+
 
 
 
@@ -243,9 +278,13 @@ cat("What is a p-value?", longmcq(opts))
 
 ::: {.webex-check .webex-box}
 
-I am going to learn a lot: <select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select>
+I am going to learn a lot: TRUE / FALSE
 
-What is a p-value? <div class='webex-radiogroup' id='radio_WNZTIYKBKN'><label><input type="radio" autocomplete="off" name="radio_WNZTIYKBKN" value=""></input> <span>the probability that the null hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WNZTIYKBKN" value="answer"></input> <span>the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true</span></label><label><input type="radio" autocomplete="off" name="radio_WNZTIYKBKN" value=""></input> <span>the probability of making an error in your conclusion</span></label></div>
+What is a p-value? 
+
+* (A) the probability that the null hypothesis is true  
+* (B) the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true  
+* (C) the probability of making an error in your conclusion  
 
 :::
 
@@ -259,23 +298,20 @@ You can fence off a solution area that will be hidden behind a button using `hid
 ````default
 `r hide("Click here to see the solution")`
 
-```{r eval = FALSE}
-library(tidyverse)
+```{r, echo = FALSE}
+hist(rnorm(1000))
 ```
 
 `r unhide()`
 ````
 
-How do you load tidyverse?
+Plot a histogram of 1000 values from a random normal distribution.
 
 
 <div class='webex-solution'><button>Click here to see the solution</button>
 
 
-
-```r
-library(tidyverse)
-```
+<img src="man/figures/unnamed-chunk-18-1.png" alt="plot of chunk unnamed-chunk-18" width="100%" />
 
 
 </div>

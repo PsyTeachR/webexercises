@@ -17,3 +17,4 @@ A string with the html for displaying a total correct element.
 \description{
 Display total correct
 }
+\keyword{internal}

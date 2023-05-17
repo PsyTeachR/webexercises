@@ -365,6 +365,7 @@ style_widgets <- function(incorrect = "#983E82",
 #' @return A string with the html for displaying a total correct element.
 #'
 #' @export
+#' @keywords internal
 
 total_correct <- function(elem = "span", args = "") {
   .Deprecated(".webex-check sections",

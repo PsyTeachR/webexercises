@@ -260,19 +260,19 @@ You can fence off a solution area that will be hidden behind a button using `hid
 ````{verbatim}
 `r hide("Click here to see the solution")`
 
-```{r eval = FALSE}
-library(tidyverse)
+```{r, echo = FALSE}
+hist(rnorm(1000))
 ```
 
 `r unhide()`
 ````
 
-How do you load tidyverse?
+Plot a histogram of 1000 values from a random normal distribution.
 
 `r hide("Click here to see the solution")`
 
-```{r eval = FALSE}
-library(tidyverse)
+```{r, echo = FALSE}
+hist(rnorm(1000))
 ```
 
 `r unhide()`
