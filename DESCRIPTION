@@ -29,3 +29,4 @@ Suggests:
     quarto,
     xfun
 Encoding: UTF-8
+VignetteBuilder: knitr

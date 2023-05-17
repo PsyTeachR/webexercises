@@ -1,0 +1,286 @@
+---
+title: "webexercises"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{webexercises}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(webexercises)
+```
+
+## Setup
+
+### RMarkdown
+
+Examples are provided in templates. To create an RMarkdown file from the webexercises template in RStudio, click `File -> New File... -> RMarkdown` and in the dialog box that appears, select `From Template` and choose `Web Exercises`.
+
+Alternatively (or if you're not using RStudio) use:
+
+```{r compile-webexercises, eval=FALSE}
+rmarkdown::draft("exercises.Rmd", "webexercises", "webexercises")
+```
+
+Knit the file to HTML to see how it works. **Note: The widgets only function in a JavaScript-enabled browser.**
+
+### Quarto
+
+You can set up a single template quarto file with the function `create_quarto_doc()`, or add the necessary files and setup to include webexercises in a quarto project with `add_to_quarto()`.
+
+### Bookdown
+
+You can add webexercises to a bookdown project or start a new bookdown project using `add_to_bookdown()`.
+
+```{r, eval = FALSE}
+# create a new book
+# use default includes and scripts directories (include and R)
+# output_format can be bs4_book, gitbook, html_book or tufte_html_book
+add_to_bookdown(bookdown_dir = "demo_bs4",
+                output_format = "bs4_book",
+                render = TRUE)
+
+# update an existing book with custom include and script directories
+add_to_bookdown(bookdown_dir = ".",
+                include_dir = "www",
+                script_dir = "scripts",
+                output_format = "gitbook")
+```
+
+
+## Creating interactive widgets with inline code
+
+The webexercises package provides functions that create HTML widgets using [inline R code](https://github.com/rstudio/cheatsheets/raw/main/rmarkdown.pdf).  These functions are:
+
+| function                | widget         | description                    |
+|:------------------------|:---------------|:-------------------------------|
+| `fitb()`                | text box       | fill-in-the-blank question     |
+| `mcq()`                 | pull-down menu | multiple choice question       |
+| `torf()`                | pull-down menu | TRUE or FALSE question         |
+| `longmcq()`             | radio buttons  | MCQs with long answers         |
+| `hide()` and `unhide()` | button         | solution revealed when clicked |
+
+The appearance of the text box and pull-down menu widgets changes when users enter the correct answer. Answers can be either static or dynamic (i.e., specified using R code). Widget styles can be changed using `style_widgets()`.
+
+These functions are optimised to be used with inline r code, but you can also use them in code chunks by setting the chunk option `results = 'asis'` and using `cat()` to display the result of the widget. 
+
+```{r, results = 'asis'}
+# echo = FALSE, results = 'asis'
+opts <- c("install.package", 
+            "install.packages", 
+            answer = "library", 
+            "libraries")
+
+q1 <- mcq(opts)
+
+cat("What function loads a package that is already on your computer?", q1)
+```
+
+### Fill-In-The-Blanks
+
+Create fill-in-the-blank questions using `fitb()`, providing the answer as the first argument.
+
+```{r, eval = FALSE}
+fitb(4)
+```
+
+- 2 + 2 is `r fitb(4)`
+
+You can also create these questions dynamically, using variables from your R session (e.g., in a hidden code chunk).
+
+```{r echo = TRUE}
+x <- sample(2:8, 1)
+```
+
+```{r, eval = FALSE}
+fitb(x)
+```
+
+- The square root of `r x^2` is: `r fitb(x)`
+
+
+
+The blanks are case-sensitive; if you don't care about case, use the argument `ignore_case = TRUE`.
+
+```{r, eval = FALSE}
+fitb("E", ignore_case = TRUE)
+```
+
+- What is the letter after D? `r fitb("E", ignore_case = TRUE)`
+
+
+
+If you want to ignore differences in whitespace use, use the argument `ignore_ws = TRUE` (which is the default) and include spaces in your answer anywhere they could be acceptable.
+
+```{r eval = FALSE}
+fitb(c("library( tidyverse )", "library( \"tidyverse\" )", "library( 'tidyverse' )"), ignore_ws = TRUE, width = "20")
+```
+
+- How do you load the tidyverse package? `r fitb(c("library( tidyverse )", "library( \"tidyverse\" )", "library( 'tidyverse' )"), ignore_ws = TRUE, width = "20")`
+
+You can set more than one possible correct answer by setting the answers as a vector.
+
+```{r, eval = FALSE}
+fitb(c("A", "E", "I", "O" , "U"), ignore_case = TRUE)
+```
+
+- Type a vowel: `r fitb(c("A", "E", "I", "O" , "U"), ignore_case = TRUE)`
+
+You can use regular expressions to test answers against more complex rules.
+
+```{r, eval = FALSE}
+fitb("^[a-zA-Z]{3}$", width = 3, regex = TRUE)
+```
+
+- Type any 3 letters: `r fitb("^[a-zA-Z]{3}$", width = 3, regex = TRUE)`
+
+### Multiple Choice
+
+Set up a multiple-choice drop-down menu using `mcq()`.
+
+```{r, eval = FALSE}
+mcq(c("tidyr", "dplyr", answer = "readr", "ggplot2"))
+```
+
+- What package helps you load CSV files? `r mcq(c("tidyr", "dplyr", answer = "readr", "ggplot2"))`
+- "Never gonna give you up, never gonna: `r mcq(c("let you go", "turn you down", "run away", answer = "let you down"))`"
+- "I `r mcq(c(answer = "bless the rains", "guess it rains", "sense the rain"))` down in Africa" -Toto
+
+### True or False
+
+Make quick true/false questions with `torf()`.
+
+```{r, eval = FALSE}
+torf(TRUE)
+torf(FALSE)
+```
+
+- True or False? You can permute values in a vector using `sample()`. `r torf(TRUE)`
+
+### Longer MCQs
+
+When your answers are very long, sometimes a drop-down select box gets formatted oddly. You can use `longmcq()` to deal with this. Since the answers are long, It's probably best to set up the options inside an R chunk with `echo=FALSE`. 
+
+```{r, echo = TRUE}
+opts_p <- c(
+   "the probability that the null hypothesis is true",
+   answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
+   "the probability of making an error in your conclusion"
+)
+```
+
+```{r, eval=FALSE}
+longmcq(opts_p)
+```
+
+**What is a p-value?**
+
+`r longmcq(opts_p)`
+
+**What is true about a 95% confidence interval of the mean?**
+
+```{r, echo = FALSE}
+# use sample() to randomise the order
+opts_ci <- sample(c(
+  answer = "if you repeated the process many times, 95% of intervals calculated in this way contain the true mean",
+  "there is a 95% probability that the true mean lies within this range",
+  "95% of the data fall within this range"
+))
+```
+
+`r longmcq(opts_ci)`
+
+
+## Checked sections
+
+Create sections with the class `webex-check` to add a button that hides feedback until it is pressed. Add the class `webex-box` to draw a box around the section (or use your own styles).
+
+
+````{verbatim}
+::: {.webex-check .webex-box}
+
+I am going to learn a lot: `r torf(TRUE)`
+
+```{r, results='asis', echo = FALSE}
+opts <- c(
+   "the probability that the null hypothesis is true",
+   answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
+   "the probability of making an error in your conclusion"
+)
+
+cat("What is a p-value?", longmcq(opts))
+```
+
+:::
+````
+
+::: {.webex-check .webex-box}
+
+I am going to learn a lot: `r torf(TRUE)`
+
+```{r, results='asis', echo = FALSE}
+opts <- c(
+   "the probability that the null hypothesis is true",
+   answer = "the probability of the observed, or more extreme, data, under the assumption that the null-hypothesis is true",
+   "the probability of making an error in your conclusion"
+)
+
+cat("What is a p-value?", longmcq(opts))
+```
+
+:::
+
+
+
+## Hidden solutions and hints
+
+You can fence off a solution area that will be hidden behind a button using `hide()` before the solution and `unhide()` after, each as inline R code.  Pass the text you want to appear on the button to the `hide()` function.
+
+````{verbatim}
+`r hide("Click here to see the solution")`
+
+```{r, echo = FALSE}
+hist(rnorm(1000))
+```
+
+`r unhide()`
+````
+
+Plot a histogram of 1000 values from a random normal distribution.
+
+`r hide("Click here to see the solution")`
+
+```{r, echo = FALSE}
+hist(rnorm(1000))
+```
+
+`r unhide()`
+
+If the solution is an RMarkdown code chunk, instead of using `hide()` and `unhide()`, you can set the `webex.hide` chunk option to TRUE, or set it to the string you wish to display on the button.
+
+````{verbatim}
+```{r, echo = TRUE, eval = FALSE, webex.hide = "See a hint"}
+?plot
+```
+````
+
+```{r, echo = TRUE, eval = FALSE, webex.hide = "See a hint"}
+?plot
+```
+
+
+<a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+
+```{r, echo = FALSE, results = 'asis'}
+js <- system.file("reports/default/webex.js", package = "webexercises")
+
+cat(paste(readLines(js), collapse = "\n"))
+```
+
+
