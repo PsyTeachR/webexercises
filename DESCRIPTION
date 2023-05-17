@@ -1,5 +1,5 @@
 Package: webexercises
-Version: 1.1.0
+Version: 1.1.0.9000
 Date: 2023-04-18
 Title: Create Interactive Web Exercises in 'R Markdown' (Formerly 'webex')
 Description: Functions for easily creating interactive web pages using

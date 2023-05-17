@@ -1,3 +1,5 @@
+# webexercises (development version)
+
 # webexercises 1.1.0
 
 * quarto support (`create_quarto_doc()` and `add_to_quarto()`)
