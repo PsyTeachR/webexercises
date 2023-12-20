@@ -11,7 +11,7 @@ Authors@R: c(
     person("Lisa", "DeBruine",
            email = "debruine@gmail.com",
            role = c("aut", "cre")))
-URL: https://github.com/psyteachr/webexercises
+URL: https://github.com/psyteachr/webexercises, https://psyteachr.github.io/webexercises/
 Depends: R (>= 3.1.2)
 Imports:
     jsonlite,
