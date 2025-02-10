@@ -84,6 +84,11 @@ fitb <- function(answer,
          html, pdf)
 }
 
+
+
+
+
+
 #' Create a multiple-choice question
 #'
 #' @param opts Vector of alternatives. The correct answer is the
@@ -120,10 +125,13 @@ mcq <- function(opts) {
   # check type of knitting
   out_fmt <- knitr::opts_knit$get("out.format")
   pandoc_to <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+
   ifelse((is.null(out_fmt) & is.null(pandoc_to)) ||
            isTRUE(out_fmt == "html") ||
            isTRUE(pandoc_to == "html"),
          html, pdf)
+
+
 }
 
 #' Create a true-or-false question
@@ -157,6 +165,15 @@ torf <- function(answer) {
          mcq(opts), "TRUE / FALSE")
 }
 
+# Function that add backslashes when mathjax is identified in the possible answers so that when printing using cat, it render correctly.
+# This ensure that when you print the output of longmcq  using "cat", the math are correctly displayed as "\" is an escape character in R.
+add_backslashes <- function(input_string) {
+  # Use regular expressions to replace single backslashes with double backslashes
+  result <- gsub("\\\\", "\\\\\\\\", input_string)
+  return(result)
+}
+
+
 
 #' Longer MCQs with Radio Buttons
 #'
@@ -183,6 +200,7 @@ torf <- function(answer) {
 #'
 #' @export
 longmcq <- function(opts) {
+
   ix <- which(names(opts) == "answer")
   if (length(ix) == 0) {
     stop("The question has no correct answer")
@@ -206,10 +224,10 @@ longmcq <- function(opts) {
   # check type of knitting
   out_fmt <- knitr::opts_knit$get("out.format")
   pandoc_to <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-  ifelse((is.null(out_fmt) & is.null(pandoc_to)) ||
-           isTRUE(out_fmt == "html") ||
-           isTRUE(pandoc_to == "html"),
-         html, pdf)
+  add_backslashes(ifelse((is.null(out_fmt) & is.null(pandoc_to)) ||
+                           isTRUE(out_fmt == "html") ||
+                           isTRUE(pandoc_to == "html"),
+                         html, pdf))
 }
 
 
