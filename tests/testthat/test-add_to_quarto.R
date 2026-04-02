@@ -1,10 +1,6 @@
-tmpdir <- tempdir()
-setwd(tmpdir)
-
 test_that("defaults", {
-  dir.create("quarto_test")
-  on.exit(unlink("quarto_test", recursive = TRUE))
-
+  scoped_tempdir({
+    dir.create("quarto_test")
   write("project:\n  title: quarto_test\n", "quarto_test/_quarto.yml")
 
   add_to_quarto("quarto_test")
@@ -23,12 +19,13 @@ test_that("defaults", {
   yml <- yaml::read_yaml(quarto)
   expect_equal(yml$format$html$css, "include/webex.css")
   expect_equal(yml$format$html$`include-after-body`, "include/webex.js")
+  })
 })
 
 
 test_that("names dirs", {
+  scoped_tempdir({
   dir.create("quarto_test")
-  on.exit(unlink("quarto_test", recursive = TRUE))
 
   write("project:\n  title: quarto_test\n", "quarto_test/_quarto.yml")
 
@@ -49,12 +46,13 @@ test_that("names dirs", {
   yml <- yaml::read_yaml(quarto)
   expect_equal(yml$format$html$css, "./webex.css")
   expect_equal(yml$format$html$`include-after-body`, "./webex.js")
+  })
 })
 
 
 test_that("yes no yaml bug", {
+  scoped_tempdir({
   dir.create("quarto_test")
-  on.exit(unlink("quarto_test", recursive = TRUE))
 
   write("project:\n  title: quarto_test\n\nexecute:\n  freeze: false",
         "quarto_test/_quarto.yml")
@@ -63,4 +61,5 @@ test_that("yes no yaml bug", {
 
   txt <- readLines("quarto_test/_quarto.yml")
   expect_true( any(grepl("  freeze: false", txt)) )
+  })
 })

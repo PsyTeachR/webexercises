@@ -3,7 +3,7 @@
 #' @param answer The correct answer (can be a vector if there is more
 #'   than one correct answer).
 #' @param width Width of the input box in characters. Defaults to the
-#'   length of the longest answer.
+#'   length of the longest answer, with a minimum of 100 characters.
 #' @param num Whether the input is numeric, in which case allow for
 #'   leading zeroes to be omitted. Determined from the answer data
 #'   type if not specified.
@@ -32,7 +32,7 @@
 #' fitb(pi, num = TRUE, tol = .001)
 #' @export
 fitb <- function(answer,
-                 width = calculated_width,
+                 width = min(100, max(nchar(answer))),
                  num = NULL,
                  ignore_case = FALSE,
                  tol = NULL,
@@ -44,7 +44,7 @@ fitb <- function(answer,
       (!is.numeric(answer) && !is.character(answer))) {
     stop("The answer must be a vector of characters or numbers.")
   }
-
+  print_answers <- paste0(escape_regex(answer), collapse = ", ")
   # set numeric based on data type if num is NULL
   if (is.null(num)) num <- is.numeric(answer)
 
@@ -58,30 +58,32 @@ fitb <- function(answer,
   }
 
   # if width not set, calculate it from max length answer, up to limit of 100
-  calculated_width <- min(100, max(nchar(answer)))
+  if(!inherits(width, what = c("numeric", "integer"))){
+    width <- min(100, max(nchar(answer)))
+  }
 
   answers <- jsonlite::toJSON(as.character(answer))
   answers <- gsub("\'", "&apos;", answers, fixed = TRUE)
 
   # html format
-  html <- paste0("<input class='webex-solveme",
-         ifelse(ignore_ws, " nospaces", ""),
-         ifelse(!is.null(tol), paste0("' data-tol='", tol, ""), ""),
-         ifelse(ignore_case, " ignorecase", ""),
-         ifelse(regex, " regex", ""),
-         "' size='", width,
-         "' data-answer='", answers, "'/>")
+  output_format <- determine_output_format()
+  if(output_format == "html"){
+    return(paste0("<input class='webex-solveme",
+                   ifelse(ignore_ws, " nospaces", ""),
+                   ifelse(!is.null(tol), paste0("' data-tol='", tol, ""), ""),
+                   ifelse(ignore_case, " ignorecase", ""),
+                   ifelse(regex, " regex", ""),
+                   "' size='", width,
+                   "' data-answer='", answers, "'/>"))
+  }
+
 
   # pdf / other format
-  pdf <- paste(rep("_", width), collapse = "")
+  if(output_format == "latex"){
+    pdf <- paste(rep("_", width), collapse = "")
 
-  # check type of knitting
-  out_fmt <- knitr::opts_knit$get("out.format")
-  pandoc_to <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-  ifelse((is.null(out_fmt) & is.null(pandoc_to)) ||
-           isTRUE(out_fmt == "html") ||
-           isTRUE(pandoc_to == "html"),
-         html, pdf)
+    return(paste0(pdf, "^[", print_answers, "]"))
+  }
 }
 
 #' Create a multiple-choice question
@@ -103,6 +105,7 @@ fitb <- function(answer,
 #' mcq(c("Alec Guinness", answer = "Mark Hamill", "Harrison Ford"))
 #' @export
 mcq <- function(opts) {
+
   ix <- which(names(opts) == "answer")
   if (length(ix) == 0) {
     stop("MCQ has no correct answer")
@@ -112,18 +115,18 @@ mcq <- function(opts) {
   options <- sprintf("<option value='%s'>%s</option>", names(opts), opts)
   html <- sprintf("<select class='webex-select'><option value='blank'></option>%s</select>",
           paste(options, collapse = ""))
+  output_format <- determine_output_format()
 
+  if(output_format == "html"){
+    return(html)
+  }
   # pdf / other format
   pdf_opts <- sprintf("* (%s) %s  ", LETTERS[seq_along(opts)], opts)
-  pdf <- paste0("\n\n", paste(pdf_opts, collapse = "\n"), "\n\n")
-
-  # check type of knitting
-  out_fmt <- knitr::opts_knit$get("out.format")
-  pandoc_to <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-  ifelse((is.null(out_fmt) & is.null(pandoc_to)) ||
-           isTRUE(out_fmt == "html") ||
-           isTRUE(pandoc_to == "html"),
-         html, pdf)
+  pdf <- paste0("^[", opts["answer"], "]\n\n", paste(pdf_opts, collapse = "\n"), "\n\n")
+  if(output_format == "latex"){
+    return(pdf)
+  }
+  ""
 }
 
 #' Create a true-or-false question
@@ -143,18 +146,18 @@ mcq <- function(opts) {
 #' @export
 torf <- function(answer) {
   opts <- c("TRUE", "FALSE")
-  if (answer)
-    names(opts) <- c("answer", "")
-  else
-    names(opts) <- c("", "answer")
+  names(opts)[2L-answer] <- "answer"
 
   # check type of knitting
-  out_fmt <- knitr::opts_knit$get("out.format")
-  pandoc_to <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-  ifelse((is.null(out_fmt) & is.null(pandoc_to)) ||
-           isTRUE(out_fmt == "html") ||
-           isTRUE(pandoc_to == "html"),
-         mcq(opts), "TRUE / FALSE")
+  output_format <- determine_output_format()
+
+  if(output_format == "html"){
+    return(mcq(opts))
+  }
+  if(output_format == "latex"){
+    return(paste0("TRUE / FALSE", "^[", opts["answer"], "]"))
+  }
+  ""
 }
 
 
@@ -199,17 +202,17 @@ longmcq <- function(opts) {
          paste(options, collapse = ""),
          "</div>\n")
 
+  output_format <- determine_output_format()
+  if(output_format == "html"){
+    return(html)
+  }
   # pdf / other format
   pdf_opts <- sprintf("* (%s) %s  ", LETTERS[seq_along(opts2)], opts2)
-  pdf <- paste0("\n\n", paste(pdf_opts, collapse = "\n"), "\n\n")
-
-  # check type of knitting
-  out_fmt <- knitr::opts_knit$get("out.format")
-  pandoc_to <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-  ifelse((is.null(out_fmt) & is.null(pandoc_to)) ||
-           isTRUE(out_fmt == "html") ||
-           isTRUE(pandoc_to == "html"),
-         html, pdf)
+  pdf <- paste0("^[", opts["answer"], "]\n\n", paste(pdf_opts, collapse = "\n"), "\n\n")
+  if(output_format == "latex"){
+    return(pdf)
+  }
+  ""
 }
 
 
@@ -237,13 +240,21 @@ longmcq <- function(opts) {
 #' @export
 hide <- function(button_text = "Solution") {
   rmd <- !is.null(getOption("knitr.in.progress"))
-
-  if (rmd) {
-    paste0("\n<div class='webex-solution'><button>", button_text, "</button>\n")
-  } else {
-    paste0("\n::: {.callout-note collapse='true'}\n## ", button_text, "\n\n")
+  output_format <- determine_output_format()
+  if(output_format == "html"){
+    if (rmd) {
+      return(paste0("\n<div class='webex-solution'><button>", button_text, "</button>\n"))
+    } else {
+      return(paste0("\n::: {.callout-note collapse='true'}\n## ", button_text, "\n\n"))
+    }
   }
-
+  if(output_format == "latex") {
+    return(knitr::raw_latex(
+      c("", paste0("\\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=", button_text, "]"),
+        "")
+    ))
+  }
+  ""
 }
 
 #' End hidden HTML content
@@ -263,12 +274,21 @@ hide <- function(button_text = "Solution") {
 #' @export
 unhide <- function() {
   rmd <- !is.null(getOption("knitr.in.progress"))
-
-  if (rmd) {
-    "\n</div>\n"
-  } else {
-    "\n:::\n\n"
+  output_format <- determine_output_format()
+  if(output_format == "html"){
+    if (rmd) {
+      return("\n</div>\n")
+    } else {
+      return("\n:::\n\n")
+    }
   }
+  if(output_format == "latex"){
+    #return(paste0("\\newpage \\n##", button_text, "\\n\\n"))
+    return(knitr::raw_latex(c("", "\\end{tcolorbox}")))
+
+  }
+  ""
+
 }
 
 #' Change webexercises widget style
@@ -430,4 +450,12 @@ strip_lzero <- function(x) {
 #' escape_regex("library(tidyverse)")
 escape_regex <- function(string) {
   gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", string)
+}
+
+#' Determine the output format
+#' @keywords internal
+determine_output_format <- function(){
+  if(isTRUE(knitr::is_latex_output())) return("latex")
+  # Default to html; if this is not desired, use knitr::is_html_output()
+  return("html")
 }
