@@ -44,7 +44,7 @@ fitb <- function(answer,
       (!is.numeric(answer) && !is.character(answer))) {
     stop("The answer must be a vector of characters or numbers.")
   }
-  print_answers <- paste0(escape_regex(answer), collapse = ", ")
+  print_answers <- paste0(escape_latex(answer), collapse = ", ")
   # set numeric based on data type if num is NULL
   if (is.null(num)) num <- is.numeric(answer)
 
@@ -449,7 +449,7 @@ strip_lzero <- function(x) {
 #' @examples
 #' escape_regex("library(tidyverse)")
 escape_regex <- function(string) {
-  gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", string)
+  gsub("([.|()\\^{}+$*?_]|\\[|\\])", "\\\\\\1", string)
 }
 
 #' Determine the output format

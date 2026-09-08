@@ -57,7 +57,6 @@
 #' @importFrom knitr is_html_output is_latex_output
 quiz <- function(..., title = "Quiz", show_box = TRUE, show_check = TRUE){
   # Parse input -------------------------------------------------------------
-
   if (isTRUE(knitr::is_html_output() & !requireNamespace("webexercises", quietly = TRUE))) {
     return("")
   }
@@ -65,16 +64,18 @@ quiz <- function(..., title = "Quiz", show_box = TRUE, show_check = TRUE){
   dots <- list(...)
   # Check if a file is provided instead of multiple questions
   if (length(dots) == 1) {
-    if (file.exists(dots[[1]])) {
-      txt <- readLines(dots[[1]])
-      questionz <- lapply(txt, function(q) {
-        spl <- regexpr("=", q)
-        trimws(substring(q, c(1, spl + 1), c(spl - 1, nchar(q))))
-      })
-      dots <- lapply(questionz, function(q) {
-        eval(parse(text = q[2]))
-      })
-      names(dots) <- trimws(sapply(questionz, `[`, 1))
+    if(length(dots[[1]]) == 1 & inherits(dots[[1]], what = "character")){
+      if (file.exists(dots[[1]])) {
+        txt <- readLines(dots[[1]])
+        questionz <- lapply(txt, function(q) {
+          spl <- regexpr("=", q)
+          trimws(substring(q, c(1, spl + 1), c(spl - 1, nchar(q))))
+        })
+        dots <- lapply(questionz, function(q) {
+          eval(parse(text = q[2]))
+        })
+        names(dots) <- trimws(sapply(questionz, `[`, 1))
+      }
     }
   }
 
@@ -124,9 +125,9 @@ quiz <- function(..., title = "Quiz", show_box = TRUE, show_check = TRUE){
           )
         })
 
-        paste0(intro, paste(paste(names(dots), questions), collapse = "\n\n"), outro)
+        paste0(intro, paste(paste(names(dots), questions), collapse = "<br>"), outro)
       }, error = function(e){ "" })
-      return(cat(txt, sep = "\n"))
+      return(knitr::raw_html(paste0(txt, collapse = "<br>")))
     }
   }
 
@@ -139,7 +140,7 @@ quiz <- function(..., title = "Quiz", show_box = TRUE, show_check = TRUE){
       questions <- unlist(lapply(seq_along(dots), function(i) {
         n <- names(dots)[i]
         q <- dots[[n]]
-        c(paste0("\\textbf{ Q", i, ": ", n, "}", collapse = ""), "",
+        c(paste0("\\textbf{ Q", i, ": ", escape_latex(n), "}", collapse = ""), "",
           tryCatch({
             switch(class(q)[1],
                    "character" = {
@@ -147,7 +148,7 @@ quiz <- function(..., title = "Quiz", show_box = TRUE, show_check = TRUE){
                        c("\\begin{enumerate}",
                          "\\def\\labelenumi{\\Alph{enumi}.}",
                          "\\tightlist",
-                         as.character(t(expand.grid("\\item", paste0("  ", sample(q)), stringsAsFactors = FALSE)))
+                         as.character(t(expand.grid("\\item", paste0("  ", sample(escape_latex(q))), stringsAsFactors = FALSE)))
                          , "\\end{enumerate}")
                      } else {
                        stop()
@@ -165,22 +166,22 @@ quiz <- function(..., title = "Quiz", show_box = TRUE, show_check = TRUE){
       ansrs <- unname(as.character(dots))
       is_mc <- !is.na(sapply(dots, `[`, "answer"))
       if(any(is_mc)){
-        ansrs[which(is_mc)] <- sapply(dots[which(is_mc)], `[`, "answer")
+        ansrs[which(is_mc)] <- escape_latex(sapply(dots[which(is_mc)], `[`, "answer"))
       }
       ansrs <- c("\\begin{itemize}", "\\tightlist",
                  paste0("\\item[Q", seq_along(ansrs), ":]  ", ansrs),
                  "\\end{itemize}")
       if(show_box){
         txt <- c(paste0("\\begin{tcolorbox}[breakable, enhanced jigsaw,colback=blue!5!white,colframe=blue!75!black,rounded corners, parbox=false,title=", title, "]"),
-        "",
-        questions,
-        "",
-        "\\tcblower",
-        "\\textbf{Answers}",
-        "",
-        ansrs,
-        "",
-        "\\end{tcolorbox}")
+                 "",
+                 questions,
+                 "",
+                 "\\tcblower",
+                 "\\textbf{Answers}",
+                 "",
+                 ansrs,
+                 "",
+                 "\\end{tcolorbox}")
 
       } else {
         txt <- c(paste0("\\textbf{", title, "}"),
@@ -196,4 +197,9 @@ quiz <- function(..., title = "Quiz", show_box = TRUE, show_check = TRUE){
   }
 
   ""
+}
+
+
+escape_latex <- function(x) {
+  gsub("([#$%&_{}])", "\\\\\\1", x, perl = TRUE)
 }
