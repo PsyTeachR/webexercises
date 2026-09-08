@@ -80,7 +80,7 @@ quiz <- function(..., title = "Quiz", show_box = TRUE, show_check = TRUE){
   }
 
   # In case of HTML output --------------------------------------------------
-  output_format <- webexercises:::determine_output_format()
+  output_format <- determine_output_format()
   if (output_format == "html") {
     if (requireNamespace("webexercises", quietly = TRUE)) {
       # Now, prepare the HTML code
