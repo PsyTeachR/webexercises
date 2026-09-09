@@ -1,0 +1,15 @@
+add_to_bookdown	add_to_bookdown
+add_to_quarto	add_to_quarto
+create_quarto_doc	create_quarto_doc
+escape_regex	escape_regex
+fitb	fitb
+hide	hide
+longmcq	longmcq
+mcq	mcq
+round2	round2
+strip_lzero	strip_lzero
+style_widgets	style_widgets
+torf	torf
+total_correct	total_correct
+unhide	unhide
+webexercises_default	webexercises_default

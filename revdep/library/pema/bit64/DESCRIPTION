@@ -1,0 +1,45 @@
+Package: bit64
+Title: A S3 Class for Vectors of 64bit Integers
+Version: 4.8.6
+Authors@R: c(
+    person("Michael", "Chirico", email="michaelchirico4@gmail.com", role=c("aut", "cre")),
+    person("Jens", "Oehlschlägel", role="aut"),
+    person("Leonardo", "Silvestri", role="ctb"),
+    person("Ofek", "Shilon", role="ctb"),
+    person("Christian", "Ullerich", role="ctb")
+  )
+Depends: R (>= 3.5.0)
+Description: 
+  Package 'bit64' provides serializable S3 atomic 64bit (signed) integers.
+  These are useful for handling database keys and exact counting in +-2^63.
+  WARNING: do not use them as replacement for 32bit integers, integer64 are not
+  supported for subscripting by R-core and they have different semantics when
+  combined with double, e.g. integer64 + double => integer64.
+  Class integer64 can be used in vectors, matrices, arrays and data.frames.
+  Methods are available for coercion from and to logicals, integers, doubles,
+  characters and factors as well as many elementwise and summary functions.
+  Many fast algorithmic operations such as 'match' and 'order' support inter-
+  active data exploration and manipulation and optionally leverage caching.
+License: GPL-2 | GPL-3
+LazyLoad: yes
+ByteCompile: yes
+URL: https://github.com/r-lib/bit64, https://bit64.r-lib.org
+Encoding: UTF-8
+Imports: bit (>= 4.0.0), graphics, methods, stats, utils
+Suggests: patrick (>= 0.3.0), testthat (>= 3.3.0), withr
+Config/testthat/edition: 3
+Config/Needs/development: patrick, testthat
+Config/Needs/website: tidyverse/tidytemplate
+Config/roxygen2/version: 8.0.0
+NeedsCompilation: yes
+Packaged: 2026-09-01 05:45:08 UTC; chiricom
+Author: Michael Chirico [aut, cre],
+  Jens Oehlschlägel [aut],
+  Leonardo Silvestri [ctb],
+  Ofek Shilon [ctb],
+  Christian Ullerich [ctb]
+Maintainer: Michael Chirico <michaelchirico4@gmail.com>
+Repository: CRAN
+Date/Publication: 2026-09-01 09:30:09 UTC
+Built: R 4.6.1; x86_64-w64-mingw32; 2026-09-01 23:51:29 UTC; windows
+Archs: x64

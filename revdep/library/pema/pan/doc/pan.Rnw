@@ -1,0 +1,74 @@
+\documentclass[12pt]{article}
+
+\usepackage{Sweave}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+
+%% \VignetteIndexEntry{Imputation of missing covariates under a multivariate linear mixed model}
+%% \Vignettekeywords{multiple imputation, multivariate linear mixed model}
+%% \VignettePackage{pan}
+
+\begin{document}
+\section*{Maintainer's Note}
+The 1997 technical report as noted at \url{https://science.psu.edu/stat/research/technical-reports}., together with the 
+subsequent publications, are all included in this vignette for convenience.
+
+\begin{enumerate}
+\item Schafer, J. L. (1997).
+\emph{Imputation of Missing Covariates under a Multivariate Linear Mixed Model.}
+Technical Report 97-04,
+Department of Statistics, The Pennsylvania State University.
+
+\item Schafer, J. L. (2001).
+Multiple imputation with PAN.
+In L. M. Collins and A. G. Sayer (Eds.),
+\emph{New Methods for the Analysis of Change}
+(pp.~357--377).
+American Psychological Association.
+\url{https://doi.org/10.1037/10409-012}
+
+\item Schafer, J. L., and Y\"ucel, R. M. (2002).
+Computational strategies for multivariate linear mixed-effects models with
+missing values.
+\emph{Journal of Computational and Graphical Statistics},
+\textbf{11}, 437--457.
+\end{enumerate}
+
+\medskip
+
+The marijuana data set included with the package is reproduced below. Example code can be viewed using \texttt{help(ecme, 
+package = "pan")}.
+
+\begin{table}[ht]
+\centering
+\caption{Change in heart rate (beats per minute above baseline) measured 15 and 90 minutes after marijuana use.}
+\label{tab:heart-rate}
+\begin{tabular}{crrr|rrr}
+\toprule
+& \multicolumn{3}{c|}{15 minutes} &
+  \multicolumn{3}{c}{90 minutes} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Subject & Placebo & Low & High &
+Placebo & Low & High \\
+\midrule
+1 & 16 & 20 & 16 & 20 & -6 & -4 \\
+2 & 12 & 24 & 12 & -6 & 4 & -8 \\
+3 & 8 & 8 & 26 & -4 & 4 & 8 \\
+4 & 20 & 8 & \textemdash & \textemdash & 20 & -4 \\
+5 & 8 & 4 & -8 & \textemdash & 22 & -8 \\
+6 & 10 & 20 & 28 & -20 & -4 & -4 \\
+7 & 4 & 28 & 24 & 12 & 8 & 18 \\
+8 & -8 & 20 & 24 & -3 & 8 & -24 \\
+9 & \textemdash & 20 & 24 & 8 & 12 & \textemdash \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\includepdf[pages=-,width=8.5in]{tr9704.pdf}
+\includepdf[pages=-,width=8.5in]{schafer01.pdf}
+\includepdf[pages=-,width=8.5in]{schafer02.pdf}
+
+\end{document}

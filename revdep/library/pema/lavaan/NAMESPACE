@@ -1,0 +1,300 @@
+# only when we have src code
+# useDynLib("lavaan")
+
+importFrom("graphics",
+           "abline", "axis", "box", "hist", "lines", "pairs", "par", "plot.default",
+           "polygon", "text", "arrows",
+           # generics
+           "plot")
+
+importFrom("grDevices", "dev.off", "png", "col2rgb")
+
+importFrom("methods",
+           "is", "new", "slot", "slotNames", ".hasSlot",
+           "setClass", "representation", "setGeneric",
+           "setRefClass", "setMethod",
+           # generics,
+           "show", "signature")
+
+importFrom("stats",
+           "as.formula", "complete.cases", "cor", "cov", "cov2cor", "cov.wt",
+           "dnorm", "lm.fit", "lm.wfit", "mad", "na.omit", "nlminb", "optim",
+           "pchisq", "plogis", "pnorm", "qchisq", "qnorm", "quantile", "rnorm",
+           "runif", "sd", "terms", "uniroot", "var", "weighted.mean", "median",
+           "aggregate", "dlogis", "qlogis", "optimize", "lm", "setNames",
+           # generics
+           "coef", "residuals", "resid", "fitted.values", "fitted",
+           "predict", "update", "anova", "vcov")
+
+importFrom("utils",
+           "combn", "modifyList", "packageDescription", "read.table",
+           "str", "write.table", "write.csv", "packageVersion")
+
+importFrom("quadprog",
+           "solve.QP")
+
+importFrom("mnormt",
+           "sadmvn")
+
+importFrom("pbivnorm",
+           "pbivnorm")
+
+# AIC and friends...
+if(getRversion() >= "2.13.0") {
+    importFrom("stats4",AIC, BIC, logLik, nobs)
+    export(logLik, nobs) # not AIC, BIC?
+} else {
+    importFrom("stats4",AIC, BIC, logLik)
+    export(logLik, BIC, nobs) # not AIC?
+}
+
+
+# export ordinary functions defined in this package
+export("lavaan", "cfa", "sem", "growth",
+       "lavaanList", "cfaList", "semList",
+       #"fsr", "twostep",
+       "sam", "efa",
+       # new name            # old name
+       "lavParTable",        "lavaanify",
+       "lavNames",           "lavaanNames",
+       "lavParseModelString", "lav_parse_options", # "parseModelString",
+       "lavInspect",         "inspect",
+       "lavTech",
+       "lavListInspect",     "lavListTech",
+       "lavResiduals",
+       "lavEffects",
+       # utilities
+       "lav_getcov", "lav_char2num", "lav_cor2cov",
+       "getCov", "char2num", "cor2cov",                 # old names
+       "lavOptions",
+#      "lav_use_lavaanC",
+       "modindices", "modificationIndices", "modificationindices",
+       "standardizedSolution", "standardizedsolution",
+       "lavParameterEstimates", "parameterEstimates", "parameterestimates",
+       "parameterTable", "parametertable", "parTable", "partable",
+       "varTable", "vartable",
+       "fitMeasures", "fitmeasures",
+       "lavInspectSampleCov",                          "inspectSampleCov",
+       "lavBootstrap",       "bootstrapLavaan",
+       "lavSimulateData",    "simulateData",
+       "estfun.lavaan", "lavScores",
+       "lavTables",
+       "lavTablesFitCp", "lavTablesFitCf", "lavTablesFitCm",
+       "lavExport",
+       "lavTest", "lavTestLRT", "lavTestWald", "lavTestScore",
+       "lavMatrixRepresentation",
+       "lav_mplus_lavaan", "mplus2lavaan",
+       "lav_mplus_syntax_model", "mplus2lavaan.modelSyntax",
+       #"lavData",
+       "lavPredict",
+       "lavPredictY",
+       "lavPredictY_cv",
+       "lavResidualsY",
+       "lavCor",
+
+       # API functions
+
+       # lav_matrix
+       "lav_matrix_vec",
+       "lav_matrix_vecr",
+       "lav_matrix_vech",
+       "lav_matrix_vechr",
+       "lav_matrix_vechu",
+       "lav_matrix_vechru",
+       "lav_matrix_vech_idx",
+       "lav_matrix_vech_row_idx",
+       "lav_matrix_vech_col_idx",
+       "lav_matrix_vechr_idx",
+       "lav_matrix_vechu_idx",
+       "lav_matrix_vechru_idx",
+       "lav_matrix_diag_idx",
+       "lav_matrix_diagh_idx",
+       "lav_matrix_antidiag_idx",
+       "lav_matrix_vech_reverse",
+       "lav_matrix_vechru_reverse",
+       "lav_matrix_upper2full",
+       "lav_matrix_vechr_reverse",
+       "lav_matrix_vechu_reverse",
+       "lav_matrix_lower2full",
+       "lav_matrix_duplication",
+       "lav_matrix_duplication_pre",
+       "lav_matrix_duplication_post",
+       "lav_matrix_duplication_pre_post",
+       "lav_matrix_duplication_ginv",
+       "lav_matrix_duplication_ginv_pre",
+       "lav_matrix_duplication_ginv_post",
+       "lav_matrix_duplication_ginv_pre_post",
+       "lav_matrix_commutation",
+       "lav_matrix_commutation_pre",
+       "lav_matrix_commutation_post",
+       "lav_matrix_commutation_pre_post",
+       "lav_matrix_commutation_mn_pre",
+       "lav_matrix_symmetric_sqrt",
+       "lav_matrix_orthogonal_complement",
+       "lav_matrix_bdiag",
+       "lav_matrix_trace",
+       "lav_matrix_cov",
+
+       # lav_partable
+       "lav_partable_independence",   # used by semTools!
+       "lav_partable_unrestricted",
+       "lav_partable_npar",
+       "lav_partable_ndat",
+       "lav_partable_df",
+       "lav_partable_labels",
+       "lav_partable_from_lm",
+       "lav_partable_complete",
+       "lav_partable_attributes",
+       "lav_partable_merge",
+       "lav_partable_add",
+       "lav_partable_constraints_def",
+       "lav_partable_constraints_ceq",
+       "lav_partable_constraints_ciq",
+
+       # lav_constraints
+       "lav_constraints_parse",
+
+       # lav_func
+       "lav_func_gradient_complex",
+       "lav_func_gradient_simple",
+       "lav_func_jacobian_complex",
+       "lav_func_jacobian_simple",    # used by semTools!
+
+       # lav_model
+       "lav_model_get_parameters",
+       "lav_model_set_parameters",
+       "lav_model_implied",
+       "lav_model_vcov_se",
+
+       # lav_data
+       "lav_data_update",
+
+       # lav_samplestats
+       "lav_samplestats_from_data",
+
+       # estimation
+       "lav_export_estimation",
+
+       # plotting utilities
+       "lav_label_code",
+       "lav_model_plotinfo",
+       "lav_plotinfo_positions",
+       "lav_plotinfo_tikzcode",
+       "lav_plotinfo_rgraph",
+       "lav_plotinfo_svgcode",
+       "lav_plot",
+
+       # shortened function names
+       "lav_mat_dup_ginv_pre_post",
+       "lav_mat_ortho_complement",
+       "lav_func_grad_complex",
+       "lav_mat_dup_ginv_post",
+       "lav_func_grad_simple",
+       "lav_mat_vech_row_idx",
+       "lav_mat_vech_col_idx",
+       "lav_mat_antidiag_idx",
+       "lav_mat_dup_pre_post",
+       "lav_mat_dup_ginv_pre",
+       "lav_mat_com_pre_post",
+       "lav_pt_unrestricted",
+       "lav_pt_independence",
+       "lav_mat_vechru_idx",
+       "lav_mat_upper2full",
+       "lav_mat_lower2full",
+       "lav_mat_com_mn_pre",
+       "lav_samp_from_data",
+       "lav_mat_vechru_rev",
+       "lav_mat_vechr_idx",
+       "lav_mat_vechu_idx",
+       "lav_mat_diagh_idx",
+       "lav_pt_attributes",
+       "lav_mat_vechr_rev",
+       "lav_mat_vechu_rev",
+       "lav_mat_vech_idx",
+       "lav_mat_diag_idx",
+       "lav_mat_dup_post",
+       "lav_mat_dup_ginv",
+       "lav_mat_com_post",
+       "lav_mat_sym_sqrt",
+       "lav_mat_vech_rev",
+       "lav_mat_dup_pre",
+       "lav_mat_com_pre",
+       "lav_pt_complete",
+       "lav_mat_vechru",
+       "lav_pt_con_def",
+       "lav_pt_con_ceq",
+       "lav_pt_con_ciq",
+       "lav_pt_from_lm",
+       "lav_con_parse",
+       "lav_mat_vechr",
+       "lav_mat_vechu",
+       "lav_mat_bdiag",
+       "lav_mat_trace",
+       "lav_pt_labels",
+       "lav_mat_vecr",
+       "lav_mat_vech",
+       "lav_pt_merge",
+       "lav_mat_vec",
+       "lav_mat_dup",
+       "lav_mat_com",
+       "lav_mat_cov",
+       "lav_pt_ndat",
+       "lav_pt_npar",
+       "lav_pt_add",
+       "lav_pt_df"
+
+       # deprecated functions
+       #"vech", "vech.reverse", "vechru", "vechru.reverse", "lower2full",
+       #"vechr", "vechr.reverse", "vechu", "vechu.reverse", "upper2full",
+       #"duplicationMatrix", "commutationMatrix", "sqrtSymmetricMatrix"
+      )
+
+# export Classes
+exportClasses(
+              "lavaan",
+              "lavaanList"
+             )
+
+# export Methods
+exportMethods(
+              "predict",
+              "update",
+              "anova",
+              "coef",
+              "residuals", "resid",
+              "vcov",
+              "logLik",
+              "fitted.values", "fitted",
+              "summary"
+             )
+
+S3method(print, lavaan.data.frame, lav_dataframe_print)
+S3method(print, lavaan.list, lav_lavaanlist_print)
+S3method(print, lavaan.matrix, lav_mat_print)
+S3method(print, lavaan.matrix.symmetric, lav_mat_sym_print)
+S3method(print, lavaan.vector, lav_vector_print)
+S3method(print, lavaan.parameterEstimates, lav_parameterestimates_print)
+S3method(print, lavaan.effects, lav_effects_print)
+S3method(print, lavaan.fitMeasures, lav_fitmeasures_print)
+S3method(print, lavaan.residuals.summary, lav_residuals_summary_print)
+S3method(print, lavaan.summary, lav_summary_print)
+S3method(print, lavaan.tables.fit.Cf, lav_tables_fit_cf_print)
+S3method(print, lavaan.tables.fit.Cp, lav_tables_fit_cp_print)
+S3method(print, lavaan.tables.fit.Cm, lav_tables_fit_cm_print)
+S3method(print, lavaan.efa, lav_efa_print)
+S3method(print, efaList.summary, lav_efalist_summary_print)
+S3method(print,    efaList, lav_efalist_print)
+S3method(predict,  efaList, lav_efalist_predict)
+S3method(summary, efaList, lav_efalist_summary)
+S3method(fitMeasures, efaList, lav_efalist_fitmeasures)
+S3method(fitmeasures, efaList, lav_efalist_fitmeasures)
+S3method(pairs, lavaan, lav_lavaan_pairs)
+S3method(inspect,    lavaan, lav_lavaan_inspect)
+S3method(inspect,    lavaanList, lav_lavaanlist_inspect)
+S3method(lavInspect, lavaan, lav_lavaan_lavinspect)
+S3method(lavTech,    lavaan, lav_lavaan_lavtech)
+S3method(lavInspect, lavaanList, lav_lavaanlist_lavinspect)
+S3method(lavTech,    lavaanList, lav_lavaanlist_lavtech)
+if(getRversion() >= "3.6.0") {
+    S3method(sandwich::estfun, lavaan)
+}

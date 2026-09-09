@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Analysis of Multiply Imputed Data Sets</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+max-width: 720px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 16px;
+font-weight: 500;
+line-height: 1.65;
+text-align: justify;
+text-justify: inter-word;
+margin: 2em auto;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 16px;
+line-height: 1.5;
+text-align: left;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 18px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+p {
+margin: 0.6em 0;
+}
+blockquote {
+border-left:3px dotted #e5e5e5;
+background-color: #fff;
+padding: 0 1em;
+margin: 0.9em 0;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul, ol {
+text-align: left;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+line-height: 1.2;
+border-radius: 3px;
+color: #333;
+padding: 0px;
+white-space: pre; 
+overflow-x: auto;
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+code {
+font-family: Consolas, monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+text-align: left;
+line-height: 1.2;
+}
+h1 {
+font-size: 2em;
+font-weight: 600;
+}
+h2 {
+color: #191919;
+font-size: 1.5em;
+font-weight: 600;
+}
+h3, h4, h5 {
+color: #292929;
+font-weight: 600;
+}
+
+h6 {
+color:#191919;
+font-size: 1.5em;
+font-weight: 600;
+margin-top: 0.83em;
+margin-bottom: 0.83em;
+}
+h6 ~ p {
+text-align: left;
+}
+a {
+color: #777;
+text-decoration: none;
+}
+a:hover {
+color: #aaa;
+text-decoration: underline;
+}
+
+
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table {
+margin-top: 25px;
+margin-bottom: 25px;
+margin-left: auto;
+margin-right: auto;
+border-collapse: collapse;
+border-spacing: 0;
+}
+th {
+padding:5px 10px;
+border: 1px solid #b2b2b2;
+}
+td {
+padding:5px 10px;
+border: 1px solid #e5e5e5;
+}
+dt {
+color:#444;
+font-weight:500;
+}
+th {
+color:#444;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+
+img {
+display: block;
+margin-left: auto;
+margin-right: auto;
+max-width:100%;
+}
+div.figure {
+text-align: center;
+}
+
+.gif_play, #gif:hover .gif_stop{
+display:none
+}
+.gif_stop, #gif:hover .gif_play{
+display:block
+}
+
+pre code { color: #707070; } 
+pre code.r { color: #333333; } 
+code span.kw { color: #558200; font-weight: normal; } 
+code span.co { color: #707070; font-style: normal; } 
+code span.dt { color: #333333; } 
+code span.fu { color: #558200; }  code span.dv { color: #007878; } 
+code span.bn { color: #007878; } 
+code span.fl { color: #007878; } 
+code span.ch { color: #985b00; } 
+code span.st { color: #985b00; } 
+code span.ot { color: #007878; } 
+code span.al { color: #a61717; font-weight: bold; } 
+code span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Analysis of Multiply Imputed Data Sets</h1>
+
+
+
+<p>This vignette is intended to provide an overview of the analysis of
+multiply imputed data sets with <code>mitml</code>. Specifically, this
+vignette addresses the following topics:</p>
+<ol style="list-style-type: decimal">
+<li>Working with multiply imputed data sets</li>
+<li>Rubin’s rules for pooling individual parameters</li>
+<li>Model comparisons</li>
+<li>Parameter constraints</li>
+</ol>
+<p>Further information can be found in the other <a href="https://github.com/simongrund1/mitml/wiki">vignettes</a> and the
+package <a href="https://cran.r-project.org/package=mitml/mitml.pdf">documentation</a>.</p>
+<div id="example-data-studentratings" class="section level2">
+<h2>Example data (<code>studentratings</code>)</h2>
+<p>For the purposes of this vignette, we make use of the
+<code>studentratings</code> data set, which contains simulated data from
+750 students in 50 schools including scores on reading and math
+achievement, socioeconomic status (SES), and ratings on school and
+classroom environment.</p>
+<p>The package and the data set can be loaded as follows.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mitml)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(studentratings)</span></code></pre></div>
+<p>As evident from its <code>summary</code>, most variables in the data
+set contain missing values.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(studentratings)</span></code></pre></div>
+<pre><code>#        ID       FedState     Sex              MathAchiev       MathDis      
+#  Min.   :1001   B :375   Length:750         Min.   :225.0   Min.   :0.2987  
+#  1st Qu.:1013   SH:375   Class :character   1st Qu.:440.7   1st Qu.:1.9594  
+#  Median :1513            Mode  :character   Median :492.7   Median :2.4350  
+#  Mean   :1513                               Mean   :495.4   Mean   :2.4717  
+#  3rd Qu.:2013                               3rd Qu.:553.2   3rd Qu.:3.0113  
+#  Max.   :2025                               Max.   :808.1   Max.   :4.7888  
+#                                             NA&#39;s   :132     NA&#39;s   :466     
+#       SES          ReadAchiev       ReadDis        CognAbility      SchClimate     
+#  Min.   :-9.00   Min.   :191.1   Min.   :0.7637   Min.   :28.89   Min.   :0.02449  
+#  1st Qu.:35.00   1st Qu.:427.4   1st Qu.:2.1249   1st Qu.:43.80   1st Qu.:1.15338  
+#  Median :46.00   Median :490.2   Median :2.5300   Median :48.69   Median :1.65636  
+#  Mean   :46.55   Mean   :489.9   Mean   :2.5899   Mean   :48.82   Mean   :1.73196  
+#  3rd Qu.:59.00   3rd Qu.:558.4   3rd Qu.:3.0663   3rd Qu.:53.94   3rd Qu.:2.24018  
+#  Max.   :93.00   Max.   :818.5   Max.   :4.8554   Max.   :71.29   Max.   :4.19316  
+#  NA&#39;s   :281                     NA&#39;s   :153                      NA&#39;s   :140</code></pre>
+<p>In the present example, we investigate the differences in mathematics
+achievement that can be attributed to differences in SES when
+controlling for students’ sex. Specifically, we are interested in the
+following model.</p>
+<p><span class="math display">\[
+\mathit{MA}_{ij} = \gamma_{00} + \gamma_{10} \mathit{Sex}_{ij} +
+\gamma_{20} (\mathit{SES}_{ij}-\overline{\mathit{SES}}_{\bullet j}) +
+\gamma_{01} \overline{\mathit{SES}}_{\bullet j} + u_{0j} + e_{ij}
+\]</span></p>
+<p>Note that this model also employs group-mean centering to separate
+the individual and group-level effects of SES.</p>
+</div>
+<div id="generating-imputations" class="section level2">
+<h2>Generating imputations</h2>
+<p>In the present example, we generate 20 imputations from the following
+imputation model.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fml <span class="ot">&lt;-</span> ReadDis <span class="sc">+</span> SES <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Sex <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>imp <span class="ot">&lt;-</span> <span class="fu">panImpute</span>(studentratings, <span class="at">formula =</span> fml, <span class="at">n.burn =</span> <span class="dv">5000</span>, <span class="at">n.iter =</span> <span class="dv">200</span>, <span class="at">m =</span> <span class="dv">20</span>)</span></code></pre></div>
+<p>The completed data are then extracted with
+<code>mitmlComplete</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>implist <span class="ot">&lt;-</span> <span class="fu">mitmlComplete</span>(imp, <span class="st">&quot;all&quot;</span>)</span></code></pre></div>
+</div>
+<div id="transforming-the-imputed-data-sets" class="section level2">
+<h2>Transforming the imputed data sets</h2>
+<p>In empirical research, the raw data rarely enter the analyses but
+often require to be transformed beforehand. For this purpose, the
+<code>mitml</code> package provides the <code>within</code> function,
+which applies a given transformation directly to each data set.</p>
+<p>In the following, we use this to (a) calculate the group means of SES
+and (b) center the individual scores around their group means.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>implist <span class="ot">&lt;-</span> <span class="fu">within</span>(implist, {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  G.SES <span class="ot">&lt;-</span> <span class="fu">clusterMeans</span>(SES, ID) <span class="co"># calculate group means</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  I.SES <span class="ot">&lt;-</span> SES <span class="sc">-</span> G.SES           <span class="co"># center around group means</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>This method can be used to apply arbitrary transformations to all of
+the completed data sets simultaneously.</p>
+<blockquote>
+<p><strong>Note regarding</strong> <code>dplyr</code><strong>:</strong>
+Due to how it is implemented, <code>within</code> cannot be used
+directly with <code>dplyr</code>. Instead, users may use
+<code>with</code> instead of <code>within</code> with the following
+workaround.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>implist <span class="ot">&lt;-</span> <span class="fu">with</span>(implist,{</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">as.list</span>(<span class="fu">environment</span>()))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> ... <span class="co"># dplyr commands</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  df</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>implist <span class="ot">&lt;-</span> <span class="fu">as.mitml.list</span>(implist)</span></code></pre></div>
+<p>Advanced users may also consider using <code>lapply</code> for a
+similar workaround.<span style="color:white">`</span></p>
+</blockquote>
+</div>
+<div id="fitting-the-analysis-model" class="section level2">
+<h2>Fitting the analysis model</h2>
+<p>In order to analyze the imputed data, each data set is analyzed using
+regular complete-data techniques. For this purpose, <code>mitml</code>
+offers the <code>with</code> function. In the present example, we use it
+to fit the model of interest with the R package <code>lme4</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">with</span>(implist, {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lmer</span>(MathAchiev <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Sex <span class="sc">+</span> I.SES <span class="sc">+</span> G.SES <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>This results in a list of fitted models, one for each of the imputed
+data sets.</p>
+</div>
+<div id="pooling" class="section level2">
+<h2>Pooling</h2>
+<p>The results obtained from the imputed data sets must be pooled in
+order to obtain a set of final parameter estimates and inferences. In
+the following, we employ a number of different pooling methods that can
+be used to address common statistical tasks, for example, for (a)
+estimating and testing individual parameters, (b) model comparisons, and
+(c) tests of constraints about one or several parameters.</p>
+<div id="parameter-estimates" class="section level4">
+<h4>Parameter estimates</h4>
+<p>Individual parameters are commonly pooled with the rules developed by
+Rubin (1987). In <code>mitml</code>, Rubin’s rules are implemented in
+the <code>testEstimates</code> function.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testEstimates</span>(fit)</span></code></pre></div>
+<pre><code># 
+# Call:
+# 
+# testEstimates(model = fit)
+# 
+# Final parameter estimates and inferences obtained from 20 imputed data sets.
+# 
+#              Estimate Std.Error   t.value        df   P(&gt;|t|)       RIV       FMI 
+# (Intercept)   433.015    28.481    15.203 1.081e+03     0.000     0.153     0.134 
+# SexGirl         3.380     7.335     0.461 2.794e+05     0.645     0.008     0.008 
+# I.SES           0.692     0.257     2.690 2.334e+02     0.008     0.399     0.291 
+# G.SES           1.296     0.597     2.173 1.097e+03     0.030     0.152     0.133 
+# 
+# Unadjusted hypothesis test as appropriate in larger samples.</code></pre>
+<p>In addition, the argument <code>extra.pars = TRUE</code> can be used
+to obtain pooled estimates of variance components, and
+<code>df.com</code> can be used to specify the complete-data degrees of
+freedom, which provides more appropriate (i.e., conservative) inferences
+in smaller samples.</p>
+<p>For example, using a conservative value for the complete-data degrees
+of freedom for the fixed effects in the model of interest (Snijders
+&amp; Bosker, 2012), the output changes as follows.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testEstimates</span>(fit, <span class="at">extra.pars =</span> <span class="cn">TRUE</span>, <span class="at">df.com =</span> <span class="dv">46</span>)</span></code></pre></div>
+<pre><code># 
+# Call:
+# 
+# testEstimates(model = fit, extra.pars = TRUE, df.com = 46)
+# 
+# Final parameter estimates and inferences obtained from 20 imputed data sets.
+# 
+#              Estimate Std.Error   t.value        df   P(&gt;|t|)       RIV       FMI 
+# (Intercept)   433.015    28.481    15.203    36.965     0.000     0.153     0.176 
+# SexGirl         3.380     7.335     0.461    43.752     0.647     0.008     0.051 
+# I.SES           0.692     0.257     2.690    27.781     0.012     0.399     0.332 
+# G.SES           1.296     0.597     2.173    37.022     0.036     0.152     0.175 
+# 
+#                         Estimate 
+# Intercept~~Intercept|ID  168.506 
+# Residual~~Residual      8092.631 
+# ICC|ID                     0.020 
+# 
+# Hypothesis test adjusted for small samples with df=[46]
+# complete-data degrees of freedom.</code></pre>
+</div>
+<div id="multiple-parameters-and-model-comparisons" class="section level4">
+<h4>Multiple parameters and model comparisons</h4>
+<p>Oftentimes, statistical inference concerns more than one parameter at
+a time. For example, the combined influence of SES (within and between
+groups) on mathematics achievement is represented by two parameters in
+the model of interest.</p>
+<p>Multiple pooling methods for Wald and likelihood ratio tests (LRTs)
+are implemented in the <code>testModels</code> function. This function
+requires the specification of a full model and a restricted model, which
+are then compared using (pooled) Wald tests or LRTs. Specifically,
+<code>testModels</code> allows users to pool Wald tests (<span class="math inline">\(D_1\)</span>), <span class="math inline">\(\chi^2\)</span> test statistics (<span class="math inline">\(D_2\)</span>), and LRTs (<span class="math inline">\(D_3\)</span> and <span class="math inline">\(D_4\)</span>; for a comparison of these methods,
+see also Grund, Lüdtke, &amp; Robitzsch, 2016b).</p>
+<p>To examine the combined influence of SES on mathematics achievement,
+the following restricted model can be specified and compared with the
+model of interest (using <span class="math inline">\(D_1\)</span>).</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fit.null <span class="ot">&lt;-</span> <span class="fu">with</span>(implist, {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lmer</span>(MathAchiev <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Sex <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">testModels</span>(fit, fit.null)</span></code></pre></div>
+<pre><code># 
+# Call:
+# 
+# testModels(model = fit, null.model = fit.null)
+# 
+# Model comparison calculated from 20 imputed data sets.
+# Combination method: D1
+# 
+#     F.value     df1     df2   P(&gt;F)     RIV 
+#       6.095       2 674.475   0.002   0.275 
+# 
+# Unadjusted hypothesis test as appropriate in larger samples.
+# Models fitted with REML were used as is.</code></pre>
+<blockquote>
+<p><strong>Note regarding the order of arguments:</strong> Please note
+that <code>testModels</code> expects that the first argument contains
+the full model, and the second argument contains the restricted model.
+If the order of the arguments is reversed, the results will not be
+interpretable.</p>
+</blockquote>
+<p>Similar to the test for individual parameters, smaller samples can be
+accommodated with <code>testModels</code> (with method <span class="math inline">\(D_1\)</span>) by specifying the complete-data
+degrees of freedom for the denominator of the <span class="math inline">\(F\)</span> statistic.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testModels</span>(fit, fit.null, <span class="at">df.com =</span> <span class="dv">46</span>)</span></code></pre></div>
+<pre><code># 
+# Call:
+# 
+# testModels(model = fit, null.model = fit.null, df.com = 46)
+# 
+# Model comparison calculated from 20 imputed data sets.
+# Combination method: D1
+# 
+#     F.value     df1     df2   P(&gt;F)     RIV 
+#       6.095       2  39.812   0.005   0.275 
+# 
+# Hypothesis test adjusted for small samples with df=[46]
+# complete-data degrees of freedom.
+# Models fitted with REML were used as is.</code></pre>
+<p>The pooling method used by <code>testModels</code> is determined by
+the <code>method</code> argument. For example, to calculate the pooled
+LRT corresponding to the Wald test above (i.e., <span class="math inline">\(D_3\)</span>), the following command can be
+issued.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">testModels</span>(fit, fit.null, <span class="at">method=</span><span class="st">&quot;D3&quot;</span>)</span></code></pre></div>
+<pre><code># 
+# Call:
+# 
+# testModels(model = fit, null.model = fit.null, method = &quot;D3&quot;)
+# 
+# Model comparison calculated from 20 imputed data sets.
+# Combination method: D3
+# 
+#     F.value     df1     df2   P(&gt;F)     RIV 
+#       5.787       2 519.143   0.003   0.328 
+# 
+# Models originally fitted with REML were refitted using ML.</code></pre>
+</div>
+<div id="constraints-on-parameters" class="section level4">
+<h4>Constraints on parameters</h4>
+<p>Finally, it is often useful to investigate functions (or constraints)
+of the parameters in the model of interest. In complete data sets, this
+can be achieved with a test of linear hypotheses or the delta method.
+The <code>mitml</code> package implements a pooled version of the delta
+method in the <code>testConstraints</code> function.</p>
+<p>For example, the combined influence of SES on mathematics achievement
+can also be tested without model comparisons by testing the constraint
+that the parameters pertaining to <code>I.SES</code> and
+<code>G.SES</code> are both zero. This constraint is defined and tested
+as follows.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>c1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;I.SES&quot;</span>, <span class="st">&quot;G.SES&quot;</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">testConstraints</span>(fit, <span class="at">constraints =</span> c1)</span></code></pre></div>
+<pre><code># 
+# Call:
+# 
+# testConstraints(model = fit, constraints = c1)
+# 
+# Hypothesis test calculated from 20 imputed data sets. The following
+# constraints were specified:
+# 
+#             Estimate Std. Error 
+#    I.SES:      0.692      0.245 
+#    G.SES:      1.296      0.628 
+# 
+# Combination method: D1 
+# 
+#     F.value     df1     df2   P(&gt;F)     RIV 
+#       6.095       2 674.475   0.002   0.275 
+# 
+# Unadjusted hypothesis test as appropriate in larger samples.</code></pre>
+<p>This test is identical to the Wald test given in the previous
+section. Arbitrary constraints on the parameters can be specified and
+tested in this manner, where each character string denotes an expression
+to be tested against zero.</p>
+<p>In the present example, we are also interested in the
+<em>contextual</em> effect of SES on mathematics achievement (e.g.,
+Snijders &amp; Bosker, 2012). The contextual effect is simply the
+difference between the coefficients pertaining to <code>G.SES</code> and
+<code>I.SES</code> and can be tested as follows.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>c2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;G.SES - I.SES&quot;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">testConstraints</span>(fit, <span class="at">constraints =</span> c2)</span></code></pre></div>
+<pre><code># 
+# Call:
+# 
+# testConstraints(model = fit, constraints = c2)
+# 
+# Hypothesis test calculated from 20 imputed data sets. The following
+# constraints were specified:
+# 
+#                     Estimate Std. Error 
+#    G.SES - I.SES:      0.605      0.644 
+# 
+# Combination method: D1 
+# 
+#     F.value     df1     df2   P(&gt;F)     RIV 
+#       0.881       1 616.380   0.348   0.166 
+# 
+# Unadjusted hypothesis test as appropriate in larger samples.</code></pre>
+<p>Similar to model comparisons, constraints can be tested with
+different methods (<span class="math inline">\(D_1\)</span> and <span class="math inline">\(D_2\)</span>) and can accommodate smaller samples
+by a value for <code>df.com</code>. Further examples for the analysis of
+multiply imputed data sets with <code>mitml</code> are given by Enders
+(2016) and Grund, Lüdtke, and Robitzsch (2016a).</p>
+<div id="references" class="section level6">
+<h6>References</h6>
+<p>Enders, C. K. (2016). Multiple imputation as a flexible tool for
+missing data handling in clinical research. <em>Behaviour Research and
+Therapy</em>. doi: 10.1016/j.brat.2016.11.008 (<a href="https://doi.org/10.1016/j.brat.2016.11.008">Link</a>)</p>
+<p>Grund, S., Lüdtke, O., &amp; Robitzsch, A. (2016a). Multiple
+imputation of multilevel missing data: An introduction to the R package
+pan. <em>SAGE Open</em>, <em>6</em>(4), 1–17. doi:
+10.1177/2158244016668220 (<a href="https://doi.org/10.1177/2158244016668220">Link</a>)</p>
+<p>Grund, S., Lüdtke, O., &amp; Robitzsch, A. (2016b). Pooling ANOVA
+results from multiply imputed datasets: A simulation study.
+<em>Methodology</em>, <em>12</em>, 75–88. doi: 10.1027/1614-2241/a000111
+(<a href="https://doi.org/10.1027/1614-2241/a000111">Link</a>)</p>
+<p>Rubin, D. B. (1987). <em>Multiple imputation for nonresponse in
+surveys</em>. Hoboken, NJ: Wiley.</p>
+<p>Snijders, T. A. B., &amp; Bosker, R. J. (2012). <em>Multilevel
+analysis: An introduction to basic and advanced multilevel
+modeling</em>. Thousand Oaks, CA: Sage.</p>
+<hr />
+<pre><code># Author: Simon Grund (simon.grund@uni-hamburg.de)
+# Date:   2023-03-08</code></pre>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

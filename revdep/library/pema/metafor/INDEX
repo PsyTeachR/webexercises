@@ -1,0 +1,139 @@
+addpoly                 Add Polygons to Forest Plots
+addpoly.default         Add Polygons to Forest Plots (Default Method)
+addpoly.predict.rma     Add Polygons to Forest Plots (Method for
+                        'predict.rma' Objects)
+addpoly.rma             Add Polygons to Forest Plots (Method for 'rma'
+                        Objects)
+aggregate.escalc        Aggregate Multiple Effect Sizes or Outcomes
+                        Within Studies
+anova.rma               Likelihood Ratio and Wald-Type Tests for 'rma'
+                        Objects
+baujat                  Baujat Plots for 'rma' Objects
+bldiag                  Construct Block Diagonal Matrix
+blsplit                 Split Block Diagonal Matrix
+blup                    Best Linear Unbiased Predictions for 'rma.uni'
+                        Objects
+coef.deltamethod        Extract the Estimates and Variance-Covariance
+                        Matrix from 'deltamethod' Objects
+coef.matreg             Extractor Functions for 'matreg' Objects
+coef.permutest.rma.uni
+                        Extract the Model Coefficient Table from
+                        'permutest.rma.uni' Objects
+coef.rma                Extract the Model Coefficients and Coefficient
+                        Table from 'rma' and 'summary.rma' Objects
+confint.rma             Confidence Intervals for 'rma' Objects
+contrmat                Construct Contrast Matrix for Two-Group
+                        Comparisons
+conv.2x2                Reconstruct Cell Frequencies of 2x2 Tables
+conv.delta              Transform Observed Effect Sizes or Outcomes and
+                        their Sampling Variances using the Delta Method
+conv.fivenum            Estimate Means and Standard Deviations from
+                        Five-Number Summary Values
+conv.wald               Convert Wald-Type Confidence Intervals and
+                        Tests to Sampling Variances
+cumul                   Cumulative Meta-Analysis for 'rma' Objects
+deltamethod             Apply the (Multivariate) Delta Method
+dfround                 Round Variables in a Data Frame
+emmprep                 Create a Reference Grid for the 'emmeans'
+                        Function
+escalc                  Calculate Effect Sizes and Outcome Measures
+fitstats                Fit Statistics and Information Criteria for
+                        'rma' Objects
+fitted.rma              Fitted Values for 'rma' Objects
+forest                  Forest Plots
+forest.cumul.rma        Forest Plots (Method for 'cumul.rma' Objects)
+forest.default          Forest Plots (Default Method)
+forest.rma              Forest Plots (Method for 'rma' Objects)
+formatters              Formatter Functions
+formula.rma             Extract the Model Formula from 'rma' Objects
+fsn                     Fail-Safe N Analysis (File Drawer Analysis)
+funnel                  Funnel Plots
+gosh                    GOSH Plots for 'rma' Objects
+hc                      Meta-Analysis based on the Method by Henmi and
+                        Copas (2010)
+influence.rma.mv        Model Diagnostics for 'rma.mv' Objects
+influence.rma.uni       Model Diagnostics for 'rma.uni' Objects
+labbe                   L'Abbe Plots for 'rma' Objects
+leave1out               Leave-One-Out Diagnostics for 'rma' Objects
+llplot                  Plot of Likelihoods for Individual Studies
+matreg                  Fit Regression Models based on a Correlation
+                        and Covariance Matrix
+metafor-package         metafor: A Meta-Analysis Package for R
+metafor.news            Read News File of the Metafor Package
+methods.vcovmat         Methods for 'vcovmat' Objects
+mfopt                   Getting and Setting Package Options
+misc-models             Fixed-Effects and Random-Effects Models in
+                        Meta-Analysis
+misc-options            Miscellaneous Options and Features
+misc-recs               Some Recommended Practices
+model.matrix.rma        Extract the Model Matrix from 'rma' Objects
+pairmat                 Construct a Pairwise Contrast Matrix for 'rma'
+                        Objects
+permutest               Permutation Tests for 'rma.uni' Objects
+plot.cumul.rma          Plot Method for 'cumul.rma' Objects
+plot.gosh.rma           Plot Method for 'gosh.rma' Objects
+plot.infl.rma.uni       Plot Method for 'infl.rma.uni' Objects
+plot.permutest.rma.uni
+                        Plot Method for 'permutest.rma.uni' Objects
+plot.rma                Plot Method for 'rma' Objects
+plot.rma.uni.selmodel   Plot Method for 'plot.rma.uni.selmodel' Objects
+plot.vif.rma            Plot Method for 'vif.rma' Objects
+predict.matreg          Predicted Values for 'matreg' Objects
+predict.rma             Predicted Values for 'rma' Objects
+print.anova.rma         Print Methods for 'anova.rma' and
+                        'list.anova.rma' Objects
+print.confint.rma       Print Methods for 'confint.rma' and
+                        'list.confint.rma' Objects
+print.deltamethod       Print Method for 'deltamethod' Objects
+print.escalc            Print and Summary Methods for 'escalc' Objects
+print.fsn               Print Method for 'fsn' Objects
+print.gosh.rma          Print Method for 'gosh.rma' Objects
+print.hc.rma.uni        Print Method for 'hc.rma.uni' Objects
+print.list.rma          Print Method for 'list.rma' Objects
+print.matreg            Print and Summary Methods for 'matreg' Objects
+print.permutest.rma.uni
+                        Print Method for 'permutest.rma.uni' Objects
+print.ranktest          Print Method for 'ranktest' Objects
+print.regtest           Print Method for 'regtest' Objects
+print.rma               Print and Summary Methods for 'rma' Objects
+profile.rma             Profile Likelihood Plots for 'rma' Objects
+qqnorm.rma              Normal QQ Plots for 'rma' Objects
+radial                  Radial Plots for 'rma' Objects
+ranef                   Best Linear Unbiased Predictions for 'rma.uni'
+                        and 'rma.mv' Objects
+ranktest                Rank Correlation Test for Funnel Plot Asymmetry
+rcalc                   Calculate the Variance-Covariance of Dependent
+                        Correlation Coefficients
+regplot                 Scatter Plots / Bubble Plots
+regtest                 Regression Test for Funnel Plot Asymmetry
+replmiss                Replace Missing Values in a Vector
+reporter                Dynamically Generated Analysis Reports for
+                        'rma.uni' Objects
+residuals.rma           Residual Values based on 'rma' Objects
+rma.glmm                Meta-Analysis via Generalized Linear
+                        (Mixed-Effects) Models
+rma.mh                  Meta-Analysis via the Mantel-Haenszel Method
+rma.mv                  Meta-Analysis via Multivariate/Multilevel
+                        Linear (Mixed-Effects) Models
+rma.peto                Meta-Analysis via Peto's Method
+rma.uni                 Meta-Analysis via Linear (Mixed-Effects) Models
+robust                  Cluster-Robust Tests and Confidence Intervals
+                        for 'rma' Objects
+se                      Extract the Standard Errors from 'rma' Objects
+selmodel                Selection Models
+simulate.rma            Simulate Method for 'rma' Objects
+tes                     Test of Excess Significance
+to.long                 Convert Data from Vector to Long Format
+to.table                Convert Data from Vector to Table Format
+to.wide                 Convert Data from a Long to a Wide Format
+transf                  Transformation Functions
+trimfill                Trim and Fill Analysis for 'rma.uni' Objects
+update.rma              Model Updating for 'rma' Objects
+vcalc                   Construct or Approximate the
+                        Variance-Covariance Matrix of Dependent Effect
+                        Sizes or Outcomes
+vcov.rma                Extract Various Types of Variance-Covariance
+                        Matrices from 'rma' Objects
+vec2mat                 Convert a Vector into a Square Matrix
+vif                     Variance Inflation Factors for 'rma' Objects
+weights.rma             Compute Weights for 'rma' Objects

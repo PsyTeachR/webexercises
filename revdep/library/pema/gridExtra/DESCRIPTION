@@ -1,0 +1,25 @@
+Package: gridExtra
+Authors@R: c(person("Baptiste", "Auguie",
+    email = "baptiste.auguie@vuw.ac.nz",
+    role = c("aut", "cre")), person("Anton", "Antonov",
+    email = "tonytonov@gmail.com",
+    role = c("ctb")))
+License: GPL (>= 2)
+Title: Miscellaneous Functions for "Grid" Graphics
+Type: Package
+Description: Provides a number of user-level functions to work with "grid"
+    graphics, notably to arrange multiple grid-based plots on a page, and draw
+    tables.
+Version: 2.3.1
+VignetteBuilder: knitr
+Imports: gtable, grid, grDevices, graphics, utils
+Suggests: ggplot2, egg, lattice, knitr, testthat
+RoxygenNote: 6.0.1
+NeedsCompilation: no
+Packaged: 2026-06-25 06:16:42 UTC; hornik
+Author: Baptiste Auguie [aut, cre],
+  Anton Antonov [ctb]
+Maintainer: Baptiste Auguie <baptiste.auguie@vuw.ac.nz>
+Repository: CRAN
+Date/Publication: 2026-06-25 08:54:51 UTC
+Built: R 4.6.1; ; 2026-09-02 02:52:46 UTC; windows

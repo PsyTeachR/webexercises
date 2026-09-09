@@ -1,0 +1,27 @@
+@Article{beachanddavidson1983,
+  author       = "Charles M Beach and Russell Davidson",
+  date         = "1983-02",
+  journaltitle = "Review of Economic Studies",
+  pages        = "723--735",
+  title        = "Distribution-free statistical inference with Lorenz curves and income shares",
+  volume       = "50",
+}
+
+@Article{beachandkaliski1986a,
+  author       = "C M Beach and S F Kaliski",
+  date         = "1986",
+  journaltitle = "Appl. Statist.",
+  pages        = "38--45",
+  title        = "Lorenz curve inference with sample weights: an application to the distribution of unemployment experience",
+  volume       = "35",
+}
+
+@Book{lambert1993,
+  author       = "Peter J Lambert",
+  location     = "Manchester",
+  publisher    = "Manchester University Press",
+  date         = "1993",
+  edition      = "2",
+  title        = "The distribution and redistribution of income. {A} mathematical analysis",
+}
+

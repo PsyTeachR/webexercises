@@ -1,0 +1,52 @@
+Package: rbibutils
+Type: Package
+Title: Read 'Bibtex' Files and Convert Between Bibliography Formats
+Version: 2.4.1
+Authors@R: c( person(given = c("Georgi", "N."), family = "Boshnakov", 
+                     role = c("aut", "cre"), 	
+                     email = "georgi.boshnakov@manchester.ac.uk",
+		     comment = c(ORCID = "0000-0003-2839-346X",
+		                         "R port, R code, new C code and modifications to bibutils' C code, conversion to Bibentry (R and C code)") ),
+              person(given = "Chris", family = "Putman",
+                     role = "aut",
+		     comment = "src/*, author of the bibutils libraries, https://sourceforge.net/projects/bibutils/"),
+              person(given = "Richard", family = "Mathar",
+                     role = "ctb",
+		     comment = "src/addsout.c"),
+              person(given = "Johannes", family = "Wilm",
+                     role = "ctb",
+		     comment = "src/biblatexin.c, src/bltypes.c"),
+	      person("R Core Team", role = "ctb",
+	             comment = "base R's bibentry and bibstyle implementation")
+            )
+Description: Read and write 'Bibtex' files. Convert between bibliography
+    formats, including 'Bibtex', 'Biblatex', 'PubMed', 'Endnote', and
+    'Bibentry'.  Includes a port of the 'bibutils' utilities by Chris
+    Putnam <https://sourceforge.net/projects/bibutils/>. Supports all
+    bibliography formats and character encodings implemented in
+    'bibutils'.
+License: GPL-2
+URL: https://geobosh.github.io/rbibutils/ (doc),
+        https://CRAN.R-project.org/package=rbibutils
+BugReports: https://github.com/GeoBosh/rbibutils/issues
+Depends: R (>= 2.10)
+Imports: utils, tools
+Suggests: testthat
+Encoding: UTF-8
+NeedsCompilation: yes
+Config/Needs/memcheck: devtools, rcmdcheck
+Packaged: 2026-01-20 19:58:02 UTC; georgi
+Author: Georgi N. Boshnakov [aut, cre] (ORCID:
+    <https://orcid.org/0000-0003-2839-346X>, R port, R code, new C code
+    and modifications to bibutils' C code, conversion to Bibentry (R
+    and C code)),
+  Chris Putman [aut] (src/*, author of the bibutils libraries,
+    https://sourceforge.net/projects/bibutils/),
+  Richard Mathar [ctb] (src/addsout.c),
+  Johannes Wilm [ctb] (src/biblatexin.c, src/bltypes.c),
+  R Core Team [ctb] (base R's bibentry and bibstyle implementation)
+Maintainer: Georgi N. Boshnakov <georgi.boshnakov@manchester.ac.uk>
+Repository: CRAN
+Date/Publication: 2026-01-21 06:40:34 UTC
+Built: R 4.6.1; x86_64-w64-mingw32; 2026-09-02 01:26:39 UTC; windows
+Archs: x64

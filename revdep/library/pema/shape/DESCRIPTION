@@ -1,0 +1,15 @@
+Package: shape
+Version: 1.4.6.1
+Title: Functions for Plotting Graphical Shapes, Colors
+Author: Karline Soetaert <karline.soetaert@nioz.nl>
+Maintainer: Karline Soetaert <karline.soetaert@nioz.nl>
+Depends: R (>= 2.01)
+Imports: stats, graphics, grDevices
+Description: Functions for plotting graphical shapes
+  such as ellipses, circles, cylinders, arrows, ...
+License: GPL (>= 3)
+NeedsCompilation: no
+Packaged: 2024-02-18 12:52:04 UTC; karlines
+Repository: CRAN
+Date/Publication: 2024-02-23 13:00:02 UTC
+Built: R 4.6.1; ; 2026-08-19 11:46:34 UTC; windows

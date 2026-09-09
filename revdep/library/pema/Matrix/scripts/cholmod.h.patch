@@ -1,0 +1,704 @@
+--- inst/include/Matrix/cholmod.h	2024-08-30 23:28:08
++++ inst/include/Matrix/cholmod.h-patched.h	2024-08-30 23:07:12
+@@ -46,8 +46,8 @@
+ // CHOLMOD's Partition Module.
+ // -----------------------------------------------------------------------------
+ 
+-#ifndef CHOLMOD_H
+-#define CHOLMOD_H
++#ifndef R_MATRIX_CHOLMOD_H
++#define R_MATRIX_CHOLMOD_H
+ 
+ //------------------------------------------------------------------------------
+ // CHOLMOD conventions
+@@ -259,6 +259,8 @@
+ extern "C" {
+ #endif
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ int cholmod_version     // returns CHOLMOD_VERSION, defined above
+ (
+     // if version is not NULL, then cholmod_version returns its contents as:
+@@ -268,6 +270,8 @@
+     int version [3]
+ ) ;
+ int cholmod_l_version (int version [3]) ;
++
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ #ifdef __cplusplus
+ }
+@@ -287,6 +291,8 @@
+ // particular, you must use -DNLARGEFILE for MATLAB 6.5 or earlier (which does
+ // not have the io64.h include file).
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ // skip all of this if NLARGEFILE is defined at the compiler command line
+ #ifndef NLARGEFILE
+     #if defined(MATLAB_MEX_FILE) || defined(MATHWORKS)
+@@ -301,10 +307,14 @@
+     #endif
+ #endif
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ //------------------------------------------------------------------------------
+ // SuiteSparse_config: definitions for all SuiteSparse packages
+ //------------------------------------------------------------------------------
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ #include "SuiteSparse_config.h"
+ 
+ #define CHOLMOD__VERSION SUITESPARSE__VERCODE(5,2,0)
+@@ -313,6 +323,13 @@
+ #error "CHOLMOD 5.2.0 requires SuiteSparse_config 7.6.0 or later"
+ #endif
+ 
++#else
++
++#include <stdint.h>
++#include <stddef.h>
++
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ //------------------------------------------------------------------------------
+ // CHOLMOD configuration
+ //------------------------------------------------------------------------------
+@@ -354,6 +371,8 @@
+ //  affect the license itself; see CHOLMOD/Doc/License.txt for your actual
+ //  license.
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ #ifdef NGPL
+     #undef  NMATRIXOPS
+     #define NMATRIXOPS
+@@ -362,6 +381,8 @@
+     #undef  NSUPERNODAL
+     #define NSUPERNODAL
+ #endif
++
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ //==============================================================================
+ // CHOLMOD:Utility Module
+@@ -926,6 +947,8 @@
+ #define CHOLMOD_ASSEMBLE_TIME       cholmod_assemble_time
+ #define CHOLMOD_ASSEMBLE_TIME2      cholmod_assemble_time2
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ //------------------------------------------------------------------------------
+ // cholmod_start:  first call to CHOLMOD
+ //------------------------------------------------------------------------------
+@@ -1066,6 +1089,8 @@
+     double *cr, double *ci      // c (real, imaginary)
+ ) ;
+ int cholmod_l_divcomplex (double, double, double, double, double *, double *) ;
++
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ //==============================================================================
+ // cholmod_sparse: a sparse matrix in compressed-column (CSC) form
+@@ -1110,6 +1135,8 @@
+     int packed ;    // true if packed (A->nz ignored), false if unpacked
+ 
+ } cholmod_sparse ;
++
++#ifndef R_MATRIX_CHOLMOD_H
+ 
+ //------------------------------------------------------------------------------
+ // cholmod_allocate_sparse:  allocate a sparse matrix
+@@ -1421,8 +1448,8 @@
+     int sorted,         // ignored; C is now always returned as sorted
+     cholmod_common *Common
+ ) ;
+-cholmod_sparse *cholmod_l_add (cholmod_sparse *, cholmod_sparse *, double *,
+-    double *, int, int, cholmod_common *) ;
++cholmod_sparse *cholmod_l_add (cholmod_sparse *, cholmod_sparse *, double [2],
++    double [2], int, int, cholmod_common *) ;
+ 
+ //------------------------------------------------------------------------------
+ // cholmod_sparse_xtype: change the xtype and/or dtype of a sparse matrix
+@@ -1438,6 +1465,8 @@
+ ) ;
+ int cholmod_l_sparse_xtype (int, cholmod_sparse *, cholmod_common *) ;
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ //==============================================================================
+ // cholmod_factor: symbolic or numeric factorization (simplicial or supernodal)
+ //==============================================================================
+@@ -1558,6 +1587,8 @@
+ 
+ } cholmod_factor ;
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ //------------------------------------------------------------------------------
+ // cholmod_allocate_factor: allocate a numerical factor
+ //------------------------------------------------------------------------------
+@@ -1701,6 +1732,8 @@
+ ) ;
+ int cholmod_l_factor_xtype (int, cholmod_factor *, cholmod_common *) ;
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ //==============================================================================
+ // cholmod_dense: a dense matrix, held by column
+ //==============================================================================
+@@ -1718,6 +1751,8 @@
+ 
+ } cholmod_dense ;
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ //------------------------------------------------------------------------------
+ // cholmod_allocate_dense: allocate a dense matrix (contents not initialized)
+ //------------------------------------------------------------------------------
+@@ -1895,6 +1930,8 @@
+ ) ;
+ int cholmod_l_dense_xtype (int, cholmod_dense *, cholmod_common *) ;
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ //=============================================================================
+ // cholmod_triplet: a sparse matrix in triplet form
+ //=============================================================================
+@@ -1937,6 +1974,8 @@
+ 
+ } cholmod_triplet ;
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ //------------------------------------------------------------------------------
+ // cholmod_allocate_triplet: allocate a triplet matrix
+ //------------------------------------------------------------------------------
+@@ -2035,6 +2074,8 @@
+ ) ;
+ int cholmod_l_triplet_xtype (int, cholmod_triplet *, cholmod_common *) ;
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ //------------------------------------------------------------------------------
+ // memory allocation: malloc/calloc/realloc/free
+ //------------------------------------------------------------------------------
+@@ -2048,6 +2089,8 @@
+ // statistics. cholmod_realloc does not return NULL if it fails; instead, it
+ // returns the pointer to the unmodified block of memory.
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ void *cholmod_malloc    // return pointer to newly allocated memory
+ (
+     // input:
+@@ -2110,6 +2153,8 @@
+ int cholmod_l_realloc_multiple (size_t, int, int, void **, void **, void **,
+     void **, size_t *, cholmod_common *) ;
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ //------------------------------------------------------------------------------
+ // numerical comparisons
+ //------------------------------------------------------------------------------
+@@ -2117,6 +2162,8 @@
+ // These macros were different on Windows for older versions of CHOLMOD.
+ // They are no longer needed but are kept for backward compatibility.
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ #define CHOLMOD_IS_NAN(x)       isnan (x)
+ #define CHOLMOD_IS_ZERO(x)      ((x) == 0.)
+ #define CHOLMOD_IS_NONZERO(x)   ((x) != 0.)
+@@ -2124,13 +2171,13 @@
+ #define CHOLMOD_IS_GT_ZERO(x)   ((x) > 0.)
+ #define CHOLMOD_IS_LE_ZERO(x)   ((x) <= 0.)
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ #endif
+ 
+ //==============================================================================
+ // CHOLMOD:Check Module
+ //==============================================================================
+-
+-#ifndef NCHECK
+ 
+ // Routines that check and print the 5 basic data types in CHOLMOD, and 3 kinds
+ // of integer vectors (subset, perm, and parent), and read in matrices from a
+@@ -2181,6 +2228,8 @@
+ //
+ // See cholmod_read.c for a description of the file formats supported by the
+ // cholmod_read_* routines.
++
++#ifndef R_MATRIX_CHOLMOD_H
+ 
+ //------------------------------------------------------------------------------
+ // cholmod_check_common:  check the Common object
+@@ -2519,6 +2568,8 @@
+ //------------------------------------------------------------------------------
+ // cholmod_write_sparse: write a sparse matrix to a file
+ //------------------------------------------------------------------------------
++
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ // return values of cholmod_symmetry and cholmod_write:
+ #define CHOLMOD_MM_RECTANGULAR       1
+@@ -2529,6 +2580,8 @@
+ #define CHOLMOD_MM_SYMMETRIC_POSDIAG 6
+ #define CHOLMOD_MM_HERMITIAN_POSDIAG 7
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ int cholmod_write_sparse    // see above, or -1 on error
+ (
+     // input:
+@@ -2556,14 +2609,12 @@
+ int cholmod_l_write_dense (FILE *, cholmod_dense *, const char *,
+     cholmod_common *) ;
+ 
+-#endif
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ //==============================================================================
+ // CHOLMOD:Cholesky Module
+ //==============================================================================
+ 
+-#ifndef NCHOLESKY
+-
+ // Sparse Cholesky routines: analysis, factorization, and solve.
+ //
+ // The primary routines are all that a user requires to order, analyze, and
+@@ -2604,6 +2655,8 @@
+ // Optionally uses the Supernodal and Partition modules.
+ // Required by the Partition module.
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ //------------------------------------------------------------------------------
+ // cholmod_analyze:  order and analyze (simplicial or supernodal)
+ //------------------------------------------------------------------------------
+@@ -2697,7 +2750,7 @@
+     cholmod_factor *L,  // resulting factorization
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_factorize_p (cholmod_sparse *, double *, int64_t *, size_t,
++int cholmod_l_factorize_p (cholmod_sparse *, double [2], int64_t *, size_t,
+     cholmod_factor *, cholmod_common *) ;
+ 
+ //------------------------------------------------------------------------------
+@@ -2707,6 +2760,8 @@
+ // Solves one of many linear systems with a dense right-hand-side, using the
+ // factorization from cholmod_factorize (or as modified by any other CHOLMOD
+ // routine).  D is identity for LL' factorizations.
++
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ #define CHOLMOD_A    0  /* solve Ax=b    */
+ #define CHOLMOD_LDLt 1  /* solve LDL'x=b */
+@@ -2718,6 +2773,8 @@
+ #define CHOLMOD_P    7  /* permute x=Px  */
+ #define CHOLMOD_Pt   8  /* permute x=P'x */
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ cholmod_dense *cholmod_solve    // returns the solution X
+ (
+     // input:
+@@ -2895,7 +2952,7 @@
+     cholmod_factor *L,
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_rowfac (cholmod_sparse *, cholmod_sparse *, double *, size_t,
++int cholmod_l_rowfac (cholmod_sparse *, cholmod_sparse *, double [2], size_t,
+     size_t, cholmod_factor *, cholmod_common *) ;
+ 
+ //------------------------------------------------------------------------------
+@@ -2920,7 +2977,7 @@
+     cholmod_factor *L,
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_rowfac_mask (cholmod_sparse *, cholmod_sparse *, double *,
++int cholmod_l_rowfac_mask (cholmod_sparse *, cholmod_sparse *, double [2],
+     size_t, size_t, int64_t *, int64_t *, cholmod_factor *, cholmod_common *) ;
+ 
+ int cholmod_rowfac_mask2
+@@ -2939,7 +2996,7 @@
+     cholmod_factor *L,
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_rowfac_mask2 (cholmod_sparse *, cholmod_sparse *, double *,
++int cholmod_l_rowfac_mask2 (cholmod_sparse *, cholmod_sparse *, double [2],
+     size_t, size_t, int64_t *, int64_t, int64_t *, cholmod_factor *,
+     cholmod_common *) ;
+ 
+@@ -3078,14 +3135,12 @@
+ int64_t cholmod_l_postorder (int64_t *, size_t, int64_t *, int64_t *,
+     cholmod_common *) ;
+ 
+-#endif
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ //==============================================================================
+ // CHOLMOD:MatrixOps Module
+ //==============================================================================
+ 
+-#ifndef NMATRIXOPS
+-
+ // Basic operations on sparse and dense matrices.
+ //
+ // cholmod_drop             A = entries in A with abs. value >= tol
+@@ -3104,6 +3159,8 @@
+ //
+ // Requires the Utility module.  Not required by any other CHOLMOD module.
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ //------------------------------------------------------------------------------
+ // cholmod_drop:  drop entries with small absolute value
+ //------------------------------------------------------------------------------
+@@ -3169,11 +3226,15 @@
+ // cholmod_scale:  A = diag(s)*A, A*diag(s), s*A or diag(s)*A*diag(s)
+ //------------------------------------------------------------------------------
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ // scaling modes, selected by the scale input parameter:
+ #define CHOLMOD_SCALAR 0    /* A = s*A               */
+ #define CHOLMOD_ROW    1    /* A = diag(s)*A         */
+ #define CHOLMOD_COL    2    /* A = A*diag(s)         */
+ #define CHOLMOD_SYM    3    /* A = diag(s)*A*diag(s) */
++
++#ifndef R_MATRIX_CHOLMOD_H
+ 
+ int cholmod_scale
+ (
+@@ -3204,7 +3265,7 @@
+     cholmod_dense *Y,   // resulting dense matrix
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_sdmult (cholmod_sparse *, int, double *, double *,
++int cholmod_l_sdmult (cholmod_sparse *, int, double [2], double [2],
+     cholmod_dense *, cholmod_dense *Y, cholmod_common *) ;
+ 
+ //------------------------------------------------------------------------------
+@@ -3310,14 +3371,12 @@
+ int cholmod_l_symmetry (cholmod_sparse *, int, int64_t *, int64_t *, int64_t *,
+     int64_t *, cholmod_common *) ;
+ 
+-#endif
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ //==============================================================================
+ // CHOLMOD:Modify Module
+ //==============================================================================
+ 
+-#ifndef NMODIFY
+-
+ //------------------------------------------------------------------------------
+ // CHOLMOD:Modify Module. Copyright (C) 2005-2023, Timothy A. Davis and William
+ // W. Hager.  http://www.suitesparse.com
+@@ -3350,6 +3409,8 @@
+ // cholmod_rowdel_mark      delete a row, and downdate solution to partial Lx=b
+ //
+ // Requires the Utility module.  Not required by any other CHOLMOD module.
++
++#ifndef R_MATRIX_CHOLMOD_H
+ 
+ //------------------------------------------------------------------------------
+ // cholmod_updown:  multiple rank update/downdate
+@@ -3504,7 +3565,7 @@
+     cholmod_dense *DeltaB,  // change in b, zero on output
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_rowadd_solve (size_t, cholmod_sparse *, double *,
++int cholmod_l_rowadd_solve (size_t, cholmod_sparse *, double [2],
+     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
+ 
+ //------------------------------------------------------------------------------
+@@ -3528,7 +3589,7 @@
+     cholmod_dense *DeltaB,  // change in b, zero on output
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_rowadd_mark (size_t, cholmod_sparse *, double *, int64_t *,
++int cholmod_l_rowadd_mark (size_t, cholmod_sparse *, double [2], int64_t *,
+     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
+ 
+ //------------------------------------------------------------------------------
+@@ -3575,7 +3636,7 @@
+     cholmod_dense *DeltaB,  // change in b, zero on output
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_rowdel_solve (size_t, cholmod_sparse *, double *,
++int cholmod_l_rowdel_solve (size_t, cholmod_sparse *, double [2],
+     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
+ 
+ //------------------------------------------------------------------------------
+@@ -3599,10 +3660,10 @@
+     cholmod_dense *DeltaB,  // change in b, zero on output
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double *, int64_t *,
++int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double [2], int64_t *,
+     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
+ 
+-#endif
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ //==============================================================================
+ // CHOLMOD:Partition Module (CAMD, CCOLAMD, and CSYMAMD)
+@@ -3634,7 +3695,7 @@
+ // Requires the Utility and Cholesky modules, and three packages: METIS, CAMD,
+ // and CCOLAMD.  Optionally used by the Cholesky module.
+ 
+-#ifndef NCAMD
++#ifndef R_MATRIX_CHOLMOD_H
+ 
+ //------------------------------------------------------------------------------
+ // cholmod_ccolamd
+@@ -3696,7 +3757,7 @@
+ int cholmod_l_camd (cholmod_sparse *, int64_t *, size_t, int64_t *, int64_t *,
+     cholmod_common *) ;
+ 
+-#endif
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ //------------------------------------------------------------------------------
+ // CHOLMOD:Partition Module (graph partition methods)
+@@ -3705,7 +3766,7 @@
+ // These routines still exist if CHOLMOD is compiled with -DNPARTITION,
+ // but they return Common->status = CHOLMOD_NOT_INSTALLED in that case.
+ 
+-#if 1
++#ifndef R_MATRIX_CHOLMOD_H
+ 
+ //------------------------------------------------------------------------------
+ // cholmod_nested_dissection
+@@ -3822,14 +3883,12 @@
+ int64_t cholmod_l_collapse_septree (size_t, size_t, double, size_t, int64_t *,
+     int64_t *, cholmod_common *) ;
+ 
+-#endif
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ //==============================================================================
+ // CHOLMOD:Supernodal Module
+ //==============================================================================
+ 
+-#ifndef NSUPERNODAL
+-
+ // Supernodal analysis, factorization, and solve.  The simplest way to use
+ // these routines is via the Cholesky module.  It does not provide any
+ // fill-reducing orderings, but does accept the orderings computed by the
+@@ -3862,6 +3921,8 @@
+ // Requires the Utility module, and two external packages: LAPACK and the BLAS.
+ // Optionally used by the Cholesky module.
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ //------------------------------------------------------------------------------
+ // cholmod_super_symbolic
+ //------------------------------------------------------------------------------
+@@ -3890,10 +3951,14 @@
+ 
+ // Analyze for supernodal Cholesky or multifrontal QR
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ #define CHOLMOD_ANALYZE_FOR_SPQR     0
+ #define CHOLMOD_ANALYZE_FOR_CHOLESKY 1
+ #define CHOLMOD_ANALYZE_FOR_SPQRGPU  2
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ int cholmod_super_symbolic2
+ (
+     // input:
+@@ -3929,7 +3994,7 @@
+     cholmod_factor *L,  // factorization
+     cholmod_common *Common
+ ) ;
+-int cholmod_l_super_numeric (cholmod_sparse *, cholmod_sparse *, double *,
++int cholmod_l_super_numeric (cholmod_sparse *, cholmod_sparse *, double [2],
+     cholmod_factor *, cholmod_common *) ;
+ 
+ //------------------------------------------------------------------------------
+@@ -3974,7 +4039,7 @@
+ int cholmod_l_super_ltsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
+     cholmod_common *) ;
+ 
+-#endif
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
+ 
+ #ifdef __cplusplus
+ }
+@@ -3998,12 +4063,16 @@
+     int64_t d ;
+ }
+ descendantScore ;
++
++#ifndef R_MATRIX_CHOLMOD_H
+ 
+ int cholmod_score_comp   (struct cholmod_descendant_score_t *i,
+                           struct cholmod_descendant_score_t *j) ;
+ int cholmod_l_score_comp (struct cholmod_descendant_score_t *i,
+                           struct cholmod_descendant_score_t *j) ;
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ #ifdef __cplusplus
+ }
+ #endif
+@@ -4051,6 +4120,8 @@
+ 
+ } cholmod_gpu_pointers ;
+ 
++#ifndef R_MATRIX_CHOLMOD_H
++
+ int cholmod_gpu_memorysize   // GPU memory size available, 1 if no GPU
+ (
+     size_t         *total_mem,
+@@ -4080,11 +4151,140 @@
+ int cholmod_gpu_allocate   ( cholmod_common *Common ) ;
+ int cholmod_l_gpu_allocate ( cholmod_common *Common ) ;
+ 
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++
+ #ifdef __cplusplus
+ }
+ #endif
+ 
+ #endif
+ 
++/* <<<< Matrix <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
++
++/* We declare a minimal subset of the above as "API" : */
++
++#ifndef R_MATRIX_CHOLMOD
++# define R_MATRIX_CHOLMOD(_NAME_) M_cholmod_ ## _NAME_
+ #endif
+ 
++#ifndef R_MATRIX_INLINE
++# define R_MATRIX_INLINE
++#endif
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++typedef cholmod_common  * CHM_CM;
++typedef cholmod_factor  * CHM_FR;
++typedef cholmod_sparse  * CHM_SP;
++typedef cholmod_triplet * CHM_TR;
++typedef cholmod_dense   * CHM_DN;
++
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(aat)(
++	CHM_SP, int *, size_t, int, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(add)(
++	CHM_SP, CHM_SP, double[2], double[2], int, int, CHM_CM);
++R_MATRIX_INLINE CHM_DN R_MATRIX_CHOLMOD(allocate_dense)(
++	size_t, size_t, size_t, int, CHM_CM);
++R_MATRIX_INLINE CHM_FR R_MATRIX_CHOLMOD(allocate_factor)(
++	size_t, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(allocate_sparse)(
++	size_t, size_t, size_t, int, int, int, int, CHM_CM);
++R_MATRIX_INLINE CHM_TR R_MATRIX_CHOLMOD(allocate_triplet)(
++	size_t, size_t, size_t, int, int, CHM_CM);
++R_MATRIX_INLINE CHM_FR R_MATRIX_CHOLMOD(analyze)(
++	CHM_SP, CHM_CM);
++R_MATRIX_INLINE CHM_FR R_MATRIX_CHOLMOD(analyze_p)(
++	CHM_SP, int *, int *, size_t, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(band_inplace)(
++	int, int, int, CHM_SP, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(change_factor)(
++	int, int, int, int, int, CHM_FR, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(check_common)(
++	CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(check_dense)(
++	CHM_DN, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(check_factor)(
++	CHM_FR, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(check_sparse)(
++	CHM_SP, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(check_triplet)(
++	CHM_TR, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(copy)(
++	CHM_SP, int, int, CHM_CM);
++R_MATRIX_INLINE CHM_DN R_MATRIX_CHOLMOD(copy_dense)(
++	CHM_DN, CHM_CM);
++R_MATRIX_INLINE CHM_FR R_MATRIX_CHOLMOD(copy_factor)(
++	CHM_FR, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(copy_sparse)(
++	CHM_SP, CHM_CM);
++R_MATRIX_INLINE CHM_TR R_MATRIX_CHOLMOD(copy_triplet)(
++	CHM_TR, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(defaults)(
++	CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(dense_to_sparse)(
++	CHM_DN, int, CHM_CM);
++R_MATRIX_INLINE   void R_MATRIX_CHOLMOD(error_handler)(
++	int, const char *, int, const char *);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(factor_to_sparse )(
++	CHM_FR, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(factorize)(
++	CHM_SP, CHM_FR, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(factorize_p)(
++	CHM_SP, double[2], int *, size_t, CHM_FR, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(finish)(
++	CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(free_dense)(
++	CHM_DN *, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(free_factor)(
++	CHM_FR *, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(free_sparse)(
++	CHM_SP *, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(free_triplet)(
++	CHM_TR *, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(horzcat)(
++	CHM_SP, CHM_SP, int, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(nnz)(
++	CHM_SP, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(scale)(
++	CHM_DN, int, CHM_SP, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(sdmult)(
++	CHM_SP, int, double[2], double[2], CHM_DN, CHM_DN, CHM_CM);
++R_MATRIX_INLINE CHM_DN R_MATRIX_CHOLMOD(solve)(
++	int, CHM_FR, CHM_DN, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(solve2)(
++	int, CHM_FR, CHM_DN, CHM_DN *, CHM_DN *, CHM_DN *, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(sort)(
++	CHM_SP, CHM_CM);
++R_MATRIX_INLINE CHM_DN R_MATRIX_CHOLMOD(sparse_to_dense)(
++	CHM_SP, CHM_CM);
++R_MATRIX_INLINE CHM_TR R_MATRIX_CHOLMOD(sparse_to_triplet)(
++	CHM_SP, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(speye)(
++	size_t, size_t, int, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(spsolve)(
++	int, CHM_FR, CHM_SP, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(ssmult)(
++	CHM_SP, CHM_SP, int, int, int, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(start)(
++	CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(submatrix)(
++	CHM_SP, int *, int, int *, int, int, int, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(transpose)(
++	CHM_SP, int, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(triplet_to_sparse)(
++	CHM_TR, int, CHM_CM);
++R_MATRIX_INLINE    int R_MATRIX_CHOLMOD(updown)(
++	int, CHM_SP, CHM_FR, CHM_CM);
++R_MATRIX_INLINE CHM_SP R_MATRIX_CHOLMOD(vertcat)(
++	CHM_SP, CHM_SP, int, CHM_CM);
++
++#ifdef __cplusplus
++}
++#endif
++
++/* >>>> Matrix >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
++
++#endif /* !defined(R_MATRIX_CHOLMOD_H) */
++

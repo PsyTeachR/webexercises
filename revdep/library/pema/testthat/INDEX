@@ -1,0 +1,75 @@
+CheckReporter           Report results for R CMD check
+DebugReporter           Interactively debug failing tests
+FailReporter            Fail if any tests fail
+JunitReporter           Report results in jUnit XML format
+ListReporter            Capture test results and metadata
+LlmReporter             Report test progress for LLMs
+LocationReporter        Test reporter: location
+MinimalReporter         Report minimal results as compactly as possible
+MultiReporter           Run multiple reporters at the same time
+ProgressReporter        Report progress interactively
+RStudioReporter         Report results to RStudio
+SilentReporter          Silently collect and all expectations
+SlowReporter            Find slow tests
+StopReporter            Error if any test fails
+SummaryReporter         Report a summary of failures
+TapReporter             Report results in TAP format
+TeamcityReporter        Report results in Teamcity format
+comparison-expectations
+                        Do you expect a value bigger or smaller than
+                        this?
+equality-expectations   Do you expect this value?
+expect_all_equal        Do you expect every value in a vector to have
+                        this value?
+expect_error            Do you expect an error, warning, message, or
+                        other condition?
+expect_invisible        Do you expect the result to be (in)visible?
+expect_length           Do you expect an object with this length or
+                        shape?
+expect_match            Do you expect a string to match this pattern?
+expect_named            Do you expect a vector with (these) names?
+expect_no_error         Do you expect the absence of errors, warnings,
+                        messages, or other conditions?
+expect_null             Do you expect 'NULL'?
+expect_output           Do you expect printed output to match this
+                        pattern?
+expect_setequal         Do you expect a vector containing these values?
+expect_silent           Do you expect code to execute silently?
+expect_snapshot         Do you expect this code to run the same way as
+                        last time?
+expect_snapshot_file    Do you expect this code to create the same file
+                        as last time?
+expect_snapshot_value   Do you expect this code to return the same
+                        value as last time?
+expect_success          Test your custom expectations
+expect_vector           Do you expect a vector with this size and/or
+                        prototype?
+extract_test            Extract a reprex from a failed expectation
+fail                    Declare that an expectation either passes or
+                        fails
+inheritance-expectations
+                        Do you expect an S3/S4/R6/S7 object that
+                        inherits from this class?
+is_testing              Determine testing status
+local_edition           Temporarily change the active testthat edition
+local_mocked_bindings   Temporarily redefine function definitions
+local_mocked_r6_class   Mock an R6 class
+local_mocked_s3_method
+                        Mock S3 and S4 methods
+local_test_context      Temporarily set options for maximum
+                        reproducibility
+logical-expectations    Do you expect 'TRUE' or 'FALSE'?
+mock_output_sequence    Mock a sequence of output from a function
+set_state_inspector     Check for global state changes
+skip                    Skip a test for various reasons
+snapshot_accept         Accept or reject modified snapshots
+snapshot_download_gh    Download snapshots from GitHub
+teardown_env            Run code after all test files
+test_dir                Run all tests in a directory
+test_file               Run tests in a single file
+test_package            Run all tests in a package
+test_path               Locate a file in the testing directory
+test_that               Run a test
+try_again               Evaluate an expectation multiple times until it
+                        succeeds
+use_catch               Use Catch for C++ unit testing

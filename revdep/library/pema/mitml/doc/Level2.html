@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Imputation of Missing Data at Level 2</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+max-width: 720px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 16px;
+font-weight: 500;
+line-height: 1.65;
+text-align: justify;
+text-justify: inter-word;
+margin: 2em auto;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 16px;
+line-height: 1.5;
+text-align: left;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 18px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+p {
+margin: 0.6em 0;
+}
+blockquote {
+border-left:3px dotted #e5e5e5;
+background-color: #fff;
+padding: 0 1em;
+margin: 0.9em 0;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul, ol {
+text-align: left;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+line-height: 1.2;
+border-radius: 3px;
+color: #333;
+padding: 0px;
+white-space: pre; 
+overflow-x: auto;
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+code {
+font-family: Consolas, monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+text-align: left;
+line-height: 1.2;
+}
+h1 {
+font-size: 2em;
+font-weight: 600;
+}
+h2 {
+color: #191919;
+font-size: 1.5em;
+font-weight: 600;
+}
+h3, h4, h5 {
+color: #292929;
+font-weight: 600;
+}
+
+h6 {
+color:#191919;
+font-size: 1.5em;
+font-weight: 600;
+margin-top: 0.83em;
+margin-bottom: 0.83em;
+}
+h6 ~ p {
+text-align: left;
+}
+a {
+color: #777;
+text-decoration: none;
+}
+a:hover {
+color: #aaa;
+text-decoration: underline;
+}
+
+
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table {
+margin-top: 25px;
+margin-bottom: 25px;
+margin-left: auto;
+margin-right: auto;
+border-collapse: collapse;
+border-spacing: 0;
+}
+th {
+padding:5px 10px;
+border: 1px solid #b2b2b2;
+}
+td {
+padding:5px 10px;
+border: 1px solid #e5e5e5;
+}
+dt {
+color:#444;
+font-weight:500;
+}
+th {
+color:#444;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+
+img {
+display: block;
+margin-left: auto;
+margin-right: auto;
+max-width:100%;
+}
+div.figure {
+text-align: center;
+}
+
+.gif_play, #gif:hover .gif_stop{
+display:none
+}
+.gif_stop, #gif:hover .gif_play{
+display:block
+}
+
+pre code { color: #707070; } 
+pre code.r { color: #333333; } 
+code span.kw { color: #558200; font-weight: normal; } 
+code span.co { color: #707070; font-style: normal; } 
+code span.dt { color: #333333; } 
+code span.fu { color: #558200; }  code span.dv { color: #007878; } 
+code span.bn { color: #007878; } 
+code span.fl { color: #007878; } 
+code span.ch { color: #985b00; } 
+code span.st { color: #985b00; } 
+code span.ot { color: #007878; } 
+code span.al { color: #a61717; font-weight: bold; } 
+code span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Imputation of Missing Data at Level 2</h1>
+
+
+
+<hr />
+<p>This vignette illustrates the use of <code>mitml</code> for the
+treatment of missing data at Level 2. Specifically, the vignette
+addresses the following topics:</p>
+<ol style="list-style-type: decimal">
+<li>Specification of the two-level imputation model for missing data at
+both Level 1 and 2</li>
+<li>Running the imputation procedure</li>
+</ol>
+<p>Further information can be found in the other <a href="https://github.com/simongrund1/mitml/wiki">vignettes</a> and the
+package <a href="https://cran.r-project.org/package=mitml/mitml.pdf">documentation</a>.</p>
+<div id="example-data" class="section level2">
+<h2>Example data</h2>
+<p>For purposes of this vignette, we make use of the
+<code>leadership</code> data set, which contains simulated data from 750
+employees in 50 groups including ratings on job satisfaction, leadership
+style, and work load (Level 1) as well as cohesion (Level 2).</p>
+<p>The package and the data set can be loaded as follows.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mitml)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(leadership)</span></code></pre></div>
+<p>In the <code>summary</code> of the data, it becomes visible that all
+variables are affected by missing data.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(leadership)</span></code></pre></div>
+<pre><code>#      GRPID          JOBSAT             COHES            NEGLEAD          WLOAD    
+#  Min.   : 1.0   Min.   :-7.32934   Min.   :-3.4072   Min.   :-3.13213   low :416  
+#  1st Qu.:13.0   1st Qu.:-1.61932   1st Qu.:-0.4004   1st Qu.:-0.70299   high:248  
+#  Median :25.5   Median :-0.02637   Median : 0.2117   Median : 0.08027   NA&#39;s: 86  
+#  Mean   :25.5   Mean   :-0.03168   Mean   : 0.1722   Mean   : 0.04024             
+#  3rd Qu.:38.0   3rd Qu.: 1.64571   3rd Qu.: 1.1497   3rd Qu.: 0.79111             
+#  Max.   :50.0   Max.   :10.19227   Max.   : 2.5794   Max.   : 3.16116             
+#                 NA&#39;s   :69         NA&#39;s   :30        NA&#39;s   :92</code></pre>
+<p>The following data segment illustrates this fact, including cases
+with missing data at Level 1 (e.g., job satisfaction) and 2 (e.g.,
+cohesion).</p>
+<pre><code>#    GRPID      JOBSAT     COHES     NEGLEAD WLOAD
+# 73     5 -1.72143400 0.9023198  0.83025589  high
+# 74     5          NA 0.9023198  0.15335056  high
+# 75     5 -0.09541178 0.9023198  0.21886272   low
+# 76     6  0.68626611        NA -0.38190591  high
+# 77     6          NA        NA          NA   low
+# 78     6 -1.86298201        NA -0.05351001  high</code></pre>
+<p>In the following, we will employ a two-level model to address missing
+data at both levels simultaneously.</p>
+</div>
+<div id="specifying-the-imputation-model" class="section level2">
+<h2>Specifying the imputation model</h2>
+<p>The specification of the two-level model, involves two components,
+one pertaining to the variables at each level of the sample (Goldstein,
+Carpenter, Kenward, &amp; Levin, 2009; for further discussion, see also
+Enders, Mister, &amp; Keller, 2016; Grund, Lüdtke, &amp; Robitzsch, in
+press).</p>
+<p>Specifically, the imputation model is specified as a list with two
+components, where the first component denotes the model for the
+variables at Level 1, and the second component denotes the model for the
+variables at Level 2.</p>
+<p>For example, using the <code>formula</code> interface, an imputation
+model targeting all variables in the data set can be written as
+follows.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fml <span class="ot">&lt;-</span> <span class="fu">list</span>( JOBSAT <span class="sc">+</span> NEGLEAD <span class="sc">+</span> WLOAD <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>GRPID) , <span class="co"># Level 1</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>             COHES <span class="sc">~</span> <span class="dv">1</span> )                                <span class="co"># Level 2</span></span></code></pre></div>
+<p>The first component of this list includes the three target variables
+at Level 1 and a fixed (<code>1</code>) as well as a random intercept
+(<code>1|GRPID</code>). The second component includes the target
+variable at Level 2 with a fixed intercept (<code>1</code>).</p>
+<p>From a statistical point of view, this specification corresponds to
+the following model <span class="math display">\[
+\begin{aligned}
+\mathbf{y}_{1ij} &amp;= \boldsymbol\mu_{1} + \mathbf{u}_{1j} +
+\mathbf{e}_{ij} \\
+\mathbf{y}_{2j} &amp;= \boldsymbol\mu_{2} + \mathbf{u}_{1j} \; ,
+\end{aligned}
+\]</span> where <span class="math inline">\(\mathbf{y}_{1ij}\)</span>
+denotes the target variables at Level 1, <span class="math inline">\(\mathbf{y}_{2j}\)</span> the target variables at
+Level 2, and the right-hand side of the model contains the fixed
+effects, random effects, and residual terms as mentioned above.</p>
+<p>Note that, even though the two components of the model appear to be
+separated, they define a single (joint) model for all target variables
+at both Level 1 and 2. Specifically, this model employs a two-level
+covariance structure, which allows for relations between variables at
+both Level 1 (i.e., correlated residuals at Level 1) and 2 (i.e.,
+correlated random effects residuals at Level 2).</p>
+</div>
+<div id="generating-imputations" class="section level2">
+<h2>Generating imputations</h2>
+<p>Because the data contain missing values at both levels, imputations
+will be generated with <code>jomoImpute</code> (and not
+<code>panImpute</code>). Except for the specification of the two-level
+model, the syntax is the same as in applications with missing data only
+at Level 1.</p>
+<p>Here, we will run 5,000 burn-in iterations and generate 20
+imputations, each 250 iterations apart.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>imp <span class="ot">&lt;-</span> <span class="fu">jomoImpute</span>(leadership, <span class="at">formula =</span> fml, <span class="at">n.burn =</span> <span class="dv">5000</span>, <span class="at">n.iter =</span> <span class="dv">250</span>, <span class="at">m =</span> <span class="dv">20</span>)</span></code></pre></div>
+<p>By looking at the <code>summary</code>, we can then review the
+imputation procedure and verify that the imputation model converged.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(imp)</span></code></pre></div>
+<pre><code># 
+# Call:
+# 
+# jomoImpute(data = leadership, formula = fml, n.burn = 5000, n.iter = 250, 
+#     m = 20)
+# 
+# Level 1:
+#  
+# Cluster variable:         GRPID 
+# Target variables:         JOBSAT NEGLEAD WLOAD 
+# Fixed effect predictors:  (Intercept) 
+# Random effect predictors: (Intercept) 
+# 
+# Level 2:
+#                 
+# Target variables:         COHES 
+# Fixed effect predictors:  (Intercept) 
+# 
+# Performed 5000 burn-in iterations, and generated 20 imputed data sets,
+# each 250 iterations apart. 
+# 
+# Potential scale reduction (Rhat, imputation phase):
+#  
+#          Min   25%  Mean Median   75%   Max
+# Beta:  1.001 1.002 1.004  1.004 1.006 1.009
+# Beta2: 1.001 1.001 1.001  1.001 1.001 1.001
+# Psi:   1.000 1.001 1.002  1.001 1.002 1.006
+# Sigma: 1.000 1.002 1.004  1.004 1.006 1.007
+# 
+# Largest potential scale reduction:
+# Beta: [1,3], Beta2: [1,1], Psi: [1,1], Sigma: [2,1]
+# 
+# Missing data per variable:
+#     GRPID JOBSAT NEGLEAD WLOAD COHES
+# MD% 0     9.2    12.3    11.5  4.0</code></pre>
+<p>Due to the greater complexity of the two-level model, the output
+includes more information than in applications with missing data only at
+Level 1. For example, the output features the model specification for
+variables at both Level 1 and 2. Furthermore, it provides convergence
+statistics for the additional regression coefficients for the target
+variables at Level 2 (i.e., <code>Beta2</code>).</p>
+<p>Finally, it also becomes visible that the two-level model indeed
+allows for relations between target variables at Level 1 and 2. This can
+be seen from the fact that the potential scale reduction factor (<span class="math inline">\(\hat{R}\)</span>) for the covariance matrix at
+Level 2 (<code>Psi</code>) was largest for <code>Psi[4,3]</code>, which
+is the covariance between cohesion and the random intercept of work
+load.</p>
+</div>
+<div id="completing-the-data" class="section level2">
+<h2>Completing the data</h2>
+<p>The completed data sets can then be extracted with
+<code>mitmlComplete</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>implist <span class="ot">&lt;-</span> <span class="fu">mitmlComplete</span>(imp, <span class="st">&quot;all&quot;</span>)</span></code></pre></div>
+<p>When inspecting the completed data, it is easy to verify that the
+imputations for variables at Level 2 are constant within groups as
+intended, thus preserving the two-level structure of the data.</p>
+<pre><code>#    GRPID      JOBSAT     NEGLEAD WLOAD     COHES
+# 73     5 -1.72143400  0.83025589  high 0.9023198
+# 74     5  0.68223338  0.15335056  high 0.9023198
+# 75     5 -0.09541178  0.21886272   low 0.9023198
+# 76     6  0.68626611 -0.38190591  high 2.1086213
+# 77     6 -2.97953478 -1.05236552   low 2.1086213
+# 78     6 -1.86298201 -0.05351001  high 2.1086213</code></pre>
+<div id="references" class="section level6">
+<h6>References</h6>
+<p>Enders, C. K., Mistler, S. A., &amp; Keller, B. T. (2016). Multilevel
+multiple imputation: A review and evaluation of joint modeling and
+chained equations imputation. <em>Psychological Methods</em>,
+<em>21</em>, 222–240. doi: 10.1037/met0000063 (<a href="https://doi.org/10.1037/met0000063">Link</a>)</p>
+<p>Goldstein, H., Carpenter, J. R., Kenward, M. G., &amp; Levin, K. A.
+(2009). Multilevel models with multivariate mixed response types.
+<em>Statistical Modelling</em>, <em>9</em>, 173–197. doi:
+10.1177/1471082X0800900301 (<a href="https://doi.org/10.1177/1471082X0800900301">Link</a>)</p>
+<p>Grund, S., Lüdtke, O., &amp; Robitzsch, A. (2018). Multiple
+imputation of missing data for multilevel models: Simulations and
+recommendations. <em>Organizational Research Methods</em>,
+<em>21</em>(1), 111–149. doi: 10.1177/1094428117703686 (<a href="https://doi.org/10.1177/1094428117703686">Link</a>)</p>
+<hr />
+<pre><code># Author: Simon Grund (simon.grund@uni-hamburg.de)
+# Date:   2023-03-08</code></pre>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

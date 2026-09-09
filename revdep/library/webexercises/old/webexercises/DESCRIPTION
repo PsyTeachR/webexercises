@@ -1,0 +1,30 @@
+Package: webexercises
+Version: 1.1.0
+Date: 2023-04-18
+Title: Create Interactive Web Exercises in 'R Markdown' (Formerly
+        'webex')
+Description: Functions for easily creating interactive web pages using
+    'R Markdown' that students can use in self-guided learning.
+Authors@R: c(
+    person("Dale","Barr",
+           email = "dalejbarr@protonmail.com",
+	         role = c("aut")),
+    person("Lisa", "DeBruine",
+           email = "debruine@gmail.com",
+           role = c("aut", "cre")))
+URL: https://github.com/psyteachr/webexercises
+Depends: R (>= 3.1.2)
+Imports: jsonlite, knitr, yaml, utils, grDevices, rstudioapi, rmarkdown
+        (>= 2.2)
+License: CC BY-SA 4.0
+RoxygenNote: 7.2.1
+Suggests: testthat, bookdown, quarto, xfun
+Encoding: UTF-8
+NeedsCompilation: no
+Packaged: 2023-05-15 10:46:57 UTC; lisad
+Author: Dale Barr [aut],
+  Lisa DeBruine [aut, cre]
+Maintainer: Lisa DeBruine <debruine@gmail.com>
+Repository: CRAN
+Date/Publication: 2023-05-15 13:10:03 UTC
+Built: R 4.6.1; ; 2026-09-02 03:30:03 UTC; windows

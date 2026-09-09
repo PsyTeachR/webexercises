@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Mans Magnusson, Paul Bürkner, Aki Vehtari and Jonah Gabry" />
+
+<meta name="date" content="2026-07-23" />
+
+<title>Using Leave-one-out cross-validation for large data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Using Leave-one-out cross-validation for
+large data</h1>
+<h4 class="author">Mans Magnusson, Paul Bürkner, Aki Vehtari and Jonah
+Gabry</h4>
+<h4 class="date">2026-07-23</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#setup" id="toc-setup">Setup</a></li>
+<li><a href="#example-well-water-in-bangladesh" id="toc-example-well-water-in-bangladesh">Example: Well water in
+Bangladesh</a>
+<ul>
+<li><a href="#coding-the-stan-model" id="toc-coding-the-stan-model">Coding the Stan model</a></li>
+<li><a href="#fitting-the-model-with-rstan" id="toc-fitting-the-model-with-rstan">Fitting the model with
+RStan</a></li>
+</ul></li>
+<li><a href="#approximate-loo-cv-using-psis-loo-and-subsampling" id="toc-approximate-loo-cv-using-psis-loo-and-subsampling">Approximate
+LOO-CV using PSIS-LOO and subsampling</a>
+<ul>
+<li><a href="#adding-additional-subsamples" id="toc-adding-additional-subsamples">Adding additional
+subsamples</a></li>
+<li><a href="#specifying-estimator-and-sampling-method" id="toc-specifying-estimator-and-sampling-method">Specifying estimator
+and sampling method</a></li>
+</ul></li>
+<li><a href="#approximate-loo-cv-using-psis-loo-with-posterior-approximations" id="toc-approximate-loo-cv-using-psis-loo-with-posterior-approximations">Approximate
+LOO-CV using PSIS-LOO with posterior approximations</a>
+<ul>
+<li><a href="#combining-the-posterior-approximation-method-with-subsampling" id="toc-combining-the-posterior-approximation-method-with-subsampling">Combining
+the posterior approximation method with subsampling</a></li>
+<li><a href="#comparing-models" id="toc-comparing-models">Comparing
+models</a></li>
+</ul></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul>
+</div>
+
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Using Leave-one-out cross-validation for large data}
+-->
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This vignette demonstrates how to do leave-one-out cross-validation
+for large data using the <strong>loo</strong> package and Stan. There
+are two approaches covered: LOO with subsampling and LOO using
+approximations to posterior distributions. Some sections from this
+vignette are excerpted from the papers</p>
+<ul>
+<li><p>Magnusson, M., Riis Andersen, M., Jonasson, J. and Vehtari, A.
+(2020). Leave-One-Out Cross-Validation for Model Comparison in Large
+Data. Proceedings of the 23rd International Conference on Artificial
+Intelligence and Statistics (AISTATS), in PMLR 108. <a href="https://arxiv.org/abs/2001.00980">arXiv preprint
+arXiv:2001.00980</a>.</p></li>
+<li><p>Magnusson, M., Andersen, M., Jonasson, J. &amp; Vehtari, A.
+(2019). Bayesian leave-one-out cross-validation for large data.
+Proceedings of the 36th International Conference on Machine Learning, in
+PMLR 97:4244-4253 <a href="http://proceedings.mlr.press/v97/magnusson19a.html">online</a>, <a href="https://arxiv.org/abs/1904.10679">arXiv preprint
+arXiv:1904.10679</a>.</p></li>
+<li><p>Vehtari, A., Gelman, A., and Gabry, J. (2017). Practical Bayesian
+model evaluation using leave-one-out cross-validation and WAIC.
+<em>Statistics and Computing</em>. 27(5), 1413–1432.
+:10.1007/s11222-016-9696-4. Links: <a href="https://link.springer.com/article/10.1007/s11222-016-9696-4">published</a>
+| <a href="https://arxiv.org/abs/1507.04544">arXiv
+preprint</a>.</p></li>
+<li><p>Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J.
+(2024). Pareto smoothed importance sampling. <em>Journal of Machine
+Learning Research</em>, 25(72):1-58. <a href="https://jmlr.org/papers/v25/19-556.html">PDF</a></p></li>
+</ul>
+<p>which provide important background for understanding the methods
+implemented in the package.</p>
+</div>
+<div id="setup" class="section level1">
+<h1>Setup</h1>
+<p>In addition to the <strong>loo</strong> package, we’ll also be using
+<strong>rstan</strong>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;rstan&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;loo&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4711</span>)</span></code></pre></div>
+</div>
+<div id="example-well-water-in-bangladesh" class="section level1">
+<h1>Example: Well water in Bangladesh</h1>
+<p>We will use the same example as in the vignette <a href="http://mc-stan.org/loo/articles/loo2-with-rstan.html"><em>Writing
+Stan programs for use with the loo package</em></a>. See that vignette
+for a description of the problem and data.</p>
+<p>The sample size in this example is only <span class="math inline">\(N=3020\)</span>, which is not large enough to
+<em>require</em> the special methods for large data described in this
+vignette, but is sufficient for demonstration purposes in this
+tutorial.</p>
+<div id="coding-the-stan-model" class="section level2">
+<h2>Coding the Stan model</h2>
+<p>Here is the Stan code for fitting the logistic regression model,
+which we save in a file called <code>logistic.stan</code>:</p>
+<pre><code>// Note: some syntax used in this program requires RStan &gt;= 2.26 (or CmdStanR)
+// To use an older version of RStan change the line declaring `y` to:
+//    int&lt;lower=0,upper=1&gt; y[N];
+data {
+  int&lt;lower=0&gt; N;             // number of data points
+  int&lt;lower=0&gt; P;             // number of predictors (including intercept)
+  matrix[N,P] X;              // predictors (including 1s for intercept)
+  array[N] int&lt;lower=0,upper=1&gt; y;  // binary outcome
+}
+parameters {
+  vector[P] beta;
+}
+model {
+  beta ~ normal(0, 1);
+  y ~ bernoulli_logit(X * beta);
+}</code></pre>
+<p>Importantly, unlike the general approach recommended in <a href="http://mc-stan.org/loo/articles/loo2-with-rstan.html"><em>Writing
+Stan programs for use with the loo package</em></a>, we do <em>not</em>
+compute the log-likelihood for each observation in the
+<code>generated quantities</code> block of the Stan program. Here we are
+assuming we have a large data set (larger than the one we’re actually
+using in this demonstration) and so it is preferable to instead define a
+function in R to compute the log-likelihood for each data point when
+needed rather than storing all of the log-likelihood values in
+memory.</p>
+<p>The log-likelihood in R can be coded as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># we&#39;ll add an argument log to toggle whether this is a log-likelihood or </span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># likelihood function. this will be useful later in the vignette.</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>llfun_logistic <span class="ot">&lt;-</span> <span class="cf">function</span>(data_i, draws, <span class="at">log =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  x_i <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(data_i[, <span class="fu">which</span>(<span class="fu">grepl</span>(<span class="fu">colnames</span>(data_i), <span class="at">pattern =</span> <span class="st">&quot;X&quot;</span>)), <span class="at">drop=</span><span class="cn">FALSE</span>])</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  logit_pred <span class="ot">&lt;-</span> draws <span class="sc">%*%</span> <span class="fu">t</span>(x_i)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="fu">dbinom</span>(<span class="at">x =</span> data_i<span class="sc">$</span>y, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>logit_pred)), <span class="at">log =</span> log)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>}</span></code></pre></div>
+<p>The function <code>llfun_logistic()</code> needs to have arguments
+<code>data_i</code> and <code>draws</code>. Below we will test that the
+function is working by using the <code>loo_i()</code> function.</p>
+</div>
+<div id="fitting-the-model-with-rstan" class="section level2">
+<h2>Fitting the model with RStan</h2>
+<p>Next we fit the model in Stan using the <strong>rstan</strong>
+package:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Prepare data</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;http://stat.columbia.edu/~gelman/arm/examples/arsenic/wells.dat&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>wells <span class="ot">&lt;-</span> <span class="fu">read.table</span>(url)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>wells<span class="sc">$</span>dist100 <span class="ot">&lt;-</span> <span class="fu">with</span>(wells, dist <span class="sc">/</span> <span class="dv">100</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> dist100 <span class="sc">+</span> arsenic, wells)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>standata <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> wells<span class="sc">$</span><span class="cf">switch</span>, <span class="at">X =</span> X, <span class="at">N =</span> <span class="fu">nrow</span>(X), <span class="at">P =</span> <span class="fu">ncol</span>(X))</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># Compile</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>stan_mod <span class="ot">&lt;-</span> <span class="fu">stan_model</span>(<span class="st">&quot;logistic.stan&quot;</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># Fit model</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>fit_1 <span class="ot">&lt;-</span> <span class="fu">sampling</span>(stan_mod, <span class="at">data =</span> standata, <span class="at">seed =</span> <span class="dv">4711</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="fu">print</span>(fit_1, <span class="at">pars =</span> <span class="st">&quot;beta&quot;</span>)</span></code></pre></div>
+<pre><code>         mean se_mean   sd  2.5%   25%   50%   75% 97.5% n_eff Rhat
+beta[1]  0.00       0 0.08 -0.15 -0.05  0.00  0.06  0.16  1933    1
+beta[2] -0.89       0 0.10 -1.09 -0.96 -0.89 -0.82 -0.69  2332    1
+beta[3]  0.46       0 0.04  0.38  0.43  0.46  0.49  0.54  2051    1</code></pre>
+<p>Before we move on to computing LOO we can now test that the
+log-likelihood function we wrote is working as it should. The
+<code>loo_i()</code> function is a helper function that can be used to
+test a log-likelihood function on a single observation.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># used for draws argument to loo_i</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>parameter_draws_1 <span class="ot">&lt;-</span> <span class="fu">extract</span>(fit_1)<span class="sc">$</span>beta</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># used for data argument to loo_i</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>stan_df_1 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(standata)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co"># compute relative efficiency (this is slow and optional but is recommended to allow </span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co"># for adjusting PSIS effective sample size based on MCMC effective sample size)</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>r_eff <span class="ot">&lt;-</span> <span class="fu">relative_eff</span>(llfun_logistic, </span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>                      <span class="at">log =</span> <span class="cn">FALSE</span>, <span class="co"># relative_eff wants likelihood not log-likelihood values</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>                      <span class="at">chain_id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">each =</span> <span class="dv">1000</span>), </span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>                      <span class="at">data =</span> stan_df_1, </span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>                      <span class="at">draws =</span> parameter_draws_1, </span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>                      <span class="at">cores =</span> <span class="dv">2</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="fu">loo_i</span>(<span class="at">i =</span> <span class="dv">1</span>, llfun_logistic, <span class="at">r_eff =</span> r_eff, <span class="at">data =</span> stan_df_1, <span class="at">draws =</span> parameter_draws_1)</span></code></pre></div>
+<pre><code>$pointwise
+    elpd_loo mcse_elpd_loo        p_loo     looic influence_pareto_k
+1 -0.3314552  0.0002887608 0.0003361772 0.6629103        -0.05679886
+...</code></pre>
+</div>
+</div>
+<div id="approximate-loo-cv-using-psis-loo-and-subsampling" class="section level1">
+<h1>Approximate LOO-CV using PSIS-LOO and subsampling</h1>
+<p>We can then use the <code>loo_subsample()</code> function to compute
+the efficient PSIS-LOO approximation to exact LOO-CV using
+subsampling:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4711</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>loo_ss_1 <span class="ot">&lt;-</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">loo_subsample</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    llfun_logistic,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="at">observations =</span> <span class="dv">100</span>, <span class="co"># take a subsample of size 100</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    <span class="at">cores =</span> <span class="dv">2</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="co"># these next objects were computed above</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    <span class="at">r_eff =</span> r_eff, </span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>    <span class="at">draws =</span> parameter_draws_1,</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>    <span class="at">data =</span> stan_df_1</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  )</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="fu">print</span>(loo_ss_1)</span></code></pre></div>
+<pre><code>Computed from 4000 by 100 subsampled log-likelihood
+values from 3020 total observations.
+
+         Estimate   SE subsampling SE
+elpd_loo  -1968.5 15.6            0.3
+p_loo         3.1  0.1            0.4
+looic      3936.9 31.2            0.6
+------
+Monte Carlo SE of elpd_loo is 0.0.
+MCSE and ESS estimates assume MCMC draws (r_eff in [0.9, 1.0]).
+
+All Pareto k estimates are good (k &lt; 0.7).
+See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+<p>The <code>loo_subsample()</code> function creates an object of class
+<code>psis_loo_ss</code>, that inherits from <code>psis_loo, loo</code>
+(the classes of regular <code>loo</code> objects).</p>
+<p>The printed output above shows the estimates <span class="math inline">\(\widehat{\mbox{elpd}}_{\rm loo}\)</span> (expected
+log predictive density), <span class="math inline">\(\widehat{p}_{\rm
+loo}\)</span> (effective number of parameters), and <span class="math inline">\({\rm looic} =-2\,
+\widehat{\mbox{elpd}}_{\rm loo}\)</span> (the LOO information
+criterion). Unlike when using <code>loo()</code>, when using
+<code>loo_subsample()</code> there is an additional column giving the
+“subsampling SE”, which reflects the additional uncertainty due to the
+subsampling used.</p>
+<p>The line at the bottom of the printed output provides information
+about the reliability of the LOO approximation (the interpretation of
+the <span class="math inline">\(k\)</span> parameter is explained in
+<code>help(&#39;pareto-k-diagnostic&#39;)</code> and in greater detail in
+Vehtari, Simpson, Gelman, Yao, and Gabry (2019)). In this case, the
+message tells us that all of the estimates for <span class="math inline">\(k\)</span> are fine <em>for this given
+subsample</em>.</p>
+<div id="adding-additional-subsamples" class="section level2">
+<h2>Adding additional subsamples</h2>
+<p>If we are not satisfied with the subsample size (i.e., the accuracy)
+we can simply add more samples until we are satisfied using the
+<code>update()</code> method.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4711</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>loo_ss_1b <span class="ot">&lt;-</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">update</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    loo_ss_1,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="at">observations =</span> <span class="dv">200</span>, <span class="co"># subsample 200 instead of 100</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="at">r_eff =</span> r_eff,</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="at">draws =</span> parameter_draws_1,</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="at">data =</span> stan_df_1</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  ) </span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="fu">print</span>(loo_ss_1b)</span></code></pre></div>
+<pre><code>Computed from 4000 by 200 subsampled log-likelihood
+values from 3020 total observations.
+
+         Estimate   SE subsampling SE
+elpd_loo  -1968.3 15.6            0.2
+p_loo         3.2  0.1            0.4
+looic      3936.7 31.2            0.5
+------
+Monte Carlo SE of elpd_loo is 0.0.
+MCSE and ESS estimates assume MCMC draws (r_eff in [0.9, 1.0]).
+
+All Pareto k estimates are good (k &lt; 0.7).
+See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+</div>
+<div id="specifying-estimator-and-sampling-method" class="section level2">
+<h2>Specifying estimator and sampling method</h2>
+<p>The performance relies on two components: the estimation method and
+the approximation used for the elpd. See the documentation for
+<code>loo_subsample()</code> more information on which estimators and
+approximations are implemented. The default implementation is using the
+point log predictive density evaluated at the mean of the posterior
+(<code>loo_approximation=&quot;plpd&quot;</code>) and the difference estimator
+(<code>estimator=&quot;diff_srs&quot;</code>). This combination has a focus on
+fast inference. But we can easily use other estimators as well as other
+elpd approximations, for example:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4711</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>loo_ss_1c <span class="ot">&lt;-</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">loo_subsample</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    <span class="at">x =</span> llfun_logistic,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>    <span class="at">r_eff =</span> r_eff,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    <span class="at">draws =</span> parameter_draws_1,</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="at">data =</span> stan_df_1,</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">observations =</span> <span class="dv">100</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>    <span class="at">estimator =</span> <span class="st">&quot;hh_pps&quot;</span>, <span class="co"># use Hansen-Hurwitz</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>    <span class="at">loo_approximation =</span> <span class="st">&quot;lpd&quot;</span>, <span class="co"># use lpd instead of plpd</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>    <span class="at">loo_approximation_draws =</span> <span class="dv">100</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>    <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>  )</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="fu">print</span>(loo_ss_1c)</span></code></pre></div>
+<pre><code>Computed from 4000 by 100 subsampled log-likelihood
+values from 3020 total observations.
+
+         Estimate   SE subsampling SE
+elpd_loo  -1968.9 15.4            0.5
+p_loo         3.5  0.2            0.5
+looic      3937.9 30.7            1.1
+------
+Monte Carlo SE of elpd_loo is 0.0.
+MCSE and ESS estimates assume MCMC draws (r_eff in [0.9, 1.0]).
+
+All Pareto k estimates are good (k &lt; 0.7).
+See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+<p>See the documentation and references for <code>loo_subsample()</code>
+for details on the implemented approximations.</p>
+</div>
+</div>
+<div id="approximate-loo-cv-using-psis-loo-with-posterior-approximations" class="section level1">
+<h1>Approximate LOO-CV using PSIS-LOO with posterior approximations</h1>
+<p>Using posterior approximations, such as variational inference and
+Laplace approximations, can further speed-up LOO-CV for large data. Here
+we demonstrate using a Laplace approximation in Stan.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>fit_laplace <span class="ot">&lt;-</span> <span class="fu">optimizing</span>(stan_mod, <span class="at">data =</span> standata, <span class="at">draws =</span> <span class="dv">2000</span>, </span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>                          <span class="at">importance_resampling =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>parameter_draws_laplace <span class="ot">&lt;-</span> fit_laplace<span class="sc">$</span>theta_tilde <span class="co"># draws from approximate posterior</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>log_p <span class="ot">&lt;-</span> fit_laplace<span class="sc">$</span>log_p <span class="co"># log density of the posterior</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>log_g <span class="ot">&lt;-</span> fit_laplace<span class="sc">$</span>log_g <span class="co"># log density of the approximation</span></span></code></pre></div>
+<p>Using the posterior approximation we can then do LOO-CV by correcting
+for the posterior approximation when we compute the elpd. To do this we
+use the <code>loo_approximate_posterior()</code> function.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4711</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>loo_ap_1 <span class="ot">&lt;-</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="fu">loo_approximate_posterior</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    <span class="at">x =</span> llfun_logistic,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    <span class="at">draws =</span> parameter_draws_laplace,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    <span class="at">data =</span> stan_df_1,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>    <span class="at">log_p =</span> log_p,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    <span class="at">log_g =</span> log_g,</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>    <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  )</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="fu">print</span>(loo_ap_1)</span></code></pre></div>
+<p>The function creates a class, <code>psis_loo_ap</code> that inherits
+from <code>psis_loo, loo</code>.</p>
+<pre><code>Computed from 2000 by 3020 log-likelihood matrix
+
+         Estimate   SE
+elpd_loo  -1968.4 15.6
+p_loo         3.2  0.2
+looic      3936.8 31.2
+------
+Posterior approximation correction used.
+Monte Carlo SE of elpd_loo is 0.0.
+MCSE and ESS estimates assume independent draws (r_eff=1).
+
+All Pareto k estimates are good (k &lt; 0.7).
+See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+<div id="combining-the-posterior-approximation-method-with-subsampling" class="section level2">
+<h2>Combining the posterior approximation method with subsampling</h2>
+<p>The posterior approximation correction can also be used together with
+subsampling:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4711</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>loo_ap_ss_1 <span class="ot">&lt;-</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="fu">loo_subsample</span>(</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>    <span class="at">x =</span> llfun_logistic,</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>    <span class="at">draws =</span> parameter_draws_laplace,</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>    <span class="at">data =</span> stan_df_1,</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>    <span class="at">log_p =</span> log_p,</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>    <span class="at">log_g =</span> log_g,</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>    <span class="at">observations =</span> <span class="dv">100</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>    <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>  )</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="fu">print</span>(loo_ap_ss_1)</span></code></pre></div>
+<pre><code>Computed from 2000 by 100 subsampled log-likelihood
+values from 3020 total observations.
+
+         Estimate   SE subsampling SE
+elpd_loo  -1968.2 15.6            0.4
+p_loo         2.9  0.1            0.5
+looic      3936.4 31.1            0.8
+------
+Posterior approximation correction used.
+Monte Carlo SE of elpd_loo is 0.0.
+MCSE and ESS estimates assume independent draws (r_eff=1).
+
+All Pareto k estimates are good (k &lt; 0.7).
+See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+<p>The object created is of class <code>psis_loo_ss</code>, which
+inherits from the <code>psis_loo_ap</code> class previously
+described.</p>
+</div>
+<div id="comparing-models" class="section level2">
+<h2>Comparing models</h2>
+<p>To compare this model to an alternative model for the same data we
+can use the <code>loo_compare()</code> function just as we would if
+using <code>loo()</code> instead of <code>loo_subsample()</code> or
+<code>loo_approximate_posterior()</code>. First we’ll fit a second model
+to the well-switching data, using <code>log(arsenic)</code> instead of
+<code>arsenic</code> as a predictor:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>standata<span class="sc">$</span>X[, <span class="st">&quot;arsenic&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">log</span>(standata<span class="sc">$</span>X[, <span class="st">&quot;arsenic&quot;</span>])</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>fit_2 <span class="ot">&lt;-</span> <span class="fu">sampling</span>(stan_mod, <span class="at">data =</span> standata) </span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>parameter_draws_2 <span class="ot">&lt;-</span> <span class="fu">extract</span>(fit_2)<span class="sc">$</span>beta</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>stan_df_2 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(standata)</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co"># recompute subsampling loo for first model for demonstration purposes</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co"># compute relative efficiency (this is slow and optional but is recommended to allow </span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co"># for adjusting PSIS effective sample size based on MCMC effective sample size)</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>r_eff_1 <span class="ot">&lt;-</span> <span class="fu">relative_eff</span>(</span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a>  llfun_logistic,</span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a>  <span class="at">log =</span> <span class="cn">FALSE</span>, <span class="co"># relative_eff wants likelihood not log-likelihood values</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a>  <span class="at">chain_id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">each =</span> <span class="dv">1000</span>),</span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a>  <span class="at">data =</span> stan_df_1,</span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a>  <span class="at">draws =</span> parameter_draws_1,</span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a>)</span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4711</span>)</span>
+<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a>loo_ss_1 <span class="ot">&lt;-</span> <span class="fu">loo_subsample</span>(</span>
+<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a>  <span class="at">x =</span> llfun_logistic,</span>
+<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a>  <span class="at">r_eff =</span> r_eff_1,</span>
+<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a>  <span class="at">draws =</span> parameter_draws_1,</span>
+<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a>  <span class="at">data =</span> stan_df_1,</span>
+<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a>  <span class="at">observations =</span> <span class="dv">200</span>,</span>
+<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a>)</span>
+<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a><span class="co"># compute subsampling loo for a second model (with log-arsenic)</span></span>
+<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a></span>
+<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a>r_eff_2 <span class="ot">&lt;-</span> <span class="fu">relative_eff</span>(</span>
+<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a>  llfun_logistic,</span>
+<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a>  <span class="at">log =</span> <span class="cn">FALSE</span>, <span class="co"># relative_eff wants likelihood not log-likelihood values</span></span>
+<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a>  <span class="at">chain_id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">each =</span> <span class="dv">1000</span>),</span>
+<span id="cb19-35"><a href="#cb19-35" tabindex="-1"></a>  <span class="at">data =</span> stan_df_2,</span>
+<span id="cb19-36"><a href="#cb19-36" tabindex="-1"></a>  <span class="at">draws =</span> parameter_draws_2,</span>
+<span id="cb19-37"><a href="#cb19-37" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb19-38"><a href="#cb19-38" tabindex="-1"></a>)</span>
+<span id="cb19-39"><a href="#cb19-39" tabindex="-1"></a>loo_ss_2 <span class="ot">&lt;-</span> <span class="fu">loo_subsample</span>(</span>
+<span id="cb19-40"><a href="#cb19-40" tabindex="-1"></a>  <span class="at">x =</span> llfun_logistic,</span>
+<span id="cb19-41"><a href="#cb19-41" tabindex="-1"></a>  <span class="at">r_eff =</span> r_eff_2, </span>
+<span id="cb19-42"><a href="#cb19-42" tabindex="-1"></a>  <span class="at">draws =</span> parameter_draws_2,</span>
+<span id="cb19-43"><a href="#cb19-43" tabindex="-1"></a>  <span class="at">data =</span> stan_df_2,</span>
+<span id="cb19-44"><a href="#cb19-44" tabindex="-1"></a>  <span class="at">observations =</span> <span class="dv">200</span>,</span>
+<span id="cb19-45"><a href="#cb19-45" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb19-46"><a href="#cb19-46" tabindex="-1"></a>)</span>
+<span id="cb19-47"><a href="#cb19-47" tabindex="-1"></a></span>
+<span id="cb19-48"><a href="#cb19-48" tabindex="-1"></a><span class="fu">print</span>(loo_ss_2)</span></code></pre></div>
+<pre><code>Computed from 4000 by 100 subsampled log-likelihood
+values from 3020 total observations.
+
+         Estimate   SE subsampling SE
+elpd_loo  -1952.0 16.2            0.2
+p_loo         2.6  0.1            0.3
+looic      3903.9 32.4            0.4
+------
+Monte Carlo SE of elpd_loo is 0.0.
+MCSE and ESS estimates assume MCMC draws (r_eff in [1.0, 1.1]).
+
+All Pareto k estimates are good (k &lt; 0.7).
+See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+<p>We can now compare the models on LOO using the
+<code>loo_compare</code> function:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># Compare</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>comp <span class="ot">&lt;-</span> <span class="fu">loo_compare</span>(loo_ss_1, loo_ss_2)</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">print</span>(comp)</span></code></pre></div>
+<pre><code>Warning: Different subsamples in &#39;model2&#39; and &#39;model1&#39;. Naive diff SE is used.
+
+       elpd_diff se_diff subsampling_se_diff
+model2  0.0       0.0     0.0               
+model1 16.5      22.5     0.4               </code></pre>
+<p>This new object <code>comp</code> contains the estimated difference
+of expected leave-one-out prediction errors between the two models,
+along with the standard error. As the warning indicates, because
+different subsamples were used the comparison will not take the
+correlations between different observations into account. Here we see
+that the naive SE is 22.5 and we cannot see any difference in
+performance between the models.</p>
+<p>To force subsampling to use the same observations for each of the
+models we can simply extract the observations used in
+<code>loo_ss_1</code> and use them in <code>loo_ss_2</code> by supplying
+the <code>loo_ss_1</code> object to the <code>observations</code>
+argument.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>loo_ss_2 <span class="ot">&lt;-</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>  <span class="fu">loo_subsample</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>    <span class="at">x =</span> llfun_logistic,</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>    <span class="at">r_eff =</span> r_eff_2,</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>    <span class="at">draws =</span> parameter_draws_2,</span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>    <span class="at">data =</span> stan_df_2,</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>    <span class="at">observations =</span> loo_ss_1,</span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>    <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>  )</span></code></pre></div>
+<p>We could also supply the subsampling indices using the
+<code>obs_idx()</code> helper function:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>idx <span class="ot">&lt;-</span> <span class="fu">obs_idx</span>(loo_ss_1)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>loo_ss_2 <span class="ot">&lt;-</span> <span class="fu">loo_subsample</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="at">x =</span> llfun_logistic,</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="at">r_eff =</span> r_eff_2, </span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="at">draws =</span> parameter_draws_2,</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="at">data =</span> stan_df_2,</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>  <span class="at">observations =</span> idx,</span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>Simple random sampling with replacement assumed.</code></pre>
+<p>This results in a message indicating that we assume these
+observations to have been sampled with simple random sampling, which is
+true because we had used the default <code>&quot;diff_srs&quot;</code> estimator
+for <code>loo_ss_1</code>.</p>
+<p>We can now compare the models and estimate the difference based on
+the same subsampled observations.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>comp <span class="ot">&lt;-</span> <span class="fu">loo_compare</span>(loo_ss_1, loo_ss_2)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">print</span>(comp) </span></code></pre></div>
+<pre><code>       elpd_diff se_diff subsampling_se_diff
+model2  0.0       0.0     0.0               
+model1 16.1       4.4     0.1               </code></pre>
+<p>First, notice that now the <code>se_diff</code> is now around 4 (as
+opposed to 20 when using different subsamples). The first column shows
+the difference in ELPD relative to the model with the largest ELPD. In
+this case, the difference in <code>elpd</code> and its scale relative to
+the approximate standard error of the difference) indicates a preference
+for the second model (<code>model2</code>). Since the subsampling
+uncertainty is so small in this case it can effectively be ignored. If
+we need larger subsamples we can simply add samples using the
+<code>update()</code> method demonstrated earlier.</p>
+<p>It is also possible to compare a subsampled loo computation with a
+full loo object.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># use loo() instead of loo_subsample() to compute full PSIS-LOO for model 2</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>loo_full_2 <span class="ot">&lt;-</span> <span class="fu">loo</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  <span class="at">x =</span> llfun_logistic,</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>  <span class="at">r_eff =</span> r_eff_2,</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>  <span class="at">draws =</span> parameter_draws_2,</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>  <span class="at">data =</span> stan_df_2,</span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">2</span></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>)</span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a><span class="fu">loo_compare</span>(loo_ss_1, loo_full_2)</span></code></pre></div>
+<pre><code>Estimated elpd_diff using observations included in loo calculations for all models.</code></pre>
+<p>Because we are comparing a non-subsampled loo calculation to a
+subsampled calculation we get the message that only the observations
+that are included in the loo calculations for both <code>model1</code>
+and <code>model2</code> are included in the computations for the
+comparison.</p>
+<pre><code>       elpd_diff se_diff subsampling_se_diff
+model2  0.0       0.0     0.0               
+model1 16.3       4.4     0.3   </code></pre>
+<p>Here we actually see an increase in <code>subsampling_se_diff</code>,
+but this is due to a technical detail not elaborated here. In general,
+the difference should be better or negligible.</p>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Gelman, A., and Hill, J. (2007). <em>Data Analysis Using Regression
+and Multilevel Hierarchical Models.</em> Cambridge University Press.</p>
+<p>Stan Development Team (2017). <em>The Stan C++ Library, Version
+2.17.0.</em> <a href="https://mc-stan.org/" class="uri">https://mc-stan.org/</a></p>
+<p>Stan Development Team (2018) <em>RStan: the R interface to Stan,
+Version 2.17.3.</em> <a href="https://mc-stan.org/" class="uri">https://mc-stan.org/</a></p>
+<p>Magnusson, M., Riis Andersen, M., Jonasson, J. and Vehtari, A.
+(2020). Leave-One-Out Cross-Validation for Model Comparison in Large
+Data. Proceedings of the 23rd International Conference on Artificial
+Intelligence and Statistics (AISTATS), in PMLR 108. <a href="https://arxiv.org/abs/2001.00980">arXiv preprint
+arXiv:2001.00980</a>.</p>
+<p>Magnusson, M., Andersen, M., Jonasson, J. &amp; Vehtari, A. (2019).
+Bayesian leave-one-out cross-validation for large data. Proceedings of
+the 36th International Conference on Machine Learning, in PMLR
+97:4244-4253 <a href="http://proceedings.mlr.press/v97/magnusson19a.html">online</a>, <a href="https://arxiv.org/abs/1904.10679">arXiv preprint
+arXiv:1904.10679</a>.</p>
+<p>Vehtari, A., Gelman, A., and Gabry, J. (2017). Practical Bayesian
+model evaluation using leave-one-out cross-validation and WAIC.
+<em>Statistics and Computing</em>. 27(5), 1413–1432.
+:10.1007/s11222-016-9696-4. <a href="https://link.springer.com/article/10.1007/s11222-016-9696-4">online</a>,
+<a href="https://arxiv.org/abs/1507.04544">arXiv preprint
+arXiv:1507.04544</a>.</p>
+<p>Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J. (2024).
+Pareto smoothed importance sampling. <em>Journal of Machine Learning
+Research</em>, 25(72):1-58. <a href="https://jmlr.org/papers/v25/19-556.html">PDF</a></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

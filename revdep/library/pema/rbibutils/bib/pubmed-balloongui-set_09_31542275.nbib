@@ -1,0 +1,126 @@
+PMID- 31542275
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200302
+LR  - 20200302
+IS  - 1535-7732 (Electronic)
+IS  - 1051-0443 (Linking)
+VI  - 30
+IP  - 11
+DP  - 2019 Nov
+TI  - Balloon Guide Catheter in Endovascular Treatment for Acute Ischemic Stroke: Results 
+      from the MR CLEAN Registry.
+PG  - 1759-1764.e6
+LID - S1051-0443(19)30544-5 [pii]
+LID - 10.1016/j.jvir.2019.05.032 [doi]
+AB  - PURPOSE: To compare outcomes after endovascular treatment (EVT) for acute ischemic 
+      stroke with and without the use of a balloon guide catheter (BGC) in clinical 
+      practice. MATERIALS AND METHODS: Data from the Multicenter Randomized Clinical Trial 
+      of Endovascular Treatment for Acute Ischemic Stroke in The Netherlands (MR CLEAN) 
+      Registry were used, in which all patients who underwent EVT for anterior-circulation 
+      stroke in The Netherlands between 2014 and 2016 were enrolled. Primary outcome was 
+      modified Rankin scale (mRS) score at 90 days. Secondary outcomes included 
+      reperfusion grade (extended Thrombolysis In Cerebral Infarction [eTICI] score) and 
+      National Institutes of Health Stroke Scale (NIHSS) score 24-48 hours after 
+      intervention. The association between the use of a BGC and outcomes was estimated 
+      with logistic regression adjusted for age, sex, prestroke mRS score, NIHSS score, 
+      collateral grade, and time from onset to EVT. RESULTS: A total of 887 patients were 
+      included. Thrombectomy was performed with the use of a BGC in 528 patients (60%) and 
+      without in 359 patients (40%). There was no significant association between use of a 
+      BGC and a shift on the mRS toward better outcome (adjusted common odds ratio, 1.17; 
+      95% confidence interval [CI], 0.91-1.52). Use of a BGC was associated with higher 
+      eTICI score (adjusted common OR, 1.33; 95% CI, 1.04-1.70) and improvement of ≥ 4 
+      points on the NIHSS (adjusted OR, 1.40; 95% CI, 1.04-1.88). CONCLUSIONS: In clinical 
+      practice, use of a BGC was associated with higher reperfusion grade and early 
+      improvement of neurologic deficits, but had no positive effect on long-term 
+      functional outcome.
+CI  - Copyright © 2019 SIR. All rights reserved.
+FAU - Goldhoorn, Robert-Jan B
+AU  - Goldhoorn RB
+AD  - Department of Neurology, Maastricht University Medical Center and Cardiovascular 
+      Research Institute Maastricht, Room 4.R1.032, P. Debyelaan 25, 6229 HX Maastricht, 
+      The Netherlands. Electronic address: robertjan.goldhoorn@mumc.nl.
+FAU - Duijsters, Nele
+AU  - Duijsters N
+AD  - Department of Neurology, Maastricht University Medical Center and Cardiovascular 
+      Research Institute Maastricht, Room 4.R1.032, P. Debyelaan 25, 6229 HX Maastricht, 
+      The Netherlands.
+FAU - Majoie, Charles B L M
+AU  - Majoie CBLM
+AD  - Department of Radiology and Nuclear Medicine, Amsterdam University Medical Center, 
+      Amsterdam, The Netherlands.
+FAU - Roos, Yvo B W E M
+AU  - Roos YBWEM
+AD  - Department of Neurology, Amsterdam University Medical Center, Amsterdam, The 
+      Netherlands.
+FAU - Dippel, Diederik W J
+AU  - Dippel DWJ
+AD  - Department of Neurology, Erasmus University Medical Center, University Medical 
+      Center, Rotterdam, The Netherlands.
+FAU - van Es, Adriaan C G M
+AU  - van Es ACGM
+AD  - Department of Radiology, Erasmus University Medical Center, University Medical 
+      Center, Rotterdam, The Netherlands.
+FAU - Vos, Jan Albert
+AU  - Vos JA
+AD  - Department of Radiology, Sint Antonius Hospital, Nieuwegein, The Netherlands.
+FAU - Boiten, Jelis
+AU  - Boiten J
+AD  - Department of Neurology, Haaglanden Medical Center, The Hague, The Netherlands.
+FAU - van Oostenbrugge, Robert J
+AU  - van Oostenbrugge RJ
+AD  - Department of Neurology, Maastricht University Medical Center and Cardiovascular 
+      Research Institute Maastricht, Room 4.R1.032, P. Debyelaan 25, 6229 HX Maastricht, 
+      The Netherlands.
+FAU - van Zwam, Wim H
+AU  - van Zwam WH
+AD  - Department of Radiology, Maastricht University Medical Center and Cardiovascular 
+      Research Institute Maastricht, Room 4.R1.032, P. Debyelaan 25, 6229 HX Maastricht, 
+      The Netherlands.
+CN  - MR CLEAN Registry Investigators
+LA  - eng
+PT  - Comparative Study
+PT  - Journal Article
+PT  - Multicenter Study
+PT  - Observational Study
+DEP - 20190918
+PL  - United States
+TA  - J Vasc Interv Radiol
+JT  - Journal of vascular and interventional radiology : JVIR
+JID - 9203369
+SB  - IM
+MH  - Aged
+MH  - Aged, 80 and over
+MH  - Brain Ischemia/diagnostic imaging/physiopathology/*therapy
+MH  - Cerebrovascular Circulation
+MH  - Disability Evaluation
+MH  - Endovascular Procedures/adverse effects/*instrumentation
+MH  - Female
+MH  - Humans
+MH  - Male
+MH  - Middle Aged
+MH  - Netherlands
+MH  - Randomized Controlled Trials as Topic
+MH  - Recovery of Function
+MH  - Registries
+MH  - Stents
+MH  - Stroke/diagnostic imaging/physiopathology/*therapy
+MH  - Thrombectomy/adverse effects/*instrumentation
+MH  - Time Factors
+MH  - Treatment Outcome
+MH  - *Vascular Access Devices
+EDAT- 2019/09/23 06:00
+MHDA- 2020/03/03 06:00
+CRDT- 2019/09/23 06:00
+PHST- 2019/02/27 00:00 [received]
+PHST- 2019/05/27 00:00 [revised]
+PHST- 2019/05/31 00:00 [accepted]
+PHST- 2019/09/23 06:00 [pubmed]
+PHST- 2020/03/03 06:00 [medline]
+PHST- 2019/09/23 06:00 [entrez]
+AID - S1051-0443(19)30544-5 [pii]
+AID - 10.1016/j.jvir.2019.05.032 [doi]
+PST - ppublish
+SO  - J Vasc Interv Radiol. 2019 Nov;30(11):1759-1764.e6. doi: 10.1016/j.jvir.2019.05.032. 
+      Epub 2019 Sep 18.
+

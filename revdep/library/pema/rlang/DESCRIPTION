@@ -1,0 +1,44 @@
+Package: rlang
+Version: 1.3.0
+Title: Functions for Base Types and Core R and 'Tidyverse' Features
+Authors@R: c(
+    person("Lionel", "Henry", , "lionel@posit.co", role = c("aut", "cre")),
+    person("Hadley", "Wickham", , "hadley@posit.co", role = "aut"),
+    person("mikefc", , , "mikefc@coolbutuseless.com", role = "cph",
+           comment = "Hash implementation based on Mike's xxhashlite"),
+    person("Yann", "Collet", role = "cph",
+           comment = "Author of the embedded xxHash library"),
+    person("Posit, PBC", role = c("cph", "fnd"))
+  )
+Description: A toolbox for working with base types, core R features like
+    the condition system, and core 'Tidyverse' features like tidy
+    evaluation.
+License: MIT + file LICENSE
+URL: https://rlang.r-lib.org, https://github.com/r-lib/rlang
+BugReports: https://github.com/r-lib/rlang/issues
+Depends: R (>= 4.0.0)
+Imports: utils
+Suggests: cli (>= 3.1.0), covr, crayon, desc, fs, glue, knitr,
+        magrittr, methods, pillar, pkgload, rmarkdown, stats, testthat
+        (>= 3.3.2), tibble, usethis, vctrs (>= 0.2.3), withr
+Enhances: winch
+Biarch: true
+ByteCompile: true
+Config/build/compilation-database: true
+Config/Needs/website: dplyr, tidyverse/tidytemplate
+Config/roxygen2/version: 8.0.0
+Config/testthat/edition: 3
+Config/testthat/parallel: true
+Encoding: UTF-8
+NeedsCompilation: yes
+Packaged: 2026-07-01 15:54:09 UTC; lionel
+Author: Lionel Henry [aut, cre],
+  Hadley Wickham [aut],
+  mikefc [cph] (Hash implementation based on Mike's xxhashlite),
+  Yann Collet [cph] (Author of the embedded xxHash library),
+  Posit, PBC [cph, fnd]
+Maintainer: Lionel Henry <lionel@posit.co>
+Repository: CRAN
+Date/Publication: 2026-07-05 08:40:02 UTC
+Built: R 4.6.1; x86_64-w64-mingw32; 2026-08-30 16:54:53 UTC; windows
+Archs: x64

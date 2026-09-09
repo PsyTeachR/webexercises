@@ -1,0 +1,30 @@
+Package: reformulas
+Title: Machinery for Processing Random Effect Formulas
+Version: 0.4.4
+Authors@R: 
+   c(
+    person(given = "Ben",
+	family = "Bolker",
+        role = c("aut", "cre"),
+        email = "bolker@mcmaster.ca",
+	comment=c(ORCID="0000-0002-2127-0443")),
+    person("Anna", "Ly", role = "ctb",
+       comment = c(ORCID = "0000-0002-0210-0342"))
+      )
+Description: Takes formulas including random-effects components (formatted as in 'lme4', 'glmmTMB', etc.) and processes them. Includes various helper functions.
+URL: https://github.com/bbolker/reformulas
+License: GPL-3
+Encoding: UTF-8
+Imports: stats, methods, Matrix, Rdpack
+RdMacros: Rdpack
+Suggests: lme4, tinytest, glmmTMB, Formula
+RoxygenNote: 7.3.3
+Config/testthat/edition: 3
+NeedsCompilation: no
+Packaged: 2026-02-02 00:36:37 UTC; bolker
+Author: Ben Bolker [aut, cre] (ORCID: <https://orcid.org/0000-0002-2127-0443>),
+  Anna Ly [ctb] (ORCID: <https://orcid.org/0000-0002-0210-0342>)
+Maintainer: Ben Bolker <bolker@mcmaster.ca>
+Repository: CRAN
+Date/Publication: 2026-02-02 06:30:25 UTC
+Built: R 4.6.1; ; 2026-09-02 02:52:41 UTC; windows

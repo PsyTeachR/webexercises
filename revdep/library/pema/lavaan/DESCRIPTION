@@ -1,0 +1,94 @@
+Package: lavaan
+Title: Latent Variable Analysis
+Version: 0.7-2
+Authors@R: c(person(given   = "Yves", family = "Rosseel",
+                    role    = c("aut", "cre"),
+                    email   = "Yves.Rosseel@UGent.be",
+                    comment = c(ORCID = "0000-0002-4129-4477")),
+             person(given = c("Terrence","D."), family = "Jorgensen",
+                    role = "aut",
+                    email = "TJorgensen314@gmail.com",
+                    comment = c(ORCID = "0000-0001-5111-6773")),
+             person(given = c("Luc"), family = "De Wilde",
+                    role = "aut",
+                    email = "Luc.DeWilde@UGent.be"),
+             person(given = "Daniel", family = "Oberski",
+                    role = "ctb",
+                    email = "daniel.oberski@gmail.com"),
+             person(given = "Jarrett", family = "Byrnes", 
+                    role = "ctb",
+                    email = "byrnes@nceas.ucsb.edu"),
+             person(given = "Leonard", family = "Vanbrabant",
+                    role = "ctb",
+                    email = "info@restriktor.org"),
+             person(given = "Victoria", family = "Savalei",
+                    role = "ctb",
+                    email = "vsavalei@ubc.ca"),
+             person(given = "Ed", family = "Merkle",
+                    role = "ctb",
+                    email = "merklee@missouri.edu"),
+             person(given = "Michael", family = "Hallquist",
+                    role = "ctb",
+                    email = "michael.hallquist@gmail.com"),
+             person(given = "Mijke", family = "Rhemtulla",
+                    role = "ctb",
+                    email = "mrhemtulla@ucdavis.edu"),
+             person(given = "Myrsini", family = "Katsikatsou",
+                    role = "ctb",
+                    email = "mirtok2@gmail.com"),
+             person(given = "Mariska", family = "Barendse",
+                    role = "ctb",
+                    email = "m.t.barendse@gmail.com"),
+             person(given = c("Nicholas"), family = "Rockwood",
+                    role = "ctb",
+                    email = "nrockwood@rti.org"),
+             person(given = "Florian", family = "Scharf",
+                    role = "ctb",
+                    email = "florian.scharf@uni-leipzig.de"),
+             person(given = "Han", family = "Du",
+                    role = "ctb",
+                    email = "hdu@psych.ucla.edu"),
+             person(given = "Haziq", family = "Jamil",
+                    role = "ctb",
+                    email = "haziq.jamil@ubd.edu.bn",
+                    comment = c(ORCID = "0000-0003-3298-1010")),
+             person(given = "Franz", family = "Classe",
+                    role  = "ctb",
+                    email = "classe@dji.de")
+            )
+Description: Fit a variety of latent variable models, including confirmatory
+   factor analysis, structural equation modeling and latent growth curve models.
+Depends: R(>= 3.4)
+Imports: methods, stats4, stats, utils, graphics, MASS, mnormt,
+        pbivnorm, numDeriv, quadprog
+BugReports: https://github.com/yrosseel/lavaan/issues
+License: GPL (>= 2)
+LazyData: yes
+LazyDataCompression: xz
+ByteCompile: true
+URL: https://lavaan.ugent.be
+NeedsCompilation: no
+Packaged: 2026-07-16 15:01:49 UTC; yves
+Author: Yves Rosseel [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-4129-4477>),
+  Terrence D. Jorgensen [aut] (ORCID:
+    <https://orcid.org/0000-0001-5111-6773>),
+  Luc De Wilde [aut],
+  Daniel Oberski [ctb],
+  Jarrett Byrnes [ctb],
+  Leonard Vanbrabant [ctb],
+  Victoria Savalei [ctb],
+  Ed Merkle [ctb],
+  Michael Hallquist [ctb],
+  Mijke Rhemtulla [ctb],
+  Myrsini Katsikatsou [ctb],
+  Mariska Barendse [ctb],
+  Nicholas Rockwood [ctb],
+  Florian Scharf [ctb],
+  Han Du [ctb],
+  Haziq Jamil [ctb] (ORCID: <https://orcid.org/0000-0003-3298-1010>),
+  Franz Classe [ctb]
+Maintainer: Yves Rosseel <Yves.Rosseel@UGent.be>
+Repository: CRAN
+Date/Publication: 2026-07-16 21:00:07 UTC
+Built: R 4.6.1; ; 2026-09-02 01:29:36 UTC; windows

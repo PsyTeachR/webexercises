@@ -1,0 +1,9 @@
+bibConvert              Convert between bibliography formats
+bibentryExtra           Work with 'bibentryExtra' objects
+bibstyle_JSSextra       Create bibstyle JSSextra
+rbibutils-package       Read 'Bibtex' Files and Convert Between
+                        Bibliography Formats
+rbibutils_formats       Supported bibliography formats
+readBib                 Read and write bibtex files
+readBibentry            Read and write bibentry files or read bibtex
+                        strings

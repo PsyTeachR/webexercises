@@ -1,0 +1,48 @@
+$.tensor                Working with index sequences
+add.tensor              Element-wise arithmetic operations +,-,*,/ with
+                        tensors
+as.tensor               Coercion to a tensor
+bind.tensor             A cbind/rbind for tensors
+chol.tensor             Cholesky decomposition of a tensor
+delta.tensor            Creates a Kronecker delta tensor
+diag.tensor             Creates a "diagonal" tensor
+diagmul.tensor          Multiplication of a tensor with a tensor given
+                        by its diagonal
+drag.tensor             Managing covariate and contravariate indices
+einstein.tensor         Tensor multiplication with Einstein's
+                        convention, by summing over all equally named
+                        indices.
+ftable.tensor           Pretty printing of tensors
+inv.tensor              Inversion of a tensor as linear mapping from
+                        tensors to tensors
+is.tensor               Checking for being a tensor
+level.tensor            The level (number of indices) of a tensor
+margin.tensor           Marginalization of tensors
+mark.tensor             Marks the names of a tensor with a mark
+mean.tensor             Mean and variance of tensors
+mul.tensor              Tensor multiplication for the tensor class
+names.tensor            Getting and setting index and dimensionnames of
+                        a tensor
+norm.tensor             Calculate the Euclidean norm or Euclidean
+                        operator norm of a tensor or its subtensors
+one.tensor              Creates a tensor with all entries 1
+pos.tensor              enumeration of index combinations
+power.tensor            Compute the power of a symmetric tensor
+reorder.tensor          Permutation of indices and storage sequence of
+                        a tensor
+rep.tensor              Repeats a tensor
+riemann.tensor          Tensor multiplication with Riemann's convention
+slice.tensor            Working with the indices of a tensor
+                        (accessing, slicing, renaming, ...)
+solve.tensor            Solving linear equations with tensors
+svd.tensor              Singular value decomposition of tensors
+tensorA-package         The tensorA package for tensor arithmetic
+to.matrix.tensor        The matrix corresponding to a tensor seen as a
+                        linear mapping of tensors.
+to.tensor               Creates a tensor object
+toPos.tensor            get the position of an index of tensor
+trace.tensor            Collapse a tensor
+tripledelta.tensor      A tensor with entry 1 if and only if three
+                        indices are equal
+undrop.tensor           Adds a spurious dimension to a tensor
+untensor                Removes indices/dimensions from a tensor

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Stan Development Team" />
+
+<meta name="date" content="2025-03-10" />
+
+<title>Interfacing with External C++ Code</title>
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Interfacing with External C++ Code</h1>
+<h4 class="author">Stan Development Team</h4>
+<h4 class="date">2025-03-10</h4>
+
+
+
+<p>Starting with the 2.13 release, it is much easier to use external C++ code in a Stan program. This vignette briefly illustrates how to do so.</p>
+<p>Suppose that you have (part of) a Stan program that involves Fibonacci numbers, such as</p>
+<pre class="stan"><code>functions {
+  int fib(int n);
+  int fib(int n) {
+    if (n &lt;= 0) reject(&quot;n must be positive&quot;);
+    return n &lt;= 2 ? 1 : fib(n - 1) + fib(n - 2);
+  }
+}
+model {} // use the fib() function somehow</code></pre>
+<p>On the second line, we have <em>declared</em> the <code>fib</code> function before it is <em>defined</em> in order to call it recursively.</p>
+<p>For functions that are not recursive, it is not necessary to declare them before defining them but it may be advantageous. For example, I often like to hide the definitions of complicated utility functions that are just a distraction using the <code>#include &quot;file&quot;</code> mechanism</p>
+<pre class="stan"><code>functions {
+  real complicated(real a, real b, real c, real d, real e, real f, real g);
+#include &quot;complicated.stan&quot;
+}
+model {} // use the complicated() function somehow</code></pre>
+<p>This Stan program would have to be parsed using the <code>stanc_builder</code> function in the <strong>rstan</strong> package rather than the default <code>stanc</code> function (which is called by <code>sampling</code> and <code>stan</code> internally).</p>
+<p>Returning to the Fibonacci example, it is not necessary to define the <code>fib</code> function using the Stan language because Stan programs with functions that are <em>declared</em> but not <em>defined</em> can use the standard capabilities of the C++ toolchain to provide the function definitions in C++. For example, this program produces a parser error by default</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">mc &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="st">'</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="st">functions { int fib(int n); }</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="st">model {} // use the fib() function somehow</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="st">'</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="kw">try</span>(<span class="kw">stan_model</span>(<span class="dt">model_code =</span> mc, <span class="dt">model_name =</span> <span class="st">&quot;parser_error&quot;</span>), <span class="dt">silent =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>However, if we specify the <code>allow_undefined</code> and <code>includes</code> arguments to the <code>stan_model</code> function, and define a <code>fib</code> function in the named C++ header file, then it will parse and compile</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">stan_model</span>(<span class="dt">model_code =</span> mc, <span class="dt">model_name =</span> <span class="st">&quot;external&quot;</span>, <span class="dt">allow_undefined =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb4-2" title="2">           <span class="dt">includes =</span> <span class="kw">paste0</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">#include &quot;'</span>, </a>
+<a class="sourceLine" id="cb4-3" title="3">                             <span class="kw">file.path</span>(<span class="kw">getwd</span>(), <span class="st">'fib.hpp'</span>), <span class="st">'&quot;</span><span class="ch">\n</span><span class="st">'</span>))</a></code></pre></div>
+<p>Specifying the <code>includes</code> argument is a bit awkward because the C++ representation of a Stan program is written and compiled in a temporary directory. Thus, the <code>includes</code> argument must specify a <em>full</em> path to the fib.hpp file, which in this case is in the working directory. Also, the path must be enclosed in double-quotes, which is why single quotes are used in the separate arguments to the <code>paste0</code> function so that double-quotes are interpreted literally. Finally, the <code>includes</code> argument should include newline characters (<code>&quot;\n&quot;</code>) at the start and end. It is possible to specify multiple paths using additional newline characters or include a “meta-header” file that contains <code>#include</code> directives to other C++ header files.</p>
+<p>The result of the <code>includes</code> argument is inserted into the C++ file directly at the end of the lines (as opposed to CmdStan where it is inserted directly <em>before</em> the following lines)</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb5-1" title="1"><span class="pp">#include </span><span class="im">&lt;stan/model/model_header.hpp&gt;</span></a>
+<a class="sourceLine" id="cb5-2" title="2"></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="kw">namespace</span> some_namespace {</a>
+<a class="sourceLine" id="cb5-4" title="4"></a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="kw">using</span> <span class="bu">std::</span>istream;</a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="kw">using</span> <span class="bu">std::</span>string;</a>
+<a class="sourceLine" id="cb5-7" title="7"><span class="kw">using</span> <span class="bu">std::</span>stringstream;</a>
+<a class="sourceLine" id="cb5-8" title="8"><span class="kw">using</span> <span class="bu">std::</span>vector;</a>
+<a class="sourceLine" id="cb5-9" title="9"><span class="kw">using</span> stan::io::dump;</a>
+<a class="sourceLine" id="cb5-10" title="10"><span class="kw">using</span> stan::math::lgamma;</a>
+<a class="sourceLine" id="cb5-11" title="11"><span class="kw">using</span> stan::model::prob_grad;</a>
+<a class="sourceLine" id="cb5-12" title="12"><span class="kw">using</span> <span class="kw">namespace</span> stan::math;</a>
+<a class="sourceLine" id="cb5-13" title="13"></a>
+<a class="sourceLine" id="cb5-14" title="14"><span class="kw">typedef</span> Eigen::Matrix&lt;<span class="dt">double</span>,Eigen::Dynamic,<span class="dv">1</span>&gt; vector_d;</a>
+<a class="sourceLine" id="cb5-15" title="15"><span class="kw">typedef</span> Eigen::Matrix&lt;<span class="dt">double</span>,<span class="dv">1</span>,Eigen::Dynamic&gt; row_vector_d;</a>
+<a class="sourceLine" id="cb5-16" title="16"><span class="kw">typedef</span> Eigen::Matrix&lt;<span class="dt">double</span>,Eigen::Dynamic,Eigen::Dynamic&gt; matrix_d;</a>
+<a class="sourceLine" id="cb5-17" title="17"></a>
+<a class="sourceLine" id="cb5-18" title="18"><span class="at">static</span> <span class="dt">int</span> current_statement_begin__;</a>
+<a class="sourceLine" id="cb5-19" title="19"></a>
+<a class="sourceLine" id="cb5-20" title="20"><span class="co">// various function declarations and / or definitions</span></a>
+<a class="sourceLine" id="cb5-21" title="21"><span class="pp">#include </span><span class="im">&quot;/full/path/to/fib.hpp&quot;</span></a></code></pre></div>
+<p>Thus, the definition of the <code>fib</code> function in the fib.hpp file need not be enclosed in any particular namespace (which is a random string by default. The “meta-include” stan/model/model_header.hpp file reads as</p>
+<pre><code>#ifndef STAN_MODEL_MODEL_HEADER_HPP
+#define STAN_MODEL_MODEL_HEADER_HPP
+
+#include &lt;stan/math.hpp&gt;
+
+#include &lt;stan/io/deserializer.hpp&gt;
+#include &lt;stan/io/serializer.hpp&gt;
+
+#include &lt;stan/model/rethrow_located.hpp&gt;
+#include &lt;stan/model/model_base.hpp&gt;
+#include &lt;stan/model/model_base_crtp.hpp&gt;
+#include &lt;stan/model/prob_grad.hpp&gt;
+#include &lt;stan/model/indexing.hpp&gt;
+#include &lt;stan/services/util/create_rng.hpp&gt;
+
+#include &lt;boost/random/additive_combine.hpp&gt;
+#include &lt;boost/random/linear_congruential.hpp&gt;
+
+#include &lt;cmath&gt;
+#include &lt;cstddef&gt;
+#include &lt;fstream&gt;
+#include &lt;iostream&gt;
+#include &lt;sstream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+
+#endif</code></pre>
+<p>so the definition of the <code>fib</code> function in the fib.hpp file could utilize any function in the Stan Math Library (without having to prefix function calls with <code>stan::math::</code>), some typedefs to classes in the Eigen matrix algebra library, plus streams, exceptions, etc. without having to worry about the corresponding header files. Nevertheless, an external C++ file <em>may</em> contain additional include directives that bring in class definitions, for example.</p>
+<p>Now let’s examine the fib.hpp file, which contains the C++ lines</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb7-1" title="1"><span class="dt">int</span> fib(<span class="at">const</span> <span class="dt">int</span>&amp;n, <span class="bu">std::</span>ostream* pstream__) {</a>
+<a class="sourceLine" id="cb7-2" title="2">  <span class="cf">if</span> (n &lt;= <span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb7-3" title="3">    stringstream errmsg;</a>
+<a class="sourceLine" id="cb7-4" title="4">    errmsg &lt;&lt; <span class="st">&quot;n must be positive&quot;</span>;</a>
+<a class="sourceLine" id="cb7-5" title="5">    <span class="cf">throw</span> <span class="bu">std::</span>domain_error(errmsg.str());</a>
+<a class="sourceLine" id="cb7-6" title="6">  }</a>
+<a class="sourceLine" id="cb7-7" title="7">  <span class="cf">return</span> n &lt;= <span class="dv">1</span> ? <span class="dv">1</span> : fib(n - <span class="dv">1</span>, <span class="dv">0</span>) + fib(n - <span class="dv">2</span>, <span class="dv">0</span>);</a>
+<a class="sourceLine" id="cb7-8" title="8">}</a></code></pre></div>
+<p>This C++ function is essentially what the preceding user-defined function in the Stan language</p>
+<pre class="stan"><code>int fib(int n) {
+  if (n &lt;= 0) reject(&quot;n must be positive&quot;);
+  return n &lt;= 2 ? 1 : fib(n - 1) + fib(n - 2);
+}</code></pre>
+<p>parses to. Thus, there is no <em>speed</em> advantage to defining the <code>fib</code> function in the external fib.hpp file. However, it is possible to use an external C++ file to handle the gradient of a function analytically as opposed to using Stan’s autodifferentiation capabilities, which are slower and more memory intensive but fully general. In this case, the <code>fib</code> function only deals with integers so there is nothing to take the derivative of. The primary advantage of using an external C++ file is flexibility to do things that cannot be done directly in the Stan language. It is also useful for R packages like <strong>rstanarm</strong> that may want to define some C++ functions in the package’s src directory and rely on the linker to make them available in its Stan programs, which are compiled at (or before) installation time.</p>
+<p>In the C++ version, we check if <code>n</code> is non-positive, in which case we throw an exception. The way the MCMC samplers are configured, if there is an exception thrown and it is <code>std::domain_error</code>, it will treat that iteration as a rejection but as a recoverable error: set that iteration’s log probability value to negative infinity and move to the next iteration. If there is a <code>std::invalid_argument</code> thrown, MCMC terminates. We treat these as non-recoverable, user programming errors. It is unnecessary to prefix <code>stringstream</code> with <code>std::</code> because of the <code>using std::stringstream;</code> line in the <em>generated</em> C++ file. However, there is no corresponding <code>using std::domain_error;</code> line, so it has to be qualified appropriately when the exception is thrown.</p>
+<p>The only confusing part of the C++ version of the <code>fib</code> function is that it has an additional argument (with no default value) named <code>pstream__</code> that is added to the <em>declaration</em> of the <code>fib</code> function by Stan. Thus, your <em>definition</em> of the <code>fib</code> function needs to match with this signature. This additional argument is a pointer to a <code>std::ostream</code> and is only used if your function prints something to the screen, which is rare. Thus, when we call the <code>fib</code> function recursively in the last line, we specify <code>fib(n - 1, 0) + fib(n - 2, 0);</code> so that the output (if any, and in this case there is none) is directed to the null pointer.</p>
+<p>This vignette has employed a toy example with the Fibonacci function, which has little apparent use in a Stan program and if it were useful, would more easily be implemented as a user-defined function in the <code>functions</code> block as illustrated at the outset. The ability to use external C++ code only becomes useful with more complicated C++ functions. It goes without saying that this mechanism ordinarily cannot call functions in C, Fortran, R, or other languages because Stan needs the derivatives with respect to unknown parameters in order to perform estimation. These derivatives are handled with custom C++ types that cannot be processed by functions in other languages that only handle primitive types such as <code>double</code>, <code>float</code>, etc.</p>
+<p>That said, it is possible to accomplish a great deal in C++, particularly when utilizing the Stan Math Library. For more details, see <a href="https://arxiv.org/abs/1509.07164">The Stan Math Library: Reverse-Mode Automatic Differentiation in C++</a> and its GitHub <a href="https://github.com/stan-dev/math/">repository</a>. The functions that you <em>declare</em> in the <code>functions</code> block of a Stan program will typically involve templating and type promotion in their signatures when parsed to C++ (the only exceptions are functions whose only arguments are integers, as in the <code>fib</code> function above). Suppose you wanted to define a function whose arguments are real numbers (or at least one of the arguments is). For example,</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">mc &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="st">'</span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="st">functions { real sinc(real x); }</span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="st">transformed data { real sinc_pi = sinc(pi()); }</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="st">'</span></a>
+<a class="sourceLine" id="cb9-6" title="6"><span class="kw">stan_model</span>(<span class="dt">model_code =</span> mc, <span class="dt">model_name =</span> <span class="st">&quot;external&quot;</span>, <span class="dt">allow_undefined =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb9-7" title="7">           <span class="dt">includes =</span> <span class="kw">paste0</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">#include &quot;'</span>, </a>
+<a class="sourceLine" id="cb9-8" title="8">                             <span class="kw">file.path</span>(<span class="kw">getwd</span>(), <span class="st">'sinc.hpp'</span>), <span class="st">'&quot;</span><span class="ch">\n</span><span class="st">'</span>))</a></code></pre></div>
+<pre><code>## Error in compileCode(f, code, language = language, verbose = verbose): /home/ben/R/x86_64-pc-linux-gnu-library/4.3/StanHeaders/include/stan/math/rev/core/precomp_vv_vari.hpp:11:7: note: candidate constructor (the implicit move constructor) not viable: requires 1 argument, but 3 were provided/home/ben/R/x86_64-pc-linux-gnu-library/4.3/StanHeaders/include/stan/math/rev/core/precomp_vv_vari.hpp:17:3: note: candidate constructor not viable: requires 5 arguments, but 3 were provided  precomp_vv_vari(double val, vari* avi, vari* bvi, double da, double db)  ^5 errors generated.make: *** [/usr/lib/R/etc/Makeconf:200: filea708eb4207.o] Error 1</code></pre>
+<pre><code>## Error in sink(type = &quot;output&quot;): invalid connection</code></pre>
+<p>The sinc.hpp file reads as</p>
+<pre><code>double
+sinc(const double&amp; x, std::ostream* pstream__) {
+  return x != 0.0 ? sin(x) / x : 1.0;
+}
+
+var
+sinc(const var&amp; x, std::ostream* pstream__) {
+  double x_ = x.val();
+  double f = x_ != 0.0 ? sin(x_) / x_ : 1.0;
+  double dfdx_ = x_ != 0.0 ? (cos(x_) - sin(x_)) / x_ : 0.0;
+  return var(new precomp_v_vari(f, x.vi_, dfdx_));
+}</code></pre>
+<p>The body of the first <code>sinc</code> function is simply its mathematical definition in the form of a ternary operator, which is sufficient when the input is a <code>double</code>.</p>
+<p>The last lines of sinc.hpp are a specialization for when the input is an unknown real parameter, which is represented in the Stan Math Library as a <code>stan::math::var</code>. Since the derivative of the <code>sinc</code> function is easy to compute analytically, we extract the underlying double-precision value from the inputted <code>stan::math::var</code> and use that to calculate the function value and its first derivative. Then, we return the result of <code>precomputed_gradients</code>, whose arguments are the function value (<code>f</code>), the derivative of <code>x</code> with respect to any other parameters (<code>x.vi_</code>), and the first derivative of <code>f</code> (<code>dfdx_</code>). The latter two are actually <code>std::vector</code>s but only have one element each because there is only one unknown.</p>
+<p>An easy way to see what the generated function signature will be is to call the <code>stanc</code> function in the <strong>rstan</strong> package with <code>allow_undefined = TRUE</code> and inspect the resuling C++ code. In this case, I first did</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">try</span>(<span class="kw">readLines</span>(<span class="kw">stanc</span>(<span class="dt">model_code =</span> mc, <span class="dt">allow_undefined =</span> <span class="ot">TRUE</span>)<span class="op">$</span>cppcode))</a></code></pre></div>
+<pre><code>## Warning in file(con, &quot;r&quot;): expanded path length 12630 would be too long for
+## #ifndef USE_STANC3
+## #define USE_STANC3
+## #endif
+## // Code generated by stanc v2.32.2
+## #include &lt;stan/model/model_header.hpp&gt;
+## namespace modela7034522a23_filea7056239fb9_namespace {
+## using stan::model::model_base_crtp;
+## using namespace stan::math;
+## stan::math::profile_map profiles__;
+## static constexpr std::array&lt;const char*, 2&gt; locations_array__ =
+##   {&quot; (found before start of program)&quot;,
+##   &quot; (in 'filea7056239fb9', line 2, column 19 to column 45)&quot;};
+## class modela7034522a23_filea7056239fb9 final : public model_base_crtp&lt;modela7034522a23_filea7056239fb9&gt; {
+## private:
+##   double sinc_pi;
+## public:
+##   ~modela7034522a23_filea7056239fb9() {}
+##   modela7034522a23_filea7056239fb9(stan::io::var_context&amp; context__,
+##                                    unsigned int random_seed__ = 0,
+##                                    std::ostream* pstream__ = nullptr)
+##       : model_base_crtp(0) {
+##     int current_statement__ = 0;
+##     using local_scalar_t__ = double;
+##     boost::ecuyer1988 bas [... truncated]
+
+## Warning in file(con, &quot;r&quot;): expanded path length 12630 would be too long for
+## #ifndef USE_STANC3
+## #define USE_STANC3
+## #endif
+## // Code generated by stanc v2.32.2
+## #include &lt;stan/model/model_header.hpp&gt;
+## namespace modela7034522a23_filea7056239fb9_namespace {
+## using stan::model::model_base_crtp;
+## using namespace stan::math;
+## stan::math::profile_map profiles__;
+## static constexpr std::array&lt;const char*, 2&gt; locations_array__ =
+##   {&quot; (found before start of program)&quot;,
+##   &quot; (in 'filea7056239fb9', line 2, column 19 to column 45)&quot;};
+## class modela7034522a23_filea7056239fb9 final : public model_base_crtp&lt;modela7034522a23_filea7056239fb9&gt; {
+## private:
+##   double sinc_pi;
+## public:
+##   ~modela7034522a23_filea7056239fb9() {}
+##   modela7034522a23_filea7056239fb9(stan::io::var_context&amp; context__,
+##                                    unsigned int random_seed__ = 0,
+##                                    std::ostream* pstream__ = nullptr)
+##       : model_base_crtp(0) {
+##     int current_statement__ = 0;
+##     using local_scalar_t__ = double;
+##     boost::ecuyer1988 bas [... truncated]</code></pre>
+<pre><code>## Warning in file(con, &quot;r&quot;): cannot open file '#ifndef USE_STANC3
+## #define USE_STANC3
+## #endif
+## // Code generated by stanc v2.32.2
+## #include &lt;stan/model/model_header.hpp&gt;
+## namespace modela7034522a23_filea7056239fb9_namespace {
+## using stan::model::model_base_crtp;
+## using namespace stan::math;
+## stan::math::profile_map profiles__;
+## static constexpr std::array&lt;const char*, 2&gt; locations_array__ =
+##   {&quot; (found before start of program)&quot;,
+##   &quot; (in 'filea7056239fb9', line 2, column 19 to column 45)&quot;};
+## class modela7034522a23_filea7056239fb9 final : public model_base_crtp&lt;modela7034522a23_filea7056239fb9&gt; {
+## private:
+##   double sinc_pi;
+## public:
+##   ~modela7034522a23_filea7056239fb9() {}
+##   modela7034522a23_filea7056239fb9(stan::io::var_context&amp; context__,
+##                                    unsigned int random_seed__ = 0,
+##                                    std::ostream* pstream__ = nullptr)
+##       : model_base_crtp(0) {
+##     int current_statement__ = 0;
+##     using local_scalar_t__ = double;
+##     boost::ecuyer1988 base_rng__ =
+##       stan::services: [... truncated]</code></pre>
+<pre><code>## Error in file(con, &quot;r&quot;) : cannot open the connection</code></pre>
+<p>to see what function signatures needed to be written for sinc.hpp.</p>
+<p>Once you go to the trouble of writing a numerically stable C++ function, we would welcome a pull request on GitHub to include your C++ function in the Stan Math Library for everyone to benefit from, provided that it can be licensed under the 3-clause BSD license and its use is not overly-specific to your particular Stan program.</p>
+<p>The Stan Math Library is compliant with the C++14 standard but not all compilers fully support the C++14 standard. In particular, the compiler that comes with RTools does not support all C++14 features. But you can use many C++14 features, such as the <code>auto</code> keyword.</p>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+Package: pema
+Title: Penalized Meta-Analysis
+Version: 0.1.5
+Authors@R: c(
+    person(c("Caspar", "J"), 
+             "van Lissa",
+             role = c("aut", "cre"),
+             email = "c.j.vanlissa@tilburguniversity.edu",
+             comment = c(ORCID = "0000-0002-0808-5024")),
+    person(c("Sara", "J"), "van Erp", role = c("aut"))
+    )
+Description: Conduct penalized meta-analysis, see Van Lissa, Van Erp, & Clapper
+    (2023) <doi:10.31234/osf.io/6phs5>. In meta-analysis, there are
+    often between-study differences. These can be coded as moderator variables,
+    and controlled for using meta-regression. However, if the number of
+    moderators is large relative to the number of studies, such an analysis may
+    be overfit. Penalized meta-regression is useful in these cases, because
+    it shrinks the regression slopes of irrelevant moderators towards zero.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/cjvanlissa/pema,
+        https://cjvanlissa.github.io/pema/
+RoxygenNote: 7.3.2
+Biarch: true
+Depends: R (>= 3.4.0)
+Imports: methods, rstan (>= 2.26.0), Rcpp (>= 0.12.0), RcppParallel (>=
+        5.0.1), rstantools (>= 2.1.1), sn, shiny, ggplot2, cli
+LinkingTo: BH (>= 1.66.0), Rcpp (>= 0.12.0), RcppEigen (>= 0.3.3.3.0),
+        RcppParallel (>= 5.0.1), rstan (>= 2.26.0), StanHeaders (>=
+        2.26.0)
+Suggests: rmarkdown, knitr, mice, testthat (>= 3.0.0), webexercises,
+        bain, metaforest, metafor
+SystemRequirements: GNU make
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+NeedsCompilation: yes
+Packaged: 2025-08-08 16:02:07 UTC; vanlissa
+Author: Caspar J van Lissa [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-0808-5024>),
+  Sara J van Erp [aut]
+Maintainer: Caspar J van Lissa <c.j.vanlissa@tilburguniversity.edu>
+Repository: CRAN
+Date/Publication: 2025-10-06 18:50:02 UTC

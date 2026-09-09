@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Publication Type="JournalArticle">
+  <Article>
+    <ArticleTitle>A new approach to something</ArticleTitle>
+    <AuthorList CompleteYN="Y">
+      <Author>
+	<LastName>TheSurname</LastName>
+	<ForeName>Forename A</ForeName>
+	<Initials>FA</Initials>
+      </Author>
+    </AuthorList>
+    <Journal>
+      <JournalIssue  CitedMedium="Print">
+	<Volume>
+	  99
+	</Volume>
+	<Issue>
+	  15
+	</Issue>
+	<PubDate>
+          <Year>
+	    2020
+	  </Year>
+          <Month>
+	    Oct
+	  </Month>
+          <Day>
+	    31
+	  </Day>
+	</PubDate>
+      </JournalIssue>
+      <Title>Journal of something </Title>
+    </Journal>
+    <Pagination>
+      <MedlinePgn>
+	12111-6
+      </MedlinePgn>
+    </Pagination>
+    <Abstract>
+      <AbstractText>
+	This is the text of the abstract.
+      </AbstractText>
+    </Abstract>
+  </Article>
+</Publication>
+
+<Publication Type="BookArticle">
+  <Article>
+    <ArticleTitle>A new approach to something</ArticleTitle>
+    <AuthorList CompleteYN="Y">
+      <Author>
+	<LastName>TheSurname</LastName>
+	<ForeName>Forename A</ForeName>
+	<Initials>FA</Initials>
+      </Author>
+    </AuthorList>
+    <Journal>
+      <JournalIssue  CitedMedium="Print">
+	<Volume>
+	  99
+	</Volume>
+	<Issue>
+	  15
+	</Issue>
+	<PubDate>
+          <Year>
+	    2020
+	  </Year>
+          <Month>
+	    Oct
+	  </Month>
+          <Day>
+	    31
+	  </Day>
+	</PubDate>
+      </JournalIssue>
+      <Title>Journal of something </Title>
+    </Journal>
+    <Pagination>
+      <MedlinePgn>
+	12111-6
+      </MedlinePgn>
+    </Pagination>
+    <Abstract>
+      <AbstractText>
+	This is the text of the abstract.
+      </AbstractText>
+    </Abstract>
+  </Article>
+</Publication>
+
+<Publication Type="Book">
+  <Book>
+    <Title>A new approach to something: Part 2</Title>
+    <AuthorList CompleteYN="Y">
+      <Author>
+	<LastName>TheSurname</LastName>
+	<ForeName>Forename A</ForeName>
+	<Initials>FA</Initials>
+      </Author>
+    </AuthorList>
+    <PubDate>
+      <Year>2020</Year>
+      <Month>April</Month>
+      <Day>22</Day>
+    </PubDate>
+    <Edition>2</Edition>
+    <Pagination>
+      <Pages>386</Pages>
+    </Pagination>
+    <Abstract>
+      <AbstractText>
+	This is the text of the abstract of the book.
+      </AbstractText>
+    </Abstract>
+  </Book>
+</Publication>
+
+<Publication Type="Report">
+  <Report>
+    <Title>A new approach to something: Part 2</Title>
+    <AuthorList CompleteYN="Y">
+      <Author>
+	<LastName>TheSurname</LastName>
+	<ForeName>Forename A</ForeName>
+	<Initials>FA</Initials>
+      </Author>
+    </AuthorList>
+    <PubDate>
+        <MedlineDate>2020 Jan 31</MedlineDate>
+    </PubDate>
+    <Edition>2</Edition>
+    <Pagination>
+      <Pages>1-100</Pages>
+    </Pagination>
+    <Abstract>
+      <AbstractText>
+	This is the text of the abstract of the book.
+      </AbstractText>
+    </Abstract>
+  </Report>
+</Publication>
+
+<Publication Type=JournalInfo>
+  <JournalInfo>
+    <Country>United Kingdom</Country>
+    <MedlineTA>Proc of Uni</MedlineTA>
+    <TitleAbbreviation>Proceedings of an university</TitleAbbreviation>
+    <NlmUniqueID>999999</NlmUniqueID>
+  </JournalInfo>
+</Publication>
+
+<Publication Type="MeshHeadingList">
+  <MeshHeadingList>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Biophysics</DescriptorName>
+    </MeshHeading>
+    <MeshHeading>
+      <DescriptorName MajorTopicYN="N">Crystallography, X-Ray</DescriptorName>
+    </MeshHeading>
+  </MeshHeadingList>
+</Publication>

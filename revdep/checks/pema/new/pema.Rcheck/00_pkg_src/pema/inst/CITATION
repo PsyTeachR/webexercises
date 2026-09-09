@@ -1,0 +1,12 @@
+citHeader("To cite pema in publications use:")
+
+bibentry(
+  key = "pema",
+  bibtype  = "Article",
+  doi = "10.31234/osf.io/6phs5",
+  url = "https://doi.org/10.31234/osf.io/6phs5",
+  author = c(person("Van Lissa", "C. J."), person("Van Erp", "S."), person("Clapper", "E. B.")),
+  title = "Selecting relevant moderators using Bayesian regularized meta-regression",
+  journal = "Research Synthesis Methods",
+  year = "2023"
+)

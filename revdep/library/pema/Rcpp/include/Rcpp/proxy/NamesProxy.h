@@ -1,0 +1,86 @@
+// Copyright (C) 2013 - 2025  Romain François
+// Copyright (C) 2026         Romain François, Iñaki Ucar and Dirk Eddelbuettel
+//
+// This file is part of Rcpp.
+//
+// Rcpp is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// Rcpp is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Rcpp.  If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef Rcpp_proxy_NamesProxy_h
+#define Rcpp_proxy_NamesProxy_h
+
+namespace Rcpp{
+
+template <typename CLASS>
+class NamesProxyPolicy{
+public:
+
+    class NamesProxy : public GenericProxy<NamesProxy> {
+    public:
+        NamesProxy( CLASS& v) : parent(v){} ;
+
+        /* lvalue uses */
+        NamesProxy& operator=(const NamesProxy& rhs) {
+            if( this != &rhs) set( rhs.get() ) ;
+            return *this ;
+        }
+
+        template <typename T>
+        NamesProxy& operator=(const T& rhs);
+
+        template <typename T> operator T() const;
+
+    private:
+        CLASS& parent;
+
+        SEXP get() const {
+            return RCPP_GET_NAMES(parent) ;
+        }
+
+        void set(SEXP x) {
+            if (!Rf_isNull(x))
+               Rf_namesgets(parent, x);
+            else Rf_setAttrib(parent, R_NamesSymbol, x);
+        }
+
+    } ;
+
+    class const_NamesProxy : public GenericProxy<const_NamesProxy>{
+    public:
+        const_NamesProxy( const CLASS& v) : parent(v){} ;
+
+        template <typename T> operator T() const;
+
+    private:
+        const CLASS& parent;
+
+        SEXP get() const {
+            return RCPP_GET_NAMES(parent) ;
+        }
+
+    } ;
+
+    NamesProxy names() {
+        return NamesProxy( static_cast<CLASS&>(*this) ) ;
+    }
+
+    const_NamesProxy names() const {
+        return const_NamesProxy(static_cast<const CLASS&>(*this) ) ;
+    }
+
+
+} ;
+
+}
+
+#endif

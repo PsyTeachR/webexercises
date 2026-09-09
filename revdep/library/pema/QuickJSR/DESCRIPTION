@@ -1,0 +1,36 @@
+Package: QuickJSR
+Title: Interface for the 'QuickJS-NG' Lightweight 'JavaScript' Engine
+Version: 1.11.0
+Authors@R: c(
+    person(c("Andrew", "R."), "Johnson", , "andrew.johnson@arjohnsonau.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7000-8065")),
+    person("QuickJS", "Authors", role = c("cph"),
+           comment = "QuickJS sources and headers"),
+    person("QuickJS-NG", "Authors", role = c("cph"),
+           comment = "QuickJS-NG sources and headers")
+  )
+Description: An 'R' interface to the 'QuickJS' portable 'JavaScript'
+    engine.  The engine and all 'R' to 'JavaScript' interoperability is bundled
+    within the package, requiring no dependencies beyond a 'C' compiler.
+License: MIT + file LICENSE
+URL: https://github.com/andrjohns/QuickJSR,
+        https://github.com/quickjs-ng/quickjs
+BugReports: https://github.com/andrjohns/QuickJSR/issues
+Suggests: knitr, rmarkdown, tinytest
+Encoding: UTF-8
+Language: en-AU
+NeedsCompilation: yes
+SystemRequirements: GNU make
+VignetteBuilder: knitr
+Config/build/compilation-database: true
+Config/roxygen2/version: 8.1.0
+Packaged: 2026-08-21 12:00:32 UTC; andrew
+Author: Andrew R. Johnson [aut, cre] (ORCID:
+    <https://orcid.org/0000-0001-7000-8065>),
+  QuickJS Authors [cph] (QuickJS sources and headers),
+  QuickJS-NG Authors [cph] (QuickJS-NG sources and headers)
+Maintainer: Andrew R. Johnson <andrew.johnson@arjohnsonau.com>
+Repository: CRAN
+Date/Publication: 2026-08-21 22:01:33 UTC
+Built: R 4.6.1; x86_64-w64-mingw32; 2026-09-02 01:29:17 UTC; windows
+Archs: x64

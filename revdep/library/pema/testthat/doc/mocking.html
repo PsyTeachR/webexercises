@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Mocking</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Mocking</h1>
+
+
+
+<p>Mocking allows you to temporarily replace the implementation of a
+function with something that makes it easier to test. It’s useful when
+testing failure scenarios that are hard to generate organically (e.g.,
+what happens if dependency X isn’t installed?), making tests more
+reliable, and making tests faster. It’s also a general escape hatch to
+resolve almost any challenging testing problem. That said, mocking comes
+with downsides too: it’s an advanced technique that can lead to brittle
+tests or tests that silently conceal problems. You should only use it
+when all other approaches fail.</p>
+<p>(If, like me, you’re confused as to why you’d want to cruelly make
+fun of your tests, mocking here is used in the sense of making a fake or
+simulated version of something, i.e., a mock-up.)</p>
+<p>testthat’s primary mocking tool is
+<code>local_mocked_bindings()</code> which is used to mock functions and
+is the focus of this vignette. But it also provides other tools for
+specialized cases: you can use <code>local_mocked_s3_method()</code> to
+mock an S3 method, <code>local_mocked_s4_method()</code> to mock an S4
+method, and <code>local_mocked_r6_class()</code> to mock an R6 class.
+Once you understand the basic idea of mocking, it should be
+straightforward to apply these other tools where needed.</p>
+<p>In this vignette, we’ll start by illustrating the basics of mocking
+with a few examples, continue to some real-world case studies from
+throughout the tidyverse, then finish up with the technical details so
+you can understand the tradeoffs of the current implementation.</p>
+<div id="getting-started-with-mocking" class="section level2">
+<h2>Getting started with mocking</h2>
+<p>Let’s begin by motivating mocking with a simple example. Imagine
+you’re writing a function like <code>rlang::check_installed()</code>.
+The goal of this function is to check if a package is installed, and if
+not, give a nice error message. It also takes an optional
+<code>min_version</code> argument that you can use to enforce a version
+constraint. A simple base R implementation might look something like
+this:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>check_installed <span class="ot">&lt;-</span> <span class="cf">function</span>(pkg, <span class="at">min_version =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(pkg, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="fu">sprintf</span>(<span class="st">&quot;{%s} is not installed.&quot;</span>, pkg))</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  }</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(min_version)) {</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    pkg_version <span class="ot">&lt;-</span> <span class="fu">packageVersion</span>(pkg)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="cf">if</span> (pkg_version <span class="sc">&lt;</span> min_version) {</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="fu">sprintf</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>        <span class="st">&quot;{%s} version %s is installed, but %s is required.&quot;</span>, </span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>        pkg, </span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>        pkg_version, </span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>        min_version</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>      ))</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    }</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  }</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>  <span class="fu">invisible</span>()</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>}</span></code></pre></div>
+<p>Now that we’ve written this function, we want to test it. There are
+many ways we might tackle this, but it’s reasonable to start by testing
+the case where we don’t specify a minimum version. To do this, we need
+to come up with a package we know is installed and a package we know
+isn’t installed:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;check_installed() checks package is installed&quot;</span>, {</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">expect_no_error</span>(<span class="fu">check_installed</span>(<span class="st">&quot;testthat&quot;</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">expect_snapshot</span>(<span class="fu">check_installed</span>(<span class="st">&quot;doesntexist&quot;</span>), <span class="at">error =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>})</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; ── Warning: check_installed() checks package is installed ──────────────────────</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; Adding new snapshot:</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Code</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt;   check_installed(&quot;doesntexist&quot;)</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; Condition</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;   Error in `check_installed()`:</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt;   ! {doesntexist} is not installed.</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; Test passed with 2 successes 🎉.</span></span></code></pre></div>
+<p>This is probably fine as we certainly know that testthat must be
+installed but it feels a little fragile as it depends on external state
+that we don’t control. While it’s pretty unlikely, if someone does
+create a <code>doesntexist</code> package, this test will no longer
+work. As a general principle, the less your tests rely on state outside
+of your control, the more robust and reliable they’ll be.</p>
+<p>Next we want to check the case where we specify a minimum version,
+and again we need to make up some inputs:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;check_installed() checks minimum version&quot;</span>, {</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">expect_no_error</span>(<span class="fu">check_installed</span>(<span class="st">&quot;testthat&quot;</span>, <span class="st">&quot;1.0.0&quot;</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">expect_snapshot</span>(<span class="fu">check_installed</span>(<span class="st">&quot;testthat&quot;</span>, <span class="st">&quot;99.99.999&quot;</span>), <span class="at">error =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>})</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; ── Warning: check_installed() checks minimum version ───────────────────────────</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; Adding new snapshot:</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; Code</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;   check_installed(&quot;testthat&quot;, &quot;99.99.999&quot;)</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; Condition</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;   Error in `check_installed()`:</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;   ! {testthat} version 3.3.2 is installed, but 99.99.999 is required.</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; Test passed with 2 successes 🥳.</span></span></code></pre></div>
+<p>Again, this is probably safe (since I’m unlikely to release 90+ new
+versions of testthat), but if you look at the snapshot message
+carefully, you’ll notice that it includes the current version of
+testthat. That means every time a new version of testthat is released,
+we’ll have to update the snapshot. We could use the
+<code>transform</code> argument to fix this:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;check_installed() checks minimum version&quot;</span>, {</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">expect_no_error</span>(<span class="fu">check_installed</span>(<span class="st">&quot;testthat&quot;</span>, <span class="st">&quot;1.0.0&quot;</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">expect_snapshot</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="fu">check_installed</span>(<span class="st">&quot;testthat&quot;</span>, <span class="st">&quot;99.99.999&quot;</span>), </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="at">error =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="at">transform =</span> <span class="cf">function</span>(lines) <span class="fu">gsub</span>(<span class="fu">packageVersion</span>(<span class="st">&quot;testthat&quot;</span>), <span class="st">&quot;&lt;version&gt;&quot;</span>, lines)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  )</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>})</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; ── Warning: check_installed() checks minimum version ───────────────────────────</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; Adding new snapshot:</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; Code</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;   check_installed(&quot;testthat&quot;, &quot;99.99.999&quot;)</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; Condition</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt;   Error in `check_installed()`:</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt;   ! {testthat} version &lt;version&gt; is installed, but 99.99.999 is required.</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; Test passed with 2 successes 🎉.</span></span></code></pre></div>
+<p>But it’s starting to feel like we’ve accumulating more and more
+hacks. So let’s take a fresh look and see how mocking might help us. The
+basic idea of mocking is to temporarily replace the implementation of
+functions being used by the function we’re testing. Here we’re testing
+<code>check_installed()</code> and want to mock
+<code>requireNamespace()</code> and <code>packageVersion()</code> so we
+can control their versions. There’s a small wrinkle here in that
+<code>requireNamespace</code> and <code>packageVersion</code> are base
+functions, not our functions, so we need to make bindings in our package
+namespace so we can mock them (we’ll come back to why later).</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>requireNamespace <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>packageVersion <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div>
+<p>For the first test, we mock <code>requireNamespace()</code> twice:
+first to always return <code>TRUE</code> (pretending every package is
+installed), and then to always return <code>FALSE</code> (pretending
+that no packages are installed). Now the test is completely
+self-contained and doesn’t depend on what packages happen to be
+installed.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;check_installed() checks package is installed&quot;</span>, {</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(<span class="at">requireNamespace =</span> <span class="cf">function</span>(...) <span class="cn">TRUE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">expect_no_error</span>(<span class="fu">check_installed</span>(<span class="st">&quot;package-name&quot;</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(<span class="at">requireNamespace =</span> <span class="cf">function</span>(...) <span class="cn">FALSE</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="fu">expect_snapshot</span>(<span class="fu">check_installed</span>(<span class="st">&quot;package-name&quot;</span>), <span class="at">error =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>})</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; ── Warning: check_installed() checks package is installed ──────────────────────</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; Adding new snapshot:</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; Code</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;   check_installed(&quot;package-name&quot;)</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; Condition</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt;   Error in `check_installed()`:</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt;   ! {package-name} is not installed.</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; Test passed with 2 successes 🎊.</span></span></code></pre></div>
+<p>For the second test, we mock <code>requireNamespace()</code> to
+return <code>TRUE</code>, and then <code>packageVersion()</code> to
+always return version 2.0.0. This again ensures our test is independent
+of system state.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;check_installed() checks minimum version&quot;</span>, {</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    <span class="at">requireNamespace =</span> <span class="cf">function</span>(...) <span class="cn">TRUE</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="at">packageVersion =</span> <span class="cf">function</span>(...) <span class="fu">numeric_version</span>(<span class="st">&quot;2.0.0&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  )</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  </span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="fu">expect_no_error</span>(<span class="fu">check_installed</span>(<span class="st">&quot;package-name&quot;</span>, <span class="st">&quot;1.0.0&quot;</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="fu">expect_snapshot</span>(<span class="fu">check_installed</span>(<span class="st">&quot;package-name&quot;</span>, <span class="st">&quot;3.4.5&quot;</span>), <span class="at">error =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>})</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; ── Warning: check_installed() checks minimum version ───────────────────────────</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; Adding new snapshot:</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; Code</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;   check_installed(&quot;package-name&quot;, &quot;3.4.5&quot;)</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; Condition</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt;   Error in `check_installed()`:</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt;   ! {package-name} version 2.0.0 is installed, but 3.4.5 is required.</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; Test passed with 2 successes 🎉.</span></span></code></pre></div>
+</div>
+<div id="case-studies" class="section level2">
+<h2>Case studies</h2>
+<p>To give you more experience with mocking, this section looks at a few
+places where we use mocking in the tidyverse:</p>
+<ul>
+<li>Testing <code>testthat::skip_on_os()</code> regardless of what
+operating system is running the test.</li>
+<li>Speeding up <code>usethis::use_release_issue()</code>.</li>
+<li>Testing the passage of time in
+<code>httr2::req_throttle()</code>.</li>
+</ul>
+<p>These situations are all a little complex, as this is the nature of
+mocking: if you can use a simpler technique, you should. Mocking is only
+needed for otherwise intractable problems.</p>
+<div id="pretending-were-on-a-different-platform" class="section level3">
+<h3>Pretending we’re on a different platform</h3>
+<p><code>testthat::skip_on_os()</code> allows you to skip tests on
+specific operating systems, using the internal <code>system_os()</code>
+function which is a thin wrapper around
+<code>Sys.info()[[&quot;sysname&quot;]]</code>. To test that this skip works
+correctly, we have to use mocking because there’s no other way to
+pretend we’re running on a different operating system. This yields the
+following test, where we using mocking to pretend that we’re always on
+Windows:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;can skip on multiple oses&quot;</span>, {</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(<span class="at">system_os =</span> <span class="cf">function</span>() <span class="st">&quot;windows&quot;</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">expect_skip</span>(<span class="fu">skip_on_os</span>(<span class="st">&quot;windows&quot;</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="fu">expect_skip</span>(<span class="fu">skip_on_os</span>(<span class="fu">c</span>(<span class="st">&quot;windows&quot;</span>, <span class="st">&quot;linux&quot;</span>)))</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="fu">expect_no_skip</span>(<span class="fu">skip_on_os</span>(<span class="st">&quot;linux&quot;</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>})</span></code></pre></div>
+<p>(The logic of <code>skip_on_os()</code> is simple enough that I feel
+confident we only need to simulate one platform.)</p>
+</div>
+<div id="speeding-up-tests" class="section level3">
+<h3>Speeding up tests</h3>
+<p><code>usethis::use_release_issue()</code> creates a GitHub issue with
+a bulleted list of actions to follow when releasing a package. But some
+of the bullets depend on complex conditions that can take a while to
+compute. So the <a href="https://github.com/r-lib/usethis/blob/main/tests/testthat/test-release.R">tests
+for this function</a> use mocks like this:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">local_mocked_bindings</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">get_revdeps =</span> <span class="cf">function</span>() <span class="fu">character</span>(),</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">gh_milestone_number =</span> <span class="cf">function</span>(...) <span class="cn">NA</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>)</span></code></pre></div>
+<p>Here we pretend that there are no reverse dependencies (revdeps) for
+the package, which is both slow to compute and will vary over time if we
+use a real package. We also pretend that there are no related GitHub
+milestones, which otherwise requires an GitHub API call, which is again
+slow and might vary over time. Together, these mocks keep the tests fast
+and self-contained, free from any state outside of our direct
+control.</p>
+</div>
+<div id="managing-time" class="section level3">
+<h3>Managing time</h3>
+<p><code>httr2::req_throttle()</code> prevents multiple requests from
+being made too quickly, using a technique called a leaky token bucket.
+This technique is inextricably tied to real time because you want to
+allow more requests as time elapses. So how do you test this? I started
+by using <code>Sys.sleep()</code>, but this made my tests both slow
+(because I’d sleep for a second or two) and unreliable (because
+sometimes more time elapsed than I expected). Eventually I figured out
+that I could “manually control” time by using a <a href="https://github.com/r-lib/httr2/blob/main/tests/testthat/test-req-throttle.R">mocked
+function</a> that returns the value of a variable I control. This allows
+me to manually advance time and carefully test the implications.</p>
+<p>You can see the basic idea with a simpler example. Let’s first begin
+with a function that returns the “unix time”, the number of seconds
+elapsed since midnight on Jan 1, 1970. This is easy to compute, but will
+make some computations simpler later as well as providing a convenient
+function to mock.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>unix_time <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">unclass</span>(<span class="fu">Sys.time</span>())</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">unix_time</span>()</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; [1] 1767980965</span></span></code></pre></div>
+<p>Now I’m going to create a function factory that makes it easy to
+compute how much time has elapsed since some fixed starting point:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>elapsed <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  start <span class="ot">&lt;-</span> <span class="fu">unix_time</span>()</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="cf">function</span>() {</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="fu">unix_time</span>() <span class="sc">-</span> start</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  }</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>}</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>timer <span class="ot">&lt;-</span> <span class="fu">elapsed</span>()</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="fu">Sys.sleep</span>(<span class="fl">0.5</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="fu">timer</span>()</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co">#&gt; [1] 0.507338</span></span></code></pre></div>
+<p>Imagine trying to test this function without mocking! You’d probably
+think it’s not worth it. In fact, that’s what I thought originally, but
+I soon learned my lesson because I introduce bug because I’d forgotten
+the complexities of computing the difference between two POSIXct
+values.</p>
+<p>With mocking, however, I can “manipulate time” by mocking
+<code>unix_time()</code> so that it returns the value of a variable I
+control. Now I can write a reliable test:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;elapsed() measures elapsed time&quot;</span>, {</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  time <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(<span class="at">unix_time =</span> <span class="cf">function</span>() time)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  timer <span class="ot">&lt;-</span> <span class="fu">elapsed</span>()</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">timer</span>(), <span class="dv">0</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  time <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">timer</span>(), <span class="dv">1</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>})</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; Test passed with 2 successes 🌈.</span></span></code></pre></div>
+</div>
+</div>
+<div id="how-does-mocking-work" class="section level2">
+<h2>How does mocking work?</h2>
+<p>To finish up, it’s worth discussing how mocking works. The
+fundamental challenge of mocking is that you want it to be “hygienic”,
+i.e. it should only affect the operation of your package code, not all
+running code. You can see why this might be problematic if you imagine
+mocking a function that testthat itself uses: you don’t want to
+accidentally break testthat while trying to test your code! To achieve
+this goal, <code>local_mocked_bindings()</code> works by modifying your
+package’s <a href="https://adv-r.hadley.nz/environments.html#special-environments">namespace
+environment</a>.</p>
+<p>You can implement the basic idea using base R code like this:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>old <span class="ot">&lt;-</span> <span class="fu">getFromNamespace</span>(<span class="st">&quot;my_function&quot;</span>, <span class="st">&quot;mypackage&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">assignInNamespace</span>(<span class="st">&quot;my_function&quot;</span>, new, <span class="st">&quot;mypackage&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co"># run the test...</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co"># restore the previous value</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="fu">assignInNamespace</span>(<span class="st">&quot;my_function&quot;</span>, old, <span class="st">&quot;mypackage&quot;</span>)</span></code></pre></div>
+<p>This implementation leads to two limitations of
+<code>local_mocked_bindings()</code>:</p>
+<ol style="list-style-type: decimal">
+<li><p>The package namespace is locked, which means that you can’t add
+new bindings to it. That means if you want to mock base functions, you
+have to provide some binding that can be overridden. The easiest way to
+do this is with something like <code>mean &lt;- NULL</code>. This
+creates a binding that <code>local_mocked_bindings()</code> can modify,
+but because of R’s <a href="https://adv-r.hadley.nz/functions.html#functions-versus-variables">lexical
+scoping rules</a> doesn’t affect ordinary calls.</p></li>
+<li><p><code>::</code> doesn’t use the package namespace, so if you want
+to mock an explicitly namespaced function, you either have import
+<code>fun</code> into your <code>NAMESPACE</code> (e.g., with
+<code>@importFrom pkg fun</code>) or create your own wrapper function
+that you can mock. Typically, one of these options will feel fairly
+natural.</p></li>
+</ol>
+<p>Overall, these limitations feel correct to me:
+<code>local_mocked_bindings()</code> makes it easy to temporarily change
+the implementation of functions that you have written, while offering
+workarounds to override the implementations of functions that others
+have written in the scope of your package.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

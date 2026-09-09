@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Tutorial: Machine Learning-Informed Meta-Analysis</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+<style type="text/css">:root {--incorrect: #983E82;--incorrect_alpha: #edaddd;--correct: #59935B;--correct_alpha: #c0edc2;--highlight: #467AAC;}.webex-check {}.webex-box {border: 2px solid var(--highlight);padding: 0.5em 0.25em;margin: 1em 0;border-radius: .25em;background-color: rgba(127, 127, 127, 0.05);}.webex-total_correct {margin-left: 1em;}.unchecked .webex-total_correct {display: none;}.unchecked .webex-incorrect,.unchecked .webex-correct {border: 2px dotted grey !important;background-color: white !important;}.webex-select, input.webex-solveme,.unchecked .webex-radiogroup label.webex-incorrect,.unchecked .webex-radiogroup label.webex-correct{border: 2px dotted grey;background-color: white;border-radius: 0.25em;}.webex-incorrect,input.webex-solveme.webex-incorrect,.webex-radiogroup label.webex-incorrect {border: 2px dotted var(--incorrect);background-color: var(--incorrect_alpha);color: black;border-radius: 0.25em;}.webex-correct,input.webex-solveme.webex-correct,.webex-radiogroup label.webex-correct {border: 2px solid var(--correct);background-color: var(--correct_alpha);color: black;border-radius: 0.25em;}.unchecked .webex-incorrect span::before,.unchecked .webex-incorrect + .webex-icon::after,.unchecked .webex-correct span::before,.unchecked .webex-correct + .webex-icon::after {content: " ";}.webex-incorrect span::before,.webex-incorrect + .webex-icon::after {content: "\274C ";}.webex-correct span::before,.webex-correct + .webex-icon::after {content: "\2705 ";}.webex-solution {height: 2.5em;overflow-y: hidden;padding: 0.5em;margin-bottom: 10px;}.webex-solution.open {height: auto;border: 2px solid var(--highlight);border-radius: 5px;}.webex-solution button, .webex-check-button {height: 2em;margin-bottom: 0.5em;border-radius: 0.5em;background-color: var(--highlight);color: white;padding: 0 0.5em;}.webex-solution pre.sourceCode {border-color: var(--correct);}.webex-radiogroup label {margin-left: 2em;text-indent: -1em;padding-left: 0.5em;font-weight: 400;display: block;border: 2px solid rgba(255, 255, 255, 0);background-color: inherit;border-radius: 0.25em;}.webex-radiogroup label input {position: relative;left: -1em;}.webex-radiogroup {margin: 1em 0;}</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Tutorial: Machine Learning-Informed
+Meta-Analysis</h1>
+
+
+
+<div id="tutorial-requirements" class="section level2">
+<h2>Tutorial Requirements</h2>
+<ol style="list-style-type: decimal">
+<li>Install R and then RStudio
+<ul>
+<li>Follow the instructions here: <a href="https://posit.co/download/rstudio-desktop/" class="uri">https://posit.co/download/rstudio-desktop/</a></li>
+</ul></li>
+<li>Open RStudio.<br />
+Now, run the setup script for this workshop.<br />
+In the window labeled &quot;Console&quot;, paste this code and press [Enter]:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(pema)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">check_workshop_data</span>(<span class="at">df =</span> curry)</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>If you have your own data: after running the <code>source()</code>
+command above, you can use the function
+<code>check_workshop_data()</code>.
+<ul>
+<li>Load your own data into R as usual, and check if you can use it for
+the workshop exercises by running:</li>
+<li><code>check_workshop_data(your_data_object)</code></li>
+</ul></li>
+</ol>
+</div>
+<div id="pool" class="section level2">
+<h2>Meta-Analysis in R</h2>
+<p>The essence of Meta-Analysis is <strong>pooling your effect
+sizes</strong> to get an overall effect size estimate of the
+studies.</p>
+<p>When pooling effect sizes in Meta-Analysis, there are two basic
+approaches: the <strong>Fixed-Effect-Model</strong>, or the
+<strong>Random-Effects-Model</strong> <span class="citation">(Borenstein
+et al. 2009)</span>. The fixed effect model assumes that one true effect
+size exists in the population; the random effects model assumes that the
+true effect varies (and is normally distributed).</p>
+<p>Both of these models require an <strong>effect size</strong>, and a
+<strong>dispersion (variance)</strong> estimate for each study.</p>
+<p>For these meta-analyses, we&#39;ll use the <code>metafor</code> package
+<span class="citation">(Viechtbauer 2010)</span>. However, notice that
+we load a different package, <code>metaforest</code>. The reason is that
+it contains the example data for this tutorial, and it loads the
+<code>metafor</code> package in turn.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(metaforest)</span></code></pre></div>
+<div id="using-your-own-data" class="section level3">
+<h3>Using Your Own Data</h3>
+<p>If you want, you can conduct the examples below with your own data.
+Note that the interactive questions won&#39;t work in this case (the correct
+answers are based on the <code>curry</code> data).</p>
+<p>If you want to use your own data, you can use the function
+<code>check_workshop_data()</code> to help make sure that your data are
+suitable for the tutorial examples.</p>
+<p>Then, apply the function to your data object by running
+<code>check_workshop_data(your_data_object)</code>. It will give helpful
+suggestions to make it easier to follow the tutorial with your own
+data:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> curry</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">check_workshop_data</span>(df)</span></code></pre></div>
+<p>Note that the message suggests that we rename the effect size column,
+which is called <code>d</code> in the <code>curry</code> dataset, to
+<code>yi</code>. Let&#39;s do that:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">names</span>(df)[<span class="fu">which</span>(<span class="fu">names</span>(df) <span class="sc">==</span> <span class="st">&#39;d&#39;</span>)] <span class="ot">&lt;-</span> <span class="st">&#39;yi&#39;</span></span></code></pre></div>
+</div>
+<div id="using-different-demo-data" class="section level3">
+<h3>Using Different Demo Data</h3>
+<p>If you do not have your own data but are up for a challenge, you can
+use a different demo dataset to complete the tutorial. Two suggestions
+are:</p>
+<pre><code>metaforest::fukkink_lont
+pema::bonapersona</code></pre>
+</div>
+</div>
+<div id="fixedef" class="section level2">
+<h2>Fixed Effect Model</h2>
+<p><strong>The idea behind the fixed-effects-model</strong></p>
+<p>The fixed-effects-model assumes that all observed effect sizes stem
+from a single <em>true</em> population effect <span class="citation">(Borenstein et al. 2009)</span>. To calculate the
+overall effect, we therefore average all effect sizes, but give studies
+with greater precision a higher weight. Precision relates to the fact
+that studies with a smaller <strong>Standard Error</strong> provide more
+accurate estimates of the true population effect.</p>
+<p>For this weighing, we use the <strong>inverse of the
+variance</strong> <span class="math inline">\(1/\hat\sigma^2_k\)</span>
+of each study <span class="math inline">\(k\)</span>. We then calculate
+a weighted average of all studies, our fixed effect size estimator <span class="math inline">\(\hat\theta_F\)</span>:</p>
+<p><span class="math display">\[
+\begin{equation}
+\hat\theta_F = \frac{\sum\limits_{k=1}^K \hat\theta_k/
+\hat\sigma^2_k}{\sum\limits_{k=1}^K 1/\hat\sigma^2_k}
+\end{equation}
+\]</span></p>
+<p>These examples assume you already have a dataset with the
+<strong>calucated effects and SE</strong> for each study. The
+<code>curry</code> data set, inside the <code>metaforest</code> package,
+will do. This dataset already contains the effect sizes and their
+variances, so we can directly use the <code>rma</code> function.</p>
+<div id="fixed-effects-model-with-rma" class="section level3">
+<h3>Fixed-effects Model with <code>rma</code></h3>
+<p>The <code>rma()</code> function has many arguments, all of which you
+can accessed by typing <code>?rma</code> in your console once the
+<code>metafor</code> package is loaded, or selecting the function and
+pressing F1.</p>
+<p><strong>Here is a table with the most important arguments for our
+code:</strong></p>
+<p>Let&#39;s conduct our first fixed-effects-model Meta-Analysis. We we will
+give the results of this analysis the simple name <code>m</code>.</p>
+<pre><code>#&gt; Warning: package &#39;metafor&#39; was built under R version 4.5.1
+#&gt; Loading required package: Matrix
+#&gt; Loading required package: metadat
+#&gt; Warning: package &#39;metadat&#39; was built under R version 4.5.1
+#&gt; Loading required package: numDeriv
+#&gt; 
+#&gt; Loading the &#39;metafor&#39; package (version 4.8-0). For an
+#&gt; introduction to the package please type: help(metafor)</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(metafor)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">rma</span>(<span class="at">yi =</span> df<span class="sc">$</span>yi,     <span class="co"># The yi-column of the df, which contains Cohen&#39;s d</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>         <span class="at">vi =</span> df<span class="sc">$</span>vi,    <span class="co"># The vi-column of the df, which contains the variances</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>         <span class="at">method =</span> <span class="st">&quot;FE&quot;</span>) <span class="co"># Run a fixed-effect model</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>m</span></code></pre></div>
+<pre><code>#&gt; Fixed-Effects Model (k = 56)
+#&gt; 
+#&gt; I^2 (total heterogeneity / total variability):   64.95%
+#&gt; H^2 (total variability / sampling variability):  2.85
+#&gt; 
+#&gt; Test for Heterogeneity:
+#&gt; Q(df = 55) = 156.9109, p-val &lt; .0001
+#&gt; 
+#&gt; Model Results:
+#&gt; 
+#&gt; estimate      se    zval    pval   ci.lb   ci.ub      
+#&gt;   0.2059  0.0219  9.4135  &lt;.0001  0.1630  0.2487  *** 
+#&gt; 
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+<p>We now see a summary of the results of our Meta-Analysis,
+including</p>
+<ul>
+<li>The total <strong>number of included studies</strong> (k)</li>
+<li>The <strong>overall effect</strong>, its confidence interval and
+p-value</li>
+<li>The <em>Q</em>-test of heterogeneity</li>
+</ul>
+</div>
+</div>
+<div id="random" class="section level2">
+<h2>Random-Effects-Model</h2>
+<p>We can only use the fixed-effect-model when we can assume that
+<strong>all included studies tap into one true effect size</strong>. In
+practice this is hardly ever the case: interventions may vary in certain
+characteristics, the sample used in each study might be slightly
+different, or its methods. If we can assume that there are many small,
+random, uncorrelated variations in true effect sizes, then a more
+appropriate assumption in these cases might be that the true effect size
+follows a normal distribution.</p>
+<p><strong>The Idea behind the Random-Effects-Model</strong></p>
+<p>In the Random-Effects-Model, we want to account for our assumption
+that the population effect size is normally distributed <span class="citation">(Schwarzer, Carpenter, and Rücker 2015)</span>.</p>
+<p>The fixed-effect-model assumes that when the observed effect size
+<span class="math inline">\(\hat\theta_k\)</span> of an individual study
+<span class="math inline">\(k\)</span> deviates from the true effect
+size <span class="math inline">\(\theta_F\)</span>, the only reason for
+this is that the estimate is burdened by (sampling) error <span class="math inline">\(\epsilon_k\)</span>.</p>
+<p><span class="math display">\[\hat\theta_k = \theta_F +
+\epsilon_k\]</span></p>
+<p>While the random-effects-model assumes that, in addition, there is
+<strong>a second source of error</strong> <span class="math inline">\(\zeta_k\)</span>.This second source of error is
+introduced by the fact that even the true effect size <span class="math inline">\(\theta_k\)</span> of our study <span class="math inline">\(k\)</span> is also only part of an over-arching
+distribution of true effect sizes with the mean <span class="math inline">\(\mu\)</span> <span class="citation">(Borenstein et
+al. 2009)</span>.</p>
+<p>The formula for the random-effects-model therefore looks like
+this:</p>
+<p><span class="math display">\[\hat\theta_k = \mu + \epsilon_k +
+\zeta_k\]</span></p>
+<p>When calculating a random-effects-model meta-analysis, where
+therefore also have to take the error <span class="math inline">\(\zeta_k\)</span> into account. To do this, we have
+to <strong>estimate the variance of the distribution of true effect
+sizes</strong>, which is denoted by <span class="math inline">\(\tau^{2}\)</span>, or <em>tau<sup>2</sup></em>.
+There are several estimators for <span class="math inline">\(\tau^{2}\)</span>, all of which are implemented in
+<code>metafor</code>.</p>
+</div>
+<div id="random-effects-model-with-rma" class="section level2">
+<h2>Random-Effects Model with <code>rma</code></h2>
+<p>We can re-use our code from the fixed-effects-model and simply remove
+the <code>method = &quot;FE&quot;</code> argument to conduct a random-effects
+analysis with the default REML estimator for <span class="math inline">\(\tau^2\)</span>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>m_re <span class="ot">&lt;-</span> <span class="fu">rma</span>(<span class="at">yi =</span> df<span class="sc">$</span>yi,     <span class="co"># The yi-column of the df, which contains Cohen&#39;s d</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>            <span class="at">vi =</span> df<span class="sc">$</span>vi)    <span class="co"># The vi-column of the df, which contains the variances</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>m_re</span></code></pre></div>
+<pre><code>#&gt; 
+#&gt; Random-Effects Model (k = 56; tau^2 estimator: REML)
+#&gt; 
+#&gt; tau^2 (estimated amount of total heterogeneity): 0.0570 (SE = 0.0176)
+#&gt; tau (square root of estimated tau^2 value):      0.2388
+#&gt; I^2 (total heterogeneity / total variability):   67.77%
+#&gt; H^2 (total variability / sampling variability):  3.10
+#&gt; 
+#&gt; Test for Heterogeneity:
+#&gt; Q(df = 55) = 156.9109, p-val &lt; .0001
+#&gt; 
+#&gt; Model Results:
+#&gt; 
+#&gt; estimate      se    zval    pval   ci.lb   ci.ub      
+#&gt;   0.2393  0.0414  5.7805  &lt;.0001  0.1581  0.3204  *** 
+#&gt; 
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+</div>
+<div id="metareg" class="section level1">
+<h1>Meta-Regression</h1>
+<p><strong>The idea behind meta-regression</strong></p>
+<p>In a conventional regression, we specify a model predicting the
+dependent variable <span class="math inline">\(y\)</span>, across <span class="math inline">\(_i\)</span> participants, based on their values on
+<span class="math inline">\(p\)</span> predictor variables, <span class="math inline">\(x_{i1} \dots x_{ip}\)</span>. The residual error
+is referred to as <span class="math inline">\(\epsilon_i\)</span>. A
+standard regression equation therefore looks like this:</p>
+<p><span class="math display">\[y_i=\beta_0 + \beta_1x_{1i} +
+...+\beta_px_{pi} + \epsilon_i\]</span></p>
+<p>In a meta-regression, we want to estimate the <strong>effect
+size</strong> <span class="math inline">\(\theta\)</span> of several
+studies <span class="math inline">\(_k\)</span>, as a function of
+between-studies moderators. There are two sources of heterogeneity:
+sampling error, <span class="math inline">\(\epsilon_k\)</span>, and
+between-studies heterogeneity, <span class="math inline">\(\zeta_k\)</span> so our regression looks like
+this:</p>
+<p><span class="math display">\[\theta_k = \beta_0 + \beta_1x_{1k} + ...
++ \beta_px_{pk} + \epsilon_k + \zeta_k\]</span></p>
+<p>You might have seen that when estimating the effect size <span class="math inline">\(\theta_k\)</span> of a study <span class="math inline">\(k\)</span> in our regression model, there are two
+<strong>extra terms in the equation</strong>, <span class="math inline">\(\epsilon_k\)</span> and <span class="math inline">\(\zeta_k\)</span>. The same terms can also be found
+in the equation for the random-effects model. The two terms signify two
+types of <strong>independent errors</strong> which cause our regression
+prediction to be <strong>imperfect</strong>. The first one, <span class="math inline">\(\epsilon_k\)</span>, is the sampling error through
+which the effect size of the study deviates from its &quot;true&quot; effect. The
+second one, <span class="math inline">\(\zeta_k\)</span>, denotes that
+even the true effect size of the study is only sampled from <strong>an
+overarching distribution of effect sizes</strong>.</p>
+<p>As the equation above has includes <strong>fixed effects</strong>
+(the <span class="math inline">\(\beta\)</span> coefficients) as well as
+<strong>random effects</strong> (<span class="math inline">\(\zeta_k\)</span>), the model used in
+meta-regression is often called <strong>a
+mixed-effects-model</strong>.</p>
+<div id="testing-moderators-significance" class="section level3">
+<h3>Testing Moderators&#39; Significance</h3>
+<p>To evaluate the <strong>statistical significance of a
+predictor</strong>, we conduct a <strong>t-test</strong> (or Z-test) of
+its <span class="math inline">\(\beta\)</span>-weight.</p>
+<p><span class="math display">\[ t=\frac{\beta}{SE_{\beta}}\]</span></p>
+<p>Which provides a <span class="math inline">\(p\)</span>-value telling
+us if a variable significantly predicts effect size differences in our
+regression model.</p>
+</div>
+<div id="assessing-meta-regression-model-fit" class="section level3">
+<h3>Assessing Meta-Regression Model Fit</h3>
+<p>In conventional regression, <span class="math inline">\(R^2\)</span>
+is commonly used to quantify the percentage of variance in the data
+explained by the model, as a percentage of total variance (0-100%). As
+this measure is commonly used, and many researchers know how to to
+interpret it, we can also calculate a <span class="math inline">\(R^2\)</span> analog for meta-regression using this
+formula:</p>
+<p><span class="math display">\[R_2=\frac{\hat\tau^2_{REM}-\hat\tau^2_{MEM}}{\hat\tau^2_{REM}}\]</span></p>
+<p>Where <span class="math inline">\(\hat\tau^2_{REM}\)</span> is the
+estimated total heterogenetiy based on the random-effects-model and
+<span class="math inline">\(\hat\tau^2_{REM}\)</span> the total
+heterogeneity of our mixed-effects regression model.</p>
+<p>NOTE however, that <span class="math inline">\(R^2\)</span> refers to
+variance explained in the observed data. In linear regression, the more
+predictors you add, the better your model will explain the observed
+data. But this can decrease the generalizability of you model, through a
+process called <strong>overfitting</strong>: You&#39;re capturing noise in
+your dataset, not true effects that exist in the real world. In
+meta-regression, because the estimate of heterogeneity may differ, we
+may not actually see the <span class="math inline">\(R^2\)</span>
+increasing with more predictors - but because the samples are often
+small, be very mindful of overfitting nonetheless.</p>
+</div>
+<div id="meta-regression-in-r" class="section level2">
+<h2>Meta-regression in R</h2>
+<p>Meta-regressions can be conducted in R using the <code>rma</code>
+function in <code>metafor</code>. First, let&#39;s conduct a regression with
+a single categorical predictor, <code>donorcode</code>, which has two
+levels: <code>Anxious</code> and <code>Typical</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>m_cat <span class="ot">&lt;-</span> <span class="fu">rma</span>(yi <span class="sc">~</span> donorcode, <span class="at">vi =</span> vi, <span class="at">data =</span> df)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>m_cat</span></code></pre></div>
+<pre><code>#&gt; 
+#&gt; Mixed-Effects Model (k = 56; tau^2 estimator: REML)
+#&gt; 
+#&gt; tau^2 (estimated amount of residual heterogeneity):     0.0567 (SE = 0.0177)
+#&gt; tau (square root of estimated tau^2 value):             0.2382
+#&gt; I^2 (residual heterogeneity / unaccounted variability): 67.81%
+#&gt; H^2 (unaccounted variability / sampling variability):   3.11
+#&gt; R^2 (amount of heterogeneity accounted for):            0.49%
+#&gt; 
+#&gt; Test for Residual Heterogeneity:
+#&gt; QE(df = 54) = 155.0054, p-val &lt; .0001
+#&gt; 
+#&gt; Test of Moderators (coefficient 2):
+#&gt; QM(df = 1) = 1.5257, p-val = 0.2168
+#&gt; 
+#&gt; Model Results:
+#&gt; 
+#&gt;                   estimate      se    zval    pval    ci.lb   ci.ub    
+#&gt; intrcpt             0.0829  0.1332  0.6222  0.5338  -0.1781  0.3439    
+#&gt; donorcodeTypical    0.1730  0.1401  1.2352  0.2168  -0.1015  0.4476    
+#&gt; 
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+<p>By default, <code>metafor::rma()</code> will recode
+<code>factor</code> variables to make one group the reference category
+and create dummies for all other groups. The syntax above created a
+binary indicator variable (a dummy variable) for people who fall in the
+<code>Typical</code> category. It then estimated the model intercept -
+which is the population effect size in the <code>Anxious</code>
+category, which serves as reference category here, and the effect of the
+<code>donorcodeTypical</code> dummy, which tells us the difference
+between the two groups&#39; population effects.</p>
+<div id="continuous-predictors" class="section level3">
+<h3>Continuous Predictors</h3>
+<p>Imagine you want to check if the <strong>proportion of male
+participants</strong> is associated with effect size. The variable
+<code>sex</code> contains this information. You can use this predictor
+in a meta-regression:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>m_reg <span class="ot">&lt;-</span> <span class="fu">rma</span>(yi <span class="sc">~</span>sex,</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>             <span class="at">vi =</span> vi,</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>             <span class="at">data =</span> df)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>m_reg</span></code></pre></div>
+<pre><code>#&gt; 
+#&gt; Mixed-Effects Model (k = 56; tau^2 estimator: REML)
+#&gt; 
+#&gt; tau^2 (estimated amount of residual heterogeneity):     0.0544 (SE = 0.0173)
+#&gt; tau (square root of estimated tau^2 value):             0.2333
+#&gt; I^2 (residual heterogeneity / unaccounted variability): 66.50%
+#&gt; H^2 (unaccounted variability / sampling variability):   2.98
+#&gt; R^2 (amount of heterogeneity accounted for):            4.53%
+#&gt; 
+#&gt; Test for Residual Heterogeneity:
+#&gt; QE(df = 54) = 149.5878, p-val &lt; .0001
+#&gt; 
+#&gt; Test of Moderators (coefficient 2):
+#&gt; QM(df = 1) = 2.1607, p-val = 0.1416
+#&gt; 
+#&gt; Model Results:
+#&gt; 
+#&gt;          estimate      se    zval    pval    ci.lb   ci.ub    
+#&gt; intrcpt    0.0648  0.1253  0.5168  0.6053  -0.1808  0.3104    
+#&gt; sex        0.0050  0.0034  1.4699  0.1416  -0.0017  0.0116    
+#&gt; 
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+</div>
+<div id="multiple-meta-regression" class="section level3">
+<h3>Multiple Meta-Regression</h3>
+<p>Previously, we only considered the scenario in which we use
+<strong>one predictor</strong> <span class="math inline">\(\beta_1x_1\)</span> in our meta-regression. When
+we add more than one predictor, we&#39;re using <strong>multiple
+meta-regression</strong>. In multiple meta-regression we use several
+moderators (variables) to predict the outcome (effect sizes). When we
+look back at the <strong>general meta-regression</strong> formula we
+defined before, we actually see that the formula already provides us
+with this feature through the <span class="math inline">\(\beta_nx_{pk}\)</span> part. Here, the parameter
+<span class="math inline">\(p\)</span> denotes that we can include <span class="math inline">\(p\)</span> more predictors/variables into our
+meta-regression, making it a multiple meta-regression.</p>
+<p>We could include both predictors from the previous exercises in a
+mutliple meta-regression as follows:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>m_multi <span class="ot">&lt;-</span> <span class="fu">rma</span>(yi <span class="sc">~</span> sex <span class="sc">+</span> donorcode,</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>               <span class="at">vi =</span> vi,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>               <span class="at">data =</span> df)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>m_multi</span></code></pre></div>
+<pre><code>#&gt; 
+#&gt; Mixed-Effects Model (k = 56; tau^2 estimator: REML)
+#&gt; 
+#&gt; tau^2 (estimated amount of residual heterogeneity):     0.0551 (SE = 0.0175)
+#&gt; tau (square root of estimated tau^2 value):             0.2347
+#&gt; I^2 (residual heterogeneity / unaccounted variability): 66.89%
+#&gt; H^2 (unaccounted variability / sampling variability):   3.02
+#&gt; R^2 (amount of heterogeneity accounted for):            3.42%
+#&gt; 
+#&gt; Test for Residual Heterogeneity:
+#&gt; QE(df = 53) = 148.6166, p-val &lt; .0001
+#&gt; 
+#&gt; Test of Moderators (coefficients 2:3):
+#&gt; QM(df = 2) = 3.0602, p-val = 0.2165
+#&gt; 
+#&gt; Model Results:
+#&gt; 
+#&gt;                   estimate      se     zval    pval    ci.lb   ci.ub    
+#&gt; intrcpt            -0.0337  0.1626  -0.2074  0.8357  -0.3523  0.2849    
+#&gt; sex                 0.0043  0.0035   1.2310  0.2183  -0.0025  0.0111    
+#&gt; donorcodeTypical    0.1361  0.1421   0.9579  0.3381  -0.1424  0.4146    
+#&gt; 
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+<p>Now, let&#39;s create a model that includes <em>all</em> potential
+moderators of the effect size:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>mods <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;age&quot;</span>, <span class="st">&quot;location&quot;</span>, <span class="st">&quot;donorcode&quot;</span>, <span class="st">&quot;interventioncode&quot;</span>, <span class="st">&quot;controlcode&quot;</span>, <span class="st">&quot;recipients&quot;</span>, <span class="st">&quot;outcomecode&quot;</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>res_multi2 <span class="ot">&lt;-</span> <span class="fu">rma</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">&quot;yi ~&quot;</span>, <span class="fu">paste</span>(mods, <span class="at">collapse =</span> <span class="st">&quot;+&quot;</span>))), <span class="at">vi =</span> vi, <span class="at">data =</span> df)</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>res_multi2</span></code></pre></div>
+<pre><code>#&gt; 
+#&gt; Mixed-Effects Model (k = 56; tau^2 estimator: REML)
+#&gt; 
+#&gt; tau^2 (estimated amount of residual heterogeneity):     0.0038 (SE = 0.0076)
+#&gt; tau (square root of estimated tau^2 value):             0.0618
+#&gt; I^2 (residual heterogeneity / unaccounted variability): 12.55%
+#&gt; H^2 (unaccounted variability / sampling variability):   1.14
+#&gt; R^2 (amount of heterogeneity accounted for):            93.30%
+#&gt; 
+#&gt; Test for Residual Heterogeneity:
+#&gt; QE(df = 26) = 34.1905, p-val = 0.1303
+#&gt; 
+#&gt; Test of Moderators (coefficients 2:30):
+#&gt; QM(df = 29) = 105.3506, p-val &lt; .0001
+#&gt; 
+#&gt; Model Results:
+#&gt; 
+#&gt; 
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+</div>
+</div>
+<div id="optional-pitfalls-of-meta-regression" class="section level2">
+<h2>Optional: Pitfalls of Meta-Regression</h2>
+<p>Skip this section if you are pressed for time.</p>
+<div id="multicollinearity" class="section level3">
+<h3>Multicollinearity</h3>
+<p>When performing the analysis above, we saw a warning message:</p>
+<pre><code>#&gt; Warning: Redundant predictors dropped from the model.</code></pre>
+<p>This warning tells us that some of the moderators conveyed exactly
+the same information, and therefore, it&#39;s not possible to include both
+in the same model.</p>
+<p>For example, look at the following subset of the data. Imagine that
+this would be our entire dataset:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>df[<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">24</span>, <span class="dv">28</span>, <span class="dv">46</span>), <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;location&quot;</span>, <span class="st">&quot;interventioncode&quot;</span>, <span class="st">&quot;controlcode&quot;</span>, <span class="st">&quot;outcomecode&quot;</span>)]</span></code></pre></div>
+<p>Note that the variable <code>age</code> has unique values for each
+study, but the first two and second two studies are completely identical
+in the variables <code>location</code>, <code>interventioncode</code>,
+and <code>controlcode</code>. If this was our dataset, it would thus not
+be possible to determine a unique effect for any of these three
+variables (because they overlap completely). This is an example of
+(multi)colinearity. Even more worrying: the column
+<code>outcomecode</code> almost has the same value for each study. If it
+did, then this column would be redundant with the model&#39;s intercept! It
+would no longer be a variable, but a constant. As it stands, only one
+study is distinct in <code>outcomecode</code>. If we add a dummy for
+this variable - that dummy uniquely identifies that one study (which
+means the model will perfectly reproduce its value)!</p>
+</div>
+<div id="overfitting" class="section level3">
+<h3>Overfitting</h3>
+<p>To better understand the risks of (multiple) meta-regression models,
+we have to understand the concept of <strong>overfitting</strong>.
+Overfitting occurs when we build a statistical model which fits the data
+<strong>too closely</strong>. In essence, this means that we build a
+statistical model which can predict the data at hand very well, but
+performs bad at predicting future data it has never seen before. This
+happens if our model assumes that some variation in our data
+<strong>stems from a true &quot;signal&quot; in our data, when in fact we only
+model random noise</strong> <span class="citation">(Hastie, Tibshirani,
+and Friedman 2009)</span>. As a result, our statistical model produces
+<strong>false positive results</strong>: it sees relationships where
+there are none.</p>
+<p>Regression methods, which usually utilize minimization or
+maximization procedures such as Ordinary Least Squares or Maximum
+Likelihood estimation, can be prone to overfitting <span class="citation">(Hastie, Tibshirani, and Friedman 2009)</span>.
+Unfortunately, the risk of building a <strong>non-robust model, which
+produces false-positive results</strong>, is <strong>even
+higher</strong> once we go from conventional regression to
+<strong>meta-regression</strong> <span class="citation">(J. P. T.
+Higgins and Thompson 2004)</span>. There are several reasons for
+this:</p>
+<ol style="list-style-type: decimal">
+<li>In Meta-Regression, our <strong>sample is often small</strong>, as
+we can only use the synthesized data of all analyzed studies <span class="math inline">\(k\)</span>.</li>
+<li>As our meta-analysis aims to be a <strong>comprehensive overview of
+all evidence</strong>, we have no <strong>additional data</strong> on
+which we can &quot;test&quot; how well our regression model can predict high or
+low effect sizes.</li>
+<li>In meta-regressions, we have to deal with the potential presence of
+effect size heterogeneity. Imagine a case in which we have two studies
+with different effect sizes and non-overlapping confidence intervals.
+Every variable which has different values for the different studies
+might be a potential explanation for effect size difference we find,
+while it seems straightforward that <strong>most of such explanations
+are spurious</strong> <span class="citation">(J. P. T. Higgins and
+Thompson 2004)</span>.</li>
+<li>Meta-regression as such, and multiple meta-regression in particular,
+make it very easy to <strong>&quot;play around&quot; with predictors</strong>. We
+can test numerous meta-regression models, include many more predictors
+or remove them in an attempt to explain the heterogeneity in our data.
+Such an approach is of course tempting, and often found in practice,
+because we, as meta-analysts, want to find a significant model which
+explains why effect sizes differ <span class="citation">(J. Higgins et
+al. 2002)</span>. However, such behavior <strong>massively increases the
+risk of spurious findings</strong> <span class="citation">(J. P. T.
+Higgins and Thompson 2004)</span>, because we can change parts of our
+model indefinitely until we find a significant model, which is then very
+likely to be overfitted (i.e., it mostly models statistical noise).</li>
+</ol>
+<p><strong>Some guidelines have been proposed to avoid an excessive
+false positive rate when building meta-regression models:</strong></p>
+<ul>
+<li>Minimize the number of investigated predictors a priori. Predictor
+selection should be based on <strong>predefined scientific or
+theoretical questions</strong> we want to answer in our
+meta-regression.</li>
+<li>When evaluating the fit of a meta-regression model, we prefer models
+which achieve a good fit with less predictors. Use fit indices that
+balance fit and parsimony, such as the <em>Akaike</em> and <em>Bayesian
+information criterion</em>, to determine which model to retain if you
+compare several models.</li>
+<li>When the number of studies is low (which is very likely to be the
+case), and we want to compute the significance of a predictor, you can
+use the Knapp-Hartung adjustment to obtain more reliable estimates <span class="citation">(J. Higgins et al. 2002)</span>, by specifying
+<code>test = &quot;knha</code> when calling <code>rma()</code>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="penalized-meta-regression" class="section level1">
+<h1>Penalized Meta-Regression</h1>
+<p>Meta-regression can be used to account for potentially relevant
+between-studies differences. However, we previously saw that the number
+of candidate moderators is often high relative to the number of studies.
+This introduces risks of overfitting, spurious results, and model
+non-convergence. Bayesian Regularized Meta-Analysis (BRMA) overcomes
+these challenges, selecting relevant moderators by shrinking small
+regression coefficients towards zero with regularizing (LASSO or
+horseshoe) priors <span class="citation">(Van Lissa, van Erp, and
+Clapper 2023)</span>. This method is suitable when there are many
+potential moderators, but it is not known beforehand which of them are
+relevant.</p>
+<p>Let&#39;s use Bayesian regularized meta-regression (BRMA) to select
+relevant moderators!</p>
+<p>First, load in the necessary packages. If you are running the model
+locally on a multi-core machine, you can set
+<code>options(mc.cores = 4)</code>. This runs 4 MCMC chains in parallel,
+giving you multiple independent sampling chains while keeping estimation
+time relatively short.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">library</span>(pema)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">library</span>(tidySEM)</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="fu">options</span>(<span class="at">mc.cores =</span> <span class="dv">4</span>)</span></code></pre></div>
+<div id="two-level-model" class="section level2">
+<h2>Two-level model</h2>
+<p>First, for simplicity, we run a two-level BRMA model, ignoring the
+fact that certain effect sizes come from the same study.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>df_brma <span class="ot">&lt;-</span> df[, <span class="fu">c</span>(<span class="st">&quot;yi&quot;</span>, <span class="st">&quot;vi&quot;</span>, mods)]</span></code></pre></div>
+<div id="two-level-model-with-the-lasso-prior" class="section level3">
+<h3>Two-level model with the lasso prior</h3>
+<p>We start with running a penalized meta-analysis using the lasso
+prior. Compared to the horseshoe prior, the lasso is easier to use
+because it has only two hyperparameters to set. However, the lighter
+tails of the lasso can result in large coefficients being shrunken too
+much towards zero thereby leading to potentially more bias compared to
+the regularized horseshoe prior.</p>
+<p>For the lasso prior, we need to specify the degrees of freedom
+<code>df</code> and the <code>scale</code>. Both default to 1. The
+degrees of freedom determines the chi-square prior that is specified for
+the inverse-tuning parameter. Increasing the degrees of freedom will
+allow larger values for the inverse-tuning parameter, leading to less
+shrinkage. Increasing the scale parameter will also result in less
+shrinkage. The influence of these hyperparameters can be visualized
+through the implemented shiny app, which can be called via
+<code>shiny_prior()</code>, and by calling
+<code>plot(sample_prior())</code>.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>fit_lasso <span class="ot">&lt;-</span> <span class="fu">brma</span>(yi <span class="sc">~</span> .,</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>                  <span class="at">data =</span> df_brma,</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>                  <span class="at">vi =</span> <span class="st">&quot;vi&quot;</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>                  <span class="at">method =</span> <span class="st">&quot;lasso&quot;</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>                  <span class="at">prior =</span> <span class="fu">c</span>(<span class="at">df =</span> <span class="dv">1</span>, <span class="at">scale =</span> <span class="dv">1</span>),</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>                  <span class="at">mute_stan =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div id="assessing-convergence-and-interpreting-the-results" class="section level4">
+<h4>Assessing convergence and interpreting the results</h4>
+<p>We can request the results using the <code>summary</code> function.
+Before we interpret the results, we need to ensure that the MCMC chains
+have converged to the posterior distribution. Two helpful diagnostics
+provided in the summary are the number of effective posterior samples
+<code>n_eff</code> and the potential scale reduction factor
+<code>Rhat</code>. <code>n_eff</code> is an estimate of the number of
+independent samples from the posterior. Ideally, the ratio
+<code>n_eff</code> to total samples is as close to 1 as possible.
+<code>Rhat</code> compares the between- and within-chain estimates and
+is ideally close to 1 (indicating the chains have mixed well). Should
+any values for <code>n_eff</code> or <code>Rhat</code> be far from these
+ideal values, you can try increasing the number of iterations through
+the <code>iter</code> argument. By default, the <code>brma</code>
+function runs four MCMC chains with 2000 iterations each, half of which
+is discarded as burn-in. As a result, a total of 4000 iterations is
+available on which posterior summaries are based. If this does not help,
+non-convergence might indicate a problem with the model
+specification.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>sum <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit_lasso)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>sum<span class="sc">$</span>coefficients[, <span class="fu">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;sd&quot;</span>, <span class="st">&quot;2.5%&quot;</span>, <span class="st">&quot;97.5%&quot;</span>, <span class="st">&quot;n_eff&quot;</span>, <span class="st">&quot;Rhat&quot;</span>)]</span></code></pre></div>
+<p>If we are satisfied with the convergence, we can continue looking at
+the posterior summary statistics. The <code>summary</code> function
+provides the posterior mean estimate for the effect of each moderator.
+Since Bayesian penalization does not automatically shrink estimates
+exactly to zero, some additional criterion is needed to determine which
+moderators should be selected in the model. Currently, this is done
+using the 95% credible intervals, with a moderator being selected if
+zero is excluded in this interval. In the <code>summary</code> this is
+denoted by an asterisk for that moderator.</p>
+<p>Also note the summary statistics for <code>tau2</code>, the
+(unexplained) residual between-studies heterogeneity.</p>
+</div>
+</div>
+</div>
+<div id="optional-three-level-model-with-horseshoe-prior" class="section level2">
+<h2>Optional: Three-level model with Horseshoe Prior</h2>
+<p>The default prior in <code>brma()</code> is the horseshoe prior,
+because it performed best in simulation studies. Moreover, we can take
+into account the fact that some effect sizes might come from the same
+study by fitting a three-level model as follows:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>df_brma_threelevel <span class="ot">&lt;-</span> df[, <span class="fu">c</span>(<span class="st">&quot;yi&quot;</span>, <span class="st">&quot;vi&quot;</span>, <span class="st">&quot;study_id&quot;</span>, mods)]</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>fit_hs <span class="ot">&lt;-</span> <span class="fu">brma</span>(yi <span class="sc">~</span> .,</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>               <span class="at">data =</span> df_brma_threelevel,</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>               <span class="at">vi =</span> <span class="st">&quot;vi&quot;</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>               <span class="at">study =</span> <span class="st">&quot;study_id&quot;</span>)</span></code></pre></div>
+<div id="more-information" class="section level3">
+<h3>More Information</h3>
+<p><strong>Reference:</strong> <span class="citation">Van Lissa, van
+Erp, and Clapper (2023)</span></p>
+<p>For a more elaborate tutorial, see <a href="https://cjvanlissa.github.io/pema/articles/using-brma.html">this
+vignette</a>.</p>
+</div>
+</div>
+</div>
+<div id="random-forest-meta-regression" class="section level1">
+<h1>Random Forest Meta-Regression</h1>
+<p>BRMA is comparable to multiple meta-regression, with the main
+difference being that it shrinks coefficients towards zero to eliminate
+irrelevant moderators. An alternative machine learning-informed approach
+to moderator selection is to use tree-based methods. In this section, we
+use MetaForest - a random forest-based approach - to analyze the same
+data and select relevant moderators <span class="citation">(Van Lissa
+2020)</span>.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># Load the metaforest package</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">library</span>(metaforest)</span></code></pre></div>
+<div id="check-convergence" class="section level3">
+<h3>Check Convergence</h3>
+<p>For any random forest model, it is important to determine how many
+trees are needed to get stable results. Convergence is indicated by
+stabilization of the cumulative mean squared out-of-bag prediction error
+(MSEoob), as a function of the number of trees in the model. We run the
+analysis once with a very high number of trees, and pick a smaller
+number of trees, at which the model is also seen to have converged, to
+speed up computationally heavy steps, such as replication and model
+tuning. We re-examine convergence for the final model. Note that we can
+account for multiple effect sizes per study in <code>MetaForest</code>
+as well:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># Run model with many trees to check convergence</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">74</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>check_conv <span class="ot">&lt;-</span> <span class="fu">MetaForest</span>(yi<span class="sc">~</span>.,</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a><span class="at">data =</span> df_brma_threelevel,</span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a><span class="at">study =</span> <span class="st">&quot;study_id&quot;</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a><span class="at">whichweights =</span> <span class="st">&quot;random&quot;</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a><span class="at">num.trees =</span> <span class="dv">10000</span>)</span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a><span class="co"># Plot convergence trajectory</span></span>
+<span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a><span class="fu">plot</span>(check_conv)</span></code></pre></div>
+<p>This model converges at around 2500 trees.</p>
+</div>
+<div id="model-tuning" class="section level3">
+<h3>Model Tuning</h3>
+<p>Machine learning models often have hyperparameters that must be tuned
+to get good performance for a specific learning task. We can tune the
+model using the R package <code>caret</code>. As tuning parameters, we
+consider all three types of weights (uniform, fixed-, and
+random-effects), the number of candidate variables at each split from
+2–6, and a minimum node size from 2–6. We select the model with smallest
+root mean squared prediction error (RMSE) as the final model, based on
+5-fold clustered cross-validation. Clustered cross-validation means that
+effect sizes from the same study are always included in the same fold,
+to account for the dependency in the data. Note that the number of folds
+cannot exceed the number of clusters in the data. Moreover, if the
+number of clusters is very small, one might have to resort to specifying
+the same number of folds as clusters. Model tuning is computationally
+intensive and might take a long time.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># Load caret</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="co"># Set up 5-fold clustered CV</span></span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>grouped_cv <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">&quot;cv&quot;</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a><span class="at">index =</span> <span class="fu">groupKFold</span>(df_brma_threelevel<span class="sc">$</span>study_id, <span class="at">k =</span> <span class="dv">5</span>))</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a><span class="co"># Set up a tuning grid</span></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>tuning_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">whichweights =</span> <span class="fu">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;fixed&quot;</span>, <span class="st">&quot;unif&quot;</span>),</span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a><span class="at">mtry =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>,</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a><span class="at">min.node.size =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a><span class="co"># X should contain only retained moderators, clustering variable, and vi</span></span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>X <span class="ot">&lt;-</span> df_brma_threelevel[, <span class="fu">c</span>(<span class="st">&quot;study_id&quot;</span>, <span class="st">&quot;vi&quot;</span>, mods)]</span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a>mf_cv <span class="ot">&lt;-</span> <span class="fu">train</span>(<span class="at">y =</span> df_brma_threelevel<span class="sc">$</span>yi,</span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a><span class="at">x =</span> X,</span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a><span class="at">study =</span> <span class="st">&quot;study_id&quot;</span>, <span class="co"># Name of the clustering variable</span></span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a><span class="at">method =</span> <span class="fu">ModelInfo_mf</span>(),</span>
+<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a><span class="at">trControl =</span> grouped_cv,</span>
+<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a><span class="at">tuneGrid =</span> tuning_grid,</span>
+<span id="cb28-21"><a href="#cb28-21" tabindex="-1"></a><span class="at">num.trees =</span> <span class="dv">2500</span>)</span>
+<span id="cb28-22"><a href="#cb28-22" tabindex="-1"></a><span class="co"># Best model tuning parameters</span></span>
+<span id="cb28-23"><a href="#cb28-23" tabindex="-1"></a>mf_cv<span class="sc">$</span>results[<span class="fu">which.min</span>(mf_cv<span class="sc">$</span>results<span class="sc">$</span>RMSE), ]</span></code></pre></div>
+<p>Based on the root mean squared error, the best combination of tuning
+parameters were fixed-effect weights, with three candidate variables per
+split, and a minimum of three cases per terminal node.</p>
+</div>
+<div id="interpreting-the-results" class="section level3">
+<h3>Interpreting the Results</h3>
+<p>The object returned by train already contains the final model,
+estimated with the best combination of tuning parameters.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="co"># Extract final model</span></span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>final <span class="ot">&lt;-</span> mf_cv<span class="sc">$</span>finalModel</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a><span class="co"># Extract R^2_oob from the final model</span></span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>r2_oob <span class="ot">&lt;-</span> final<span class="sc">$</span>forest<span class="sc">$</span>r.squared</span></code></pre></div>
+<p>This model has a positive estimate of explained variance in new data,
+<span class="math inline">\(R^2_{oob} = .19\)</span>.</p>
+<p>Now, we proceed to interpreting the moderator effects, by examining
+variable importance and partial dependence plots. Variable importance is
+determined by randomly permuting each variable in turn (so it loses all
+meaningful association with the outcome), and then assessing how much
+the model&#39;s predictive performance diminishes after this random
+permutation. For an important variable, the model performance drops
+after permutation. Partial dependence plots show the model&#39;s predicted
+values at different levels of one variable, averaging over the values of
+all other variables. Thus, you can think of this as the bivariate
+marginal association.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co"># Plot variable importance</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="fu">VarImpPlot</span>(final)</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a><span class="co"># Sort the variable names by importance</span></span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>ordered_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(final<span class="sc">$</span>forest<span class="sc">$</span>variable.importance)[</span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a><span class="fu">order</span>(final<span class="sc">$</span>forest<span class="sc">$</span>variable.importance, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)]</span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a><span class="co"># Plot partial dependence</span></span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a><span class="fu">PartialDependence</span>(final, <span class="at">vars =</span> ordered_vars,</span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a><span class="at">rawdata =</span> <span class="cn">TRUE</span>, <span class="at">pi =</span> .<span class="dv">95</span>)</span></code></pre></div>
+</div>
+<div id="more-information-1" class="section level3">
+<h3>More Information</h3>
+<p><strong>Reference:</strong> <span class="citation">Van Lissa
+(2020)</span></p>
+<p>For a more elaborate tutorial, see <a href="https://doi.org/10.4324/9780429273872-16">this open access book
+chapter on MetaForest</a>.</p>
+</div>
+</div>
+<div id="bayesian-evidence-synthesis" class="section level1">
+<h1>Bayesian Evidence Synthesis</h1>
+<p>Heterogeneity presents a fundamental challenge to research synthesis
+methods <span class="citation">(J. P. T. Higgins, Thompson, and
+Spiegelhalter 2009)</span>. When studies all assess the same informative
+hypothesis, but differ in fundamental ways that preclude aggregation
+through conventional meta-analysis methods, Bayesian Evidence Synthesis
+(BES) can be used. Consider, for example, the situation that arises when
+the number of moderators is very large relative to the number of
+studies, or when moderators are redundant (see Meta-Regression chapter
+above).</p>
+<p>The PBF <span class="citation">(Van Lissa, Kuiper, and Clapper
+2023)</span> can be used instead of random-effects meta-analysis when
+its assumptions were likely to be violated. This Tutorial illustrates
+the use of the PBF in such cases.</p>
+<p>At the start of the day, we conducted random- and fixed effects
+meta-analyses using the function <code>rma()</code> from the
+<code>metafor</code> package. This required the <code>yi</code> and
+<code>vi</code> columns. Now, we will perform a PBF analysis using the
+<code>pbf()</code> function in the <code>bain</code> package, which
+accepts the same arguments.</p>
+<p>First, we will load the required packages.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">library</span>(bain)</span></code></pre></div>
+<div id="repeating-the-rma" class="section level3">
+<h3>Repeating the RMA</h3>
+<p>Let&#39;s repeat our previous random effects meta-analysis, and examine a
+funnel plot of the distribution of effect sizes:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>res_rma <span class="ot">&lt;-</span> <span class="fu">rma</span>(<span class="at">yi =</span> yi, <span class="at">vi =</span> vi, <span class="at">data =</span> df)</span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">funnel</span>(res_rma)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" width="480" /></p>
+<p>An effect size over 0 means that helping others increased happiness,
+even a little bit.</p>
+<p>With a Bayes Factor, we could test the informative hypothesis (just a
+directional null hypothesis) that helping increases happiness in one
+particular study, for example the first row of the dataset:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="fu">bain</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;yi&quot;</span> <span class="ot">=</span> df<span class="sc">$</span>yi[<span class="dv">1</span>]), <span class="co"># Select the first effect size</span></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>     <span class="at">Sigma =</span> <span class="fu">matrix</span>(df<span class="sc">$</span>vi[<span class="dv">1</span>], <span class="dv">1</span>, <span class="dv">1</span>), <span class="co"># Make covariance matrix</span></span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>     <span class="at">hypothesis =</span> <span class="st">&quot;yi &gt; 0&quot;</span>, <span class="co"># Define informative hypothesis</span></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>     <span class="at">n =</span> df<span class="sc">$</span>n1i[<span class="dv">1</span>]<span class="sc">+</span>df<span class="sc">$</span>n2c[<span class="dv">1</span>]) <span class="co"># Calculate total sample size</span></span></code></pre></div>
+<p>The results indicate that the first study provides 1508 times more
+evidence <em>in favor</em> of our informative hypothesis (helping
+increases happiness) than against it, <span class="math inline">\(BF =
+1508.434\)</span>.</p>
+</div>
+<div id="product-bayes-factor" class="section level3">
+<h3>Product Bayes Factor</h3>
+<p>We now perform the PBF analysis, using the <code>pbf()</code> method
+for numeric input (see <code>?pbf</code>). This interface is very
+similar to <code>rma()</code>, and is specifically designed for
+applications where PBF is applied to meta-analytic datasets. The
+<code>yi</code> and <code>vi</code> arguments are the same as those of
+<code>rma()</code>. Additional argument <code>ni</code> is used to
+construct the prior for the approximate Bayes factors <span class="citation">(Hoijtink et al. 2019)</span>. Importantly, the
+<code>hypothesis</code> argument determines which informative hypotheses
+are tested.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>res_pbf <span class="ot">&lt;-</span> <span class="fu">pbf</span>(<span class="at">yi =</span> df<span class="sc">$</span>yi,</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>               <span class="at">vi =</span> df<span class="sc">$</span>vi,</span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>               <span class="at">ni =</span> <span class="fu">sum</span>(df<span class="sc">$</span>n1i<span class="sc">+</span>df<span class="sc">$</span>n2c),</span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>               <span class="at">hypothesis =</span> <span class="st">&quot;y &gt; 0&quot;</span>)</span></code></pre></div>
+<p>The resulting output shows the product Bayes factors for our
+informative hypothesis (PBF column), as well as study-specific Bayes
+factors (remaining columns, trimmed here to keep the document tidy). The
+PBF in favor of our hypothesis is very high (a 7.45 with 69 zeroes), so
+the body of evidence provides consistent support for the notion that
+helping increases happiness.</p>
+<p>This last question relates to generalizability. When we perform a
+normal fixed- or random-effects meta-analysis, we rely on sampling
+theory and assume that each effect size represents a random sample from
+the population of possible effect sizes.</p>
+<p>If this assumption is justified, then we can claim that the pooled
+effect size generalized to the population those effect sizes were
+randomly sampled from. Thus, our pooled effect size tells us something
+about future studies.</p>
+<p>Of course, this assumption is very questionable, due to publication
+bias, and the fact that researchers build upon previous work! So in
+practice, meta-analysis might not be as generalizable as we&#39;d like.</p>
+<p>The PBF does not rely on sampling theory and does not make such
+assumptions about random sampling from the population. As a result, it
+can only be interpreted as a quantitative summary of the evidence
+<em>within the present sample of studies</em>.</p>
+<p>It would be incorrect to interpret the PBF as saying anything about
+the population; we should interpret it as a summary statistic of the
+studies at hand. Of course, the same could be said about conventional
+meta-analysis, if the assumption of random sampling is violated.</p>
+</div>
+<div id="more-information-2" class="section level3">
+<h3>More Information</h3>
+<p><strong>References:</strong> <span class="citation">Van Lissa,
+Kuiper, and Clapper (2023)</span>, <span class="citation">Van Lissa et
+al. (2020)</span></p>
+<p>For a more elaborate tutorial on the Product Bayes Factor, see <a href="https://osf.io/preprints/psyarxiv/nvqpw">this paper, in press at
+Research Synthesis Methods</a>.</p>
+</div>
+<div id="credit" class="section level2">
+<h2>Credit</h2>
+<p>This tutorial is partly based on the book <em>Doing Meta-Analysis
+with R: A Hands-On Guide</em>, which is also recommended as further
+reading:</p>
+<blockquote>
+<p>Harrer, M., Cuijpers, P., Furukawa, T.A., &amp; Ebert, D.D. (2021).
+<em>Doing Meta-Analysis with R: A Hands-On Guide</em>. Boca Raton, FL
+and London: Chapmann &amp; Hall/CRC Press. ISBN 978-0-367-61007-4.</p>
+</blockquote>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-borensteinIntroductionMetaAnalysis2009" class="csl-entry">
+Borenstein, Michael, Larry V. Hedges, Julian P. T. Higgins, and Hannah
+R. Rothstein. 2009. <em>Introduction to <span>Meta-Analysis</span></em>.
+John Wiley &amp; Sons, Ltd. <a href="https://doi.org/10.1002/9780470743386">https://doi.org/10.1002/9780470743386</a>.
+</div>
+<div id="ref-hastieElementsStatisticalLearning2009" class="csl-entry">
+Hastie, Trevor, Robert Tibshirani, and Jerome Friedman. 2009. <em>The
+Elements of Statistical Learning: <span>Data</span> Mining, Inference,
+and Prediction</em>. Second. New York: Springer.
+</div>
+<div id="ref-higginsControllingRiskSpurious2004" class="csl-entry">
+Higgins, Julian P. T., and Simon G. Thompson. 2004. <span>“Controlling
+the Risk of Spurious Findings from Meta-Regression.”</span>
+<em>Statistics in Medicine</em> 23 (11): 1663–82. <a href="https://doi.org/10.1002/sim.1752">https://doi.org/10.1002/sim.1752</a>.
+</div>
+<div id="ref-higginsReevaluationRandomeffectsMetaanalysis2009" class="csl-entry">
+Higgins, Julian P. T., Simon G. Thompson, and David J Spiegelhalter.
+2009. <span>“A Re-Evaluation of Random-Effects Meta-Analysis.”</span>
+<em>Journal of the Royal Statistical Society. Series A, (Statistics in
+Society)</em> 172 (1): 137–59. <a href="https://doi.org/10.1111/j.1467-985X.2008.00552.x">https://doi.org/10.1111/j.1467-985X.2008.00552.x</a>.
+</div>
+<div id="ref-higginsStatisticalHeterogeneitySystematic2002" class="csl-entry">
+Higgins, Julian, Simon Thompson, Jonathan Deeks, and Douglas Altman.
+2002. <span>“Statistical Heterogeneity in Systematic Reviews of Clinical
+Trials: A Critical Appraisal of Guidelines and Practice.”</span>
+<em>Journal of Health Services Research &amp; Policy</em> 7 (1): 51–61.
+<a href="https://doi.org/10.1258/1355819021927674">https://doi.org/10.1258/1355819021927674</a>.
+</div>
+<div id="ref-hoijtinkTutorialTestingHypotheses2019" class="csl-entry">
+Hoijtink, Herbert, Joris Mulder, Caspar van Lissa, and Xin Gu. 2019.
+<span>“A Tutorial on Testing Hypotheses Using the <span>Bayes</span>
+Factor.”</span> <em>Psychological Methods</em> 24 (5): 539–56. <a href="https://doi.org/10.1037/met0000201">https://doi.org/10.1037/met0000201</a>.
+</div>
+<div id="ref-schwarzerMetaAnalysis2015" class="csl-entry">
+Schwarzer, Guido, James R. Carpenter, and Gerta Rücker. 2015.
+<em>Meta-<span>Analysis</span> with <span>R</span></em>. Use
+<span>R</span>! Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-21416-0">https://doi.org/10.1007/978-3-319-21416-0</a>.
+</div>
+<div id="ref-vanlissaSmallSampleMetaanalyses2020" class="csl-entry">
+Van Lissa, Caspar J. 2020. <span>“Small Sample Meta-Analyses:
+<span>Exploring</span> Heterogeneity Using
+<span>MetaForest</span>.”</span> In <em>Small <span>Sample Size
+Solutions</span> (<span>Open Access</span>): <span>A Guide</span> for
+<span>Applied Researchers</span> and <span>Practitioners</span></em>,
+edited by Rens Van De Schoot and Milica Miočević. European
+<span>Association</span> of <span>Methodology Series</span>. CRC Press.
+</div>
+<div id="ref-vanlissaSelectingRelevantModerators2023a" class="csl-entry">
+Van Lissa, Caspar J., Sara van Erp, and Eli-Boaz Clapper. 2023.
+<span>“Selecting Relevant Moderators with <span>Bayesian</span>
+Regularized Meta-Regression.”</span> <em>Research Synthesis Methods</em>
+14 (2): 301–22. <a href="https://doi.org/10.1002/jrsm.1628">https://doi.org/10.1002/jrsm.1628</a>.
+</div>
+<div id="ref-vanlissaTeacherCornerEvaluating2020" class="csl-entry">
+Van Lissa, Caspar J., Xin Gu, Joris Mulder, Yves Rosseel, Camiel Van
+Zundert, and Herbert Hoijtink. 2020. <span>“Teacher’s
+<span>Corner</span>: <span>Evaluating Informative Hypotheses
+Using</span> the <span>Bayes Factor</span> in <span>Structural Equation
+Models</span>.”</span> <em>Structural Equation Modeling: A
+Multidisciplinary Journal</em> 0 (0): 1–10. <a href="https://doi.org/10.1080/10705511.2020.1745644">https://doi.org/10.1080/10705511.2020.1745644</a>.
+</div>
+<div id="ref-vanlissaAggregatingEvidenceConceptual2023" class="csl-entry">
+Van Lissa, Caspar J., Rebecca M. Kuiper, and Eli-Boaz Clapper. 2023.
+<span>“Aggregating Evidence from Conceptual Replication Studies Using
+the Product <span>Bayes</span> Factor.”</span> Preprint. PsyArXiv. <a href="https://doi.org/10.31234/osf.io/nvqpw">https://doi.org/10.31234/osf.io/nvqpw</a>.
+</div>
+<div id="ref-viechtbauerConductingMetaanalysesMetafor2010" class="csl-entry">
+Viechtbauer, Wolfgang. 2010. <span>“Conducting Meta-Analyses in
+<span>R</span> with the Metafor Package.”</span> <em>Journal of
+Statistical Software</em> 36 (3): 1–48.
+</div>
+</div>
+</div>
+</div>
+
+<script>
+
+/* update total correct if #webex-total_correct exists */
+update_total_correct = function() {
+  console.log("webex: update total_correct");
+
+  var t = document.getElementsByClassName("webex-total_correct");
+  for (var i = 0; i < t.length; i++) {
+    p = t[i].parentElement;
+    var correct = p.getElementsByClassName("webex-correct").length;
+    var solvemes = p.getElementsByClassName("webex-solveme").length;
+    var radiogroups = p.getElementsByClassName("webex-radiogroup").length;
+    var selects = p.getElementsByClassName("webex-select").length;
+
+    t[i].innerHTML = correct + " of " + (solvemes + radiogroups + selects) + " correct";
+  }
+}
+
+/* webex-solution button toggling function */
+b_func = function() {
+  console.log("webex: toggle hide");
+
+  var cl = this.parentElement.classList;
+  if (cl.contains('open')) {
+    cl.remove("open");
+  } else {
+    cl.add("open");
+  }
+}
+
+/* check answers */
+check_func = function() {
+  console.log("webex: check answers");
+
+  var cl = this.parentElement.classList;
+  if (cl.contains('unchecked')) {
+    cl.remove("unchecked");
+    this.innerHTML = "Hide Answers";
+  } else {
+    cl.add("unchecked");
+    this.innerHTML = "Show Answers";
+  }
+}
+
+/* function for checking solveme answers */
+solveme_func = function(e) {
+  console.log("webex: check solveme");
+
+  var real_answers = JSON.parse(this.dataset.answer);
+  var my_answer = this.value;
+  var cl = this.classList;
+  if (cl.contains("ignorecase")) {
+    my_answer = my_answer.toLowerCase();
+  }
+  if (cl.contains("nospaces")) {
+    my_answer = my_answer.replace(/ /g, "")
+  }
+
+  if (my_answer == "") {
+    cl.remove("webex-correct");
+    cl.remove("webex-incorrect");
+  } else if (real_answers.includes(my_answer)) {
+    cl.add("webex-correct");
+    cl.remove("webex-incorrect");
+  } else {
+    cl.add("webex-incorrect");
+    cl.remove("webex-correct");
+  }
+
+  // match numeric answers within a specified tolerance
+  if(this.dataset.tol > 0){
+    var tol = JSON.parse(this.dataset.tol);
+    var matches = real_answers.map(x => Math.abs(x - my_answer) < tol)
+    if (matches.reduce((a, b) => a + b, 0) > 0) {
+      cl.add("webex-correct");
+    } else {
+      cl.remove("webex-correct");
+    }
+  }
+
+  // added regex bit
+  if (cl.contains("regex")){
+    answer_regex = RegExp(real_answers.join("|"))
+    if (answer_regex.test(my_answer)) {
+      cl.add("webex-correct");
+    }
+  }
+
+  update_total_correct();
+}
+
+/* function for checking select answers */
+select_func = function(e) {
+  console.log("webex: check select");
+
+  var cl = this.classList
+
+  /* add style */
+  cl.remove("webex-incorrect");
+  cl.remove("webex-correct");
+  if (this.value == "answer") {
+    cl.add("webex-correct");
+  } else if (this.value != "blank") {
+    cl.add("webex-incorrect");
+  }
+
+  update_total_correct();
+}
+
+/* function for checking radiogroups answers */
+radiogroups_func = function(e) {
+  console.log("webex: check radiogroups");
+
+  var checked_button = document.querySelector('input[name=' + this.id + ']:checked');
+  var cl = checked_button.parentElement.classList;
+  var labels = checked_button.parentElement.parentElement.children;
+
+  /* get rid of styles */
+  for (i = 0; i < labels.length; i++) {
+    labels[i].classList.remove("webex-incorrect");
+    labels[i].classList.remove("webex-correct");
+  }
+
+  /* add style */
+  if (checked_button.value == "answer") {
+    cl.add("webex-correct");
+  } else {
+    cl.add("webex-incorrect");
+  }
+
+  update_total_correct();
+}
+
+window.onload = function() {
+  console.log("webex onload");
+  /* set up solution buttons */
+  var buttons = document.getElementsByTagName("button");
+
+  for (var i = 0; i < buttons.length; i++) {
+    if (buttons[i].parentElement.classList.contains('webex-solution')) {
+      buttons[i].onclick = b_func;
+    }
+  }
+
+  var check_sections = document.getElementsByClassName("webex-check");
+  console.log("check:", check_sections.length);
+  for (var i = 0; i < check_sections.length; i++) {
+    check_sections[i].classList.add("unchecked");
+
+    let btn = document.createElement("button");
+    btn.innerHTML = "Show Answers";
+    btn.classList.add("webex-check-button");
+    btn.onclick = check_func;
+    check_sections[i].appendChild(btn);
+
+    let spn = document.createElement("span");
+    spn.classList.add("webex-total_correct");
+    check_sections[i].appendChild(spn);
+  }
+
+  /* set up webex-solveme inputs */
+  var solveme = document.getElementsByClassName("webex-solveme");
+
+  for (var i = 0; i < solveme.length; i++) {
+    /* make sure input boxes don't auto-anything */
+    solveme[i].setAttribute("autocomplete","off");
+    solveme[i].setAttribute("autocorrect", "off");
+    solveme[i].setAttribute("autocapitalize", "off");
+    solveme[i].setAttribute("spellcheck", "false");
+    solveme[i].value = "";
+
+    /* adjust answer for ignorecase or nospaces */
+    var cl = solveme[i].classList;
+    var real_answer = solveme[i].dataset.answer;
+    if (cl.contains("ignorecase")) {
+      real_answer = real_answer.toLowerCase();
+    }
+    if (cl.contains("nospaces")) {
+      real_answer = real_answer.replace(/ /g, "");
+    }
+    solveme[i].dataset.answer = real_answer;
+
+    /* attach checking function */
+    solveme[i].onkeyup = solveme_func;
+    solveme[i].onchange = solveme_func;
+
+    solveme[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
+  }
+
+  /* set up radiogroups */
+  var radiogroups = document.getElementsByClassName("webex-radiogroup");
+  for (var i = 0; i < radiogroups.length; i++) {
+    radiogroups[i].onchange = radiogroups_func;
+  }
+
+  /* set up selects */
+  var selects = document.getElementsByClassName("webex-select");
+  for (var i = 0; i < selects.length; i++) {
+    selects[i].onchange = select_func;
+    selects[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
+  }
+
+  update_total_correct();
+}
+
+</script>
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
