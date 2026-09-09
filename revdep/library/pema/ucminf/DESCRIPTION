@@ -1,0 +1,31 @@
+Package: ucminf
+Title: General-Purpose Unconstrained Non-Linear Optimization
+Version: 1.2.3
+Authors@R: c(
+    person("K Hervé", "Dakpo", email = "k-herve.dakpo@inrae.fr", 
+    role = c("ctb", "cre")),
+    person("Hans Bruun", "Nielsen", role = "aut"),
+    person("Stig Bousgaard", "Mortensen", role = "aut")
+  )
+Description: An algorithm for general-purpose unconstrained non-linear optimization.
+             The algorithm is of quasi-Newton type with BFGS updating of the inverse
+             Hessian and soft line search with a trust region type monitoring of the
+             input to the line search algorithm. The interface of 'ucminf' is
+             designed for easy interchange with 'optim'.
+License: GPL (>= 2)
+URL: https://github.com/hdakpo/ucminf
+BugReports: https://github.com/hdakpo/ucminf/issues
+Encoding: UTF-8
+RoxygenNote: 7.3.3
+Depends: R (>= 3.5.0)
+Suggests: numDeriv
+NeedsCompilation: yes
+Packaged: 2026-04-02 08:48:51 UTC; hdakpo
+Author: K Hervé Dakpo [ctb, cre],
+  Hans Bruun Nielsen [aut],
+  Stig Bousgaard Mortensen [aut]
+Maintainer: K Hervé Dakpo <k-herve.dakpo@inrae.fr>
+Repository: CRAN
+Date/Publication: 2026-04-02 10:50:02 UTC
+Built: R 4.6.1; x86_64-w64-mingw32; 2026-08-19 11:47:14 UTC; windows
+Archs: x64

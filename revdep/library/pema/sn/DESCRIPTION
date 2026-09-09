@@ -1,0 +1,29 @@
+Package: sn
+Version: 2.1.3
+Date: 2026-02-24
+Title: The Skew-Normal and Related Distributions Such as the Skew-t and
+        the SUN
+Authors@R: person(given = "Adelchi", family = "Azzalini", 
+                  email = "adelchi.azzalini@unipd.it", role = c("aut", "cre"), 
+                  comment = c(ORCID = "0000-0002-7583-1269"))
+Maintainer: Adelchi Azzalini <adelchi.azzalini@unipd.it>
+Depends: R (>= 3.0.0), methods, stats4
+Imports: mnormt (>= 2.0.0), numDeriv, utils, quantreg
+Suggests: R.rsp
+VignetteBuilder: R.rsp
+Description: Build and manipulate probability distributions of the skew-normal 
+  family and some related ones, notably the skew-t and the SUN families. 
+  For the skew-normal and the skew-t distributions, statistical methods are 
+  provided for data fitting and model diagnostics, in the univariate and the 
+  multivariate case.
+License: GPL-2 | GPL-3
+URL: http://azzalini.stat.unipd.it/SN/
+Encoding: UTF-8
+NeedsCompilation: no
+RoxygenNote: 7.3.3
+Packaged: 2026-02-24 08:26:25 UTC; aa
+Author: Adelchi Azzalini [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-7583-1269>)
+Repository: CRAN
+Date/Publication: 2026-02-24 10:00:02 UTC
+Built: R 4.6.1; ; 2026-09-02 03:16:19 UTC; windows

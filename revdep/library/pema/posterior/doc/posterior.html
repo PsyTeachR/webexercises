@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Paul Bürkner, Jonah Gabry, Matthew Kay, and Aki Vehtari" />
+
+
+<title>The posterior R package</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">The posterior R package</h1>
+<h4 class="author">Paul Bürkner, Jonah Gabry, Matthew Kay, and Aki
+Vehtari</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#installation" id="toc-installation">Installation</a></li>
+<li><a href="#example" id="toc-example">Example</a></li>
+<li><a href="#draws-formats" id="toc-draws-formats">Draws formats</a>
+<ul>
+<li><a href="#available-formats" id="toc-available-formats">Available
+formats</a></li>
+<li><a href="#converting-between-formats" id="toc-converting-between-formats">Converting between formats</a></li>
+<li><a href="#converting-regular-r-objects-to-draws-formats" id="toc-converting-regular-r-objects-to-draws-formats">Converting
+regular R objects to <code>draws</code> formats</a></li>
+</ul></li>
+<li><a href="#manipulating-draws-objects" id="toc-manipulating-draws-objects">Manipulating <code>draws</code>
+objects</a>
+<ul>
+<li><a href="#subsetting" id="toc-subsetting">Subsetting</a></li>
+<li><a href="#mutating-transformations-of-variables" id="toc-mutating-transformations-of-variables">Mutating (transformations
+of variables)</a></li>
+<li><a href="#renaming" id="toc-renaming">Renaming</a></li>
+<li><a href="#binding" id="toc-binding">Binding</a></li>
+</ul></li>
+<li><a href="#summaries-and-diagnostics" id="toc-summaries-and-diagnostics">Summaries and diagnostics</a>
+<ul>
+<li><a href="#summarise_draws-basic-usage" id="toc-summarise_draws-basic-usage">summarise_draws() basic
+usage</a></li>
+<li><a href="#changing-column-names" id="toc-changing-column-names">Changing column names</a></li>
+<li><a href="#using-custom-functions" id="toc-using-custom-functions">Using custom functions</a></li>
+<li><a href="#specifying-functions-using-lambda-like-syntax" id="toc-specifying-functions-using-lambda-like-syntax">Specifying
+functions using lambda-like syntax</a></li>
+<li><a href="#other-diagnostics" id="toc-other-diagnostics">Other
+diagnostics</a></li>
+</ul></li>
+<li><a href="#other-methods-for-working-with-draws-objects" id="toc-other-methods-for-working-with-draws-objects">Other methods for
+working with <code>draws</code> objects</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The posterior R package is intended to provide useful tools for both
+users and developers of packages for fitting Bayesian models or working
+with output from Bayesian models. The primary goals of the package are
+to:</p>
+<ul>
+<li>Efficiently convert between many different useful formats of draws
+(samples) from posterior or prior distributions.</li>
+<li>Provide consistent methods for operations commonly performed on
+draws, for example, subsetting, binding, or mutating draws.</li>
+<li>Provide various summaries of draws in convenient formats.</li>
+<li>Provide lightweight implementations of state of the art posterior
+inference diagnostics.</li>
+</ul>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>You can install the latest official release version via</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;posterior&quot;</span>)</span></code></pre></div>
+<p>or the latest development version from GitHub via</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;stan-dev/posterior&quot;</span>)</span></code></pre></div>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;posterior&quot;</span>)</span></code></pre></div>
+<p>To demonstrate how to work with the posterior package, throughout the
+rest of this vignette we will use example posterior draws obtained from
+the eight schools hierarchical meta-analysis model described in Gelman
+et al. (2013). The variables are an estimate per school
+(<code>theta[1]</code> through <code>theta[8]</code>) as well as an
+overall mean (<code>mu</code>) and standard deviation across schools
+(<code>tau</code>).</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>eight_schools_array <span class="ot">&lt;-</span> <span class="fu">example_draws</span>(<span class="st">&quot;eight_schools&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">print</span>(eight_schools_array, <span class="at">max_variables =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## # A draws_array: 100 iterations, 4 chains, and 10 variables
+## , , variable = mu
+## 
+##          chain
+## iteration   1    2     3   4
+##         1 2.0  3.0  1.79 6.5
+##         2 1.5  8.2  5.99 9.1
+##         3 5.8 -1.2  2.56 0.2
+##         4 6.8 10.9  2.79 3.7
+##         5 1.8  9.8 -0.03 5.5
+## 
+## , , variable = tau
+## 
+##          chain
+## iteration   1    2    3   4
+##         1 2.8 2.80  8.7 3.8
+##         2 7.0 2.76  2.9 6.8
+##         3 9.7 0.57  8.4 5.3
+##         4 4.8 2.45  4.4 1.6
+##         5 2.8 2.80 11.0 3.0
+## 
+## , , variable = theta[1]
+## 
+##          chain
+## iteration     1     2    3     4
+##         1  3.96  6.26 13.3  5.78
+##         2  0.12  9.32  6.3  2.09
+##         3 21.25 -0.97 10.6 15.72
+##         4 14.70 12.45  5.4  2.69
+##         5  5.96  9.75  8.2 -0.91
+## 
+## # ... with 95 more iterations, and 7 more variables</code></pre>
+<p>The structure of this object is explained in the next section.</p>
+</div>
+<div id="draws-formats" class="section level2">
+<h2>Draws formats</h2>
+<div id="available-formats" class="section level3">
+<h3>Available formats</h3>
+<p>Because different formats are preferable in different situations,
+posterior supports multiple formats and easy conversion between them.
+The currently supported formats are:</p>
+<ul>
+<li><code>draws_array</code>: An iterations by chains by variables
+array.</li>
+<li><code>draws_matrix</code>: A draws (iterations x chains) by
+variables array.</li>
+<li><code>draws_df</code>: A draws by variables data frame with addition
+meta columns <code>.chain</code>, <code>.iteration</code>,
+<code>.draw</code>.</li>
+<li><code>draws_list</code>: A list with one sublist per chain. Each
+sublist is a named list with one vector of iterations per variable.</li>
+<li><code>draws_rvars</code>: A list of random variable
+<code>rvar</code> objects, one per variable. See
+<code>vignette(&quot;rvar&quot;)</code> for an introduction to this new data
+type.</li>
+</ul>
+<p>These formats are essentially base R object classes and can be used
+as such. For example, a <code>draws_matrix</code> object is just a
+<code>matrix</code> with a little more consistency (e.g., no dropping of
+dimensions with one level when indexing) and additional methods. The
+exception to this is the <code>draws_rvars</code> format, which contains
+<code>rvar</code> objects that behave somewhat like arrays but are
+really a unique data type. See the separate vignette on the
+<code>rvar</code> and <code>draws_rvars</code> data types for
+details.</p>
+<p>The draws for our example come as a <code>draws_array</code> object
+with 100 iterations, 4 chains, and 10 variables:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">str</span>(eight_schools_array)</span></code></pre></div>
+<pre><code>##  &#39;draws_array&#39; num [1:100, 1:4, 1:10] 2.01 1.46 5.81 6.85 1.81 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 3
+##   ..$ iteration: chr [1:100] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
+##   ..$ chain    : chr [1:4] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot;
+##   ..$ variable : chr [1:10] &quot;mu&quot; &quot;tau&quot; &quot;theta[1]&quot; &quot;theta[2]&quot; ...</code></pre>
+</div>
+<div id="converting-between-formats" class="section level3">
+<h3>Converting between formats</h3>
+<p>Each of the formats has a method <code>as_draws_&lt;format&gt;</code>
+(e.g., <code>as_draws_list()</code>) for creating an object of the class
+from any of the other formats. As a demonstration we can convert the
+example <code>draws_array</code> to a <code>draws_df</code>, a data
+frame with additional meta information. To convert to a
+<code>draws_df</code> we use <code>as_draws_df()</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>eight_schools_df <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(eight_schools_array)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">str</span>(eight_schools_df)</span></code></pre></div>
+<pre><code>## draws_df [400 × 13] (S3: draws_df/draws/tbl_df/tbl/data.frame)
+##  $ mu        : num [1:400] 2.01 1.46 5.81 6.85 1.81 ...
+##  $ tau       : num [1:400] 2.77 6.98 9.68 4.79 2.85 ...
+##  $ theta[1]  : num [1:400] 3.962 0.124 21.251 14.7 5.96 ...
+##  $ theta[2]  : num [1:400] 0.271 -0.069 14.931 8.586 1.156 ...
+##  $ theta[3]  : num [1:400] -0.743 0.952 1.829 2.675 3.109 ...
+##  $ theta[4]  : num [1:400] 2.1 7.28 1.38 4.39 1.99 ...
+##  $ theta[5]  : num [1:400] 0.923 -0.062 0.531 4.758 0.769 ...
+##  $ theta[6]  : num [1:400] 1.65 11.26 7.16 8.1 4.66 ...
+##  $ theta[7]  : num [1:400] 3.32 9.62 14.8 9.49 1.21 ...
+##  $ theta[8]  : num [1:400] 4.85 -8.64 -1.74 5.28 -4.54 ...
+##  $ .chain    : int [1:400] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ .iteration: int [1:400] 1 2 3 4 5 6 7 8 9 10 ...
+##  $ .draw     : int [1:400] 1 2 3 4 5 6 7 8 9 10 ...</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">print</span>(eight_schools_df)</span></code></pre></div>
+<pre><code>## # A draws_df: 100 iterations, 4 chains, and 10 variables
+##      mu tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6]
+## 1  2.01 2.8     3.96    0.271    -0.74      2.1    0.923      1.7
+## 2  1.46 7.0     0.12   -0.069     0.95      7.3   -0.062     11.3
+## 3  5.81 9.7    21.25   14.931     1.83      1.4    0.531      7.2
+## 4  6.85 4.8    14.70    8.586     2.67      4.4    4.758      8.1
+## 5  1.81 2.8     5.96    1.156     3.11      2.0    0.769      4.7
+## 6  3.84 4.1     5.76    9.909    -1.00      5.3    5.889     -1.7
+## 7  5.47 4.0     4.03    4.151    10.15      6.6    3.741     -2.2
+## 8  1.20 1.5    -0.28    1.846     0.47      4.3    1.467      3.3
+## 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
+## 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
+## # ... with 390 more draws, and 2 more variables
+## # ... hidden reserved variables {&#39;.chain&#39;, &#39;.iteration&#39;, &#39;.draw&#39;}</code></pre>
+</div>
+<div id="converting-regular-r-objects-to-draws-formats" class="section level3">
+<h3>Converting regular R objects to <code>draws</code> formats</h3>
+<p>The example draws already come in a format natively supported by
+posterior, but we can of course also import the draws from other sources
+like common base R objects.</p>
+<div id="example-create-draws_matrix-from-a-matrix" class="section level4">
+<h4>Example: create draws_matrix from a matrix</h4>
+<p>In addition to converting other <code>draws</code> objects to the
+<code>draws_matrix</code> format, the <code>as_draws_matrix()</code>
+function will convert a regular matrix to a
+<code>draws_matrix</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">50</span>), <span class="at">nrow =</span> <span class="dv">10</span>, <span class="at">ncol =</span> <span class="dv">5</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">colnames</span>(x) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;V&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">as_draws_matrix</span>(x)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="fu">print</span>(x)</span></code></pre></div>
+<pre><code>## # A draws_matrix: 10 iterations, 1 chains, and 5 variables
+##     variable
+## draw     V1     V2     V3    V4    V5
+##   1   0.983  0.951 -0.029  1.58 -0.56
+##   2   1.157  1.049 -0.547  0.14  1.66
+##   3  -2.124  0.582  0.921 -2.15 -0.33
+##   4  -1.807 -1.366  0.894 -0.57  1.05
+##   5  -0.774 -0.237  1.202 -0.16 -0.80
+##   6   0.209 -0.020 -1.171 -0.95 -1.89
+##   7  -1.166  0.011 -0.110  0.17 -1.24
+##   8   0.603 -0.737 -0.337  0.75  0.11
+##   9  -0.600 -1.029 -0.565 -1.53  0.27
+##   10 -0.072  0.744  0.659 -1.35  0.86</code></pre>
+<p>Because the matrix was converted to a <code>draws_matrix</code>, all
+of the methods for working with <code>draws</code> objects described in
+subsequent sections of this vignette will now be available.</p>
+<p>Instead of <code>as_draws_matrix()</code> we also could have just
+used <code>as_draws()</code>, which attempts to find the closest
+available format to the input object. In this case the result would be a
+<code>draws_matrix</code> object either way.</p>
+</div>
+<div id="example-create-draws_matrix-from-multiple-vectors" class="section level4">
+<h4>Example: create draws_matrix from multiple vectors</h4>
+<p>In addition to the <code>as_draws_matrix()</code> converter function
+there is also a <code>draws_matrix()</code> constructor function that
+can be used to create draws matrix from multiple vectors.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">draws_matrix</span>(<span class="at">alpha =</span> <span class="fu">rnorm</span>(<span class="dv">50</span>), <span class="at">beta =</span> <span class="fu">rnorm</span>(<span class="dv">50</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">print</span>(x)</span></code></pre></div>
+<pre><code>## # A draws_matrix: 50 iterations, 1 chains, and 2 variables
+##     variable
+## draw  alpha   beta
+##   1  -0.981  0.728
+##   2  -0.213 -1.102
+##   3  -1.015 -0.831
+##   4   2.204 -0.841
+##   5  -1.096 -1.138
+##   6  -1.055  0.625
+##   7  -1.458  1.002
+##   8   0.134 -0.163
+##   9   0.047 -0.061
+##   10 -0.006 -1.304
+## # ... with 40 more draws</code></pre>
+<p>Analogous functions exist for the other draws formats and are used
+similarly.</p>
+</div>
+</div>
+</div>
+<div id="manipulating-draws-objects" class="section level2">
+<h2>Manipulating <code>draws</code> objects</h2>
+<p>The posterior package provides many methods for manipulating draws
+objects in useful ways. In this section we demonstrate several of the
+most commonly used methods. These methods, like the other methods in
+posterior, are available for every supported draws format.</p>
+<div id="subsetting" class="section level3">
+<h3>Subsetting</h3>
+<p>Subsetting <code>draws</code> objects can be done according to
+various aspects of the draws (iterations, chains, or variables). The
+posterior package provides a convenient interface for this purpose via
+<code>subset_draws()</code>. For example, here is the code to extract
+the first five iterations of the first two chains of the variable
+<code>mu</code>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>sub_df <span class="ot">&lt;-</span> <span class="fu">subset_draws</span>(eight_schools_df, <span class="at">variable =</span> <span class="st">&quot;mu&quot;</span>, <span class="at">chain =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">str</span>(sub_df)</span></code></pre></div>
+<pre><code>## draws_df [10 × 4] (S3: draws_df/draws/tbl_df/tbl/data.frame)
+##  $ mu        : num [1:10] 2.01 1.46 5.81 6.85 1.81 ...
+##  $ .chain    : int [1:10] 1 1 1 1 1 2 2 2 2 2
+##  $ .iteration: int [1:10] 1 2 3 4 5 1 2 3 4 5
+##  $ .draw     : int [1:10] 1 2 3 4 5 6 7 8 9 10</code></pre>
+<p>The same call to <code>subset_draws()</code> can be used regardless
+of the draws format. For example, here is the same code except replacing
+the <code>draws_df</code> object with the <code>draws_array</code>
+object.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>sub_arr <span class="ot">&lt;-</span> <span class="fu">subset_draws</span>(eight_schools_array, <span class="at">variable =</span> <span class="st">&quot;mu&quot;</span>, <span class="at">chain =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="fu">str</span>(sub_arr)</span></code></pre></div>
+<pre><code>##  &#39;draws_array&#39; num [1:5, 1:2, 1] 2.01 1.46 5.81 6.85 1.81 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 3
+##   ..$ iteration: chr [1:5] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
+##   ..$ chain    : chr [1:2] &quot;1&quot; &quot;2&quot;
+##   ..$ variable : chr &quot;mu&quot;</code></pre>
+<p>We can check that these two calls to <code>subset_draws()</code> (the
+first with the data frame, the second with the array) produce the same
+result.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">identical</span>(sub_df, <span class="fu">as_draws_df</span>(sub_arr))</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">as_draws_array</span>(sub_df), sub_arr)</span></code></pre></div>
+<pre><code>## [1] TRUE
+## [1] TRUE</code></pre>
+<p>It is also possible to use standard R subsetting syntax with
+<code>draws</code> objects. The following is equivalent to the use of
+<code>subset_draws()</code> with the array above.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>eight_schools_array[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="st">&quot;mu&quot;</span>]</span></code></pre></div>
+<pre><code>## # A draws_array: 5 iterations, 2 chains, and 1 variables
+## , , variable = mu
+## 
+##          chain
+## iteration   1    2
+##         1 2.0  3.0
+##         2 1.5  8.2
+##         3 5.8 -1.2
+##         4 6.8 10.9
+##         5 1.8  9.8</code></pre>
+<p>The major difference between how posterior behaves when indexing and
+how base R behaves is that posterior will <em>not</em> drop dimensions
+with only one level. That is, even though there is only one variable
+left after subsetting, the result of the subsetting above is still a
+<code>draws_array</code> and not a <code>draws_matrix</code>.</p>
+</div>
+<div id="mutating-transformations-of-variables" class="section level3">
+<h3>Mutating (transformations of variables)</h3>
+<p>The magic of having obtained draws from the joint posterior (or
+prior) distribution of a set of variables is that these draws can also
+be used to obtain draws from any other variable that is a function of
+the original variables. That is, if we are interested in the posterior
+distribution of, say, <code>phi = (mu + tau)^2</code> all we have to do
+is to perform the transformation for each of the individual draws to
+obtain draws from the posterior distribution of the transformed
+variable. This procedure is handled by
+<code>mutate_variables()</code>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">mutate_variables</span>(eight_schools_df, <span class="at">phi =</span> (mu <span class="sc">+</span> tau)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">subset_draws</span>(x, <span class="fu">c</span>(<span class="st">&quot;mu&quot;</span>, <span class="st">&quot;tau&quot;</span>, <span class="st">&quot;phi&quot;</span>))</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="fu">print</span>(x)</span></code></pre></div>
+<pre><code>## # A draws_df: 100 iterations, 4 chains, and 3 variables
+##      mu tau   phi
+## 1  2.01 2.8  22.8
+## 2  1.46 7.0  71.2
+## 3  5.81 9.7 240.0
+## 4  6.85 4.8 135.4
+## 5  1.81 2.8  21.7
+## 6  3.84 4.1  62.8
+## 7  5.47 4.0  88.8
+## 8  1.20 1.5   7.1
+## 9  0.15 3.9  16.6
+## 10 7.17 1.8  79.9
+## # ... with 390 more draws
+## # ... hidden reserved variables {&#39;.chain&#39;, &#39;.iteration&#39;, &#39;.draw&#39;}</code></pre>
+</div>
+<div id="renaming" class="section level3">
+<h3>Renaming</h3>
+<p>To rename variables use <code>rename_variables()</code>. Here we
+rename the scalar <code>mu</code> to <code>mean</code> and the vector
+<code>theta</code> to <code>alpha</code>.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># mu is a scalar, theta is a vector</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rename_variables</span>(eight_schools_df, <span class="at">mean =</span> mu, <span class="at">alpha =</span> theta)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="fu">variables</span>(x)</span></code></pre></div>
+<pre><code>##  [1] &quot;mean&quot;     &quot;tau&quot;      &quot;alpha[1]&quot; &quot;alpha[2]&quot; &quot;alpha[3]&quot; &quot;alpha[4]&quot;
+##  [7] &quot;alpha[5]&quot; &quot;alpha[6]&quot; &quot;alpha[7]&quot; &quot;alpha[8]&quot;</code></pre>
+<p>In the call to <code>rename_variables()</code> above, <code>mu</code>
+and <code>theta</code> can be quoted or unquoted.</p>
+<p>It is also possible to rename individual elements of non-scalar
+parameters, for example we can rename just the first element of
+<code>alpha</code>:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rename_variables</span>(x, <span class="at">a1 =</span> <span class="st">`</span><span class="at">alpha[1]</span><span class="st">`</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">variables</span>(x)</span></code></pre></div>
+<pre><code>##  [1] &quot;mean&quot;     &quot;tau&quot;      &quot;a1&quot;       &quot;alpha[2]&quot; &quot;alpha[3]&quot; &quot;alpha[4]&quot;
+##  [7] &quot;alpha[5]&quot; &quot;alpha[6]&quot; &quot;alpha[7]&quot; &quot;alpha[8]&quot;</code></pre>
+</div>
+<div id="binding" class="section level3">
+<h3>Binding</h3>
+<p>The <code>bind_draws()</code> method can be used to combine
+<code>draws</code> objects along different dimensions. As an example,
+suppose we have several different <code>draws_matrix</code> objects:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">draws_matrix</span>(<span class="at">alpha =</span> <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">beta =</span> <span class="fu">rnorm</span>(<span class="dv">5</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">draws_matrix</span>(<span class="at">alpha =</span> <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">beta =</span> <span class="fu">rnorm</span>(<span class="dv">5</span>))</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>x3 <span class="ot">&lt;-</span> <span class="fu">draws_matrix</span>(<span class="at">theta =</span> <span class="fu">rexp</span>(<span class="dv">5</span>))</span></code></pre></div>
+<p>We can bind <code>x1</code> and <code>x3</code> together along the
+<code>&#39;variable&#39;</code> dimension to get a single
+<code>draws_matrix</code> with the variables from both <code>x1</code>
+and <code>x3</code>:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>x4 <span class="ot">&lt;-</span> <span class="fu">bind_draws</span>(x1, x3, <span class="at">along =</span> <span class="st">&quot;variable&quot;</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="fu">print</span>(x4)</span></code></pre></div>
+<pre><code>## # A draws_matrix: 5 iterations, 1 chains, and 3 variables
+##     variable
+## draw alpha  beta theta
+##    1 -1.57  0.40 1.720
+##    2  0.88 -1.11 1.330
+##    3  1.08  0.62 0.135
+##    4  0.62  1.67 0.996
+##    5  0.30  0.92 0.049</code></pre>
+<p>Because <code>x1</code> and <code>x2</code> have the same variables,
+we can bind them along the <code>&#39;draw&#39;</code> dimension to create a
+single <code>draws_matrix</code> with more draws:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>x5 <span class="ot">&lt;-</span> <span class="fu">bind_draws</span>(x1, x2, <span class="at">along =</span> <span class="st">&quot;draw&quot;</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="fu">print</span>(x5)</span></code></pre></div>
+<pre><code>## # A draws_matrix: 10 iterations, 1 chains, and 2 variables
+##     variable
+## draw  alpha  beta
+##   1  -1.574  0.40
+##   2   0.876 -1.11
+##   3   1.076  0.62
+##   4   0.620  1.67
+##   5   0.296  0.92
+##   6  -0.378 -0.46
+##   7   0.015 -0.60
+##   8  -0.137  0.74
+##   9  -1.298  0.19
+##   10 -0.359  0.37</code></pre>
+<p>As with all posterior methods, <code>bind_draws()</code> can be used
+with all draws formats and depending on the format different dimensions
+are available to bind on. For example, we can bind
+<code>draws_array</code> objects together by <code>iteration</code>,
+<code>chain</code>, or <code>variable</code>, but a 2-D
+<code>draws_matrix</code> with the chains combined can only by bound by
+<code>draw</code> and <code>variable</code>.</p>
+</div>
+</div>
+<div id="summaries-and-diagnostics" class="section level2">
+<h2>Summaries and diagnostics</h2>
+<div id="summarise_draws-basic-usage" class="section level3">
+<h3>summarise_draws() basic usage</h3>
+<p>Computing summaries of posterior or prior draws and convergence
+diagnostics for posterior draws are some of the most common tasks when
+working with Bayesian models fit using Markov Chain Monte Carlo (MCMC)
+methods. The posterior package provides a flexible interface for this
+purpose via <code>summarise_draws()</code> (or
+<code>summarize_draws()</code>), which can be passed any of the formats
+supported by the package.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="co"># summarise_draws or summarize_draws</span></span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="fu">summarise_draws</span>(eight_schools_df)</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 10
+##    variable  mean median    sd   mad     q5   q95  rhat ess_bulk ess_tail
+##    &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+##  1 mu         4.2    4.2   3.4   3.6  -0.85   9.4   1.0     558.     322.
+##  2 tau        4.2    3.1   3.6   2.9   0.31  11.    1.0     246.     202.
+##  3 theta[1]   6.7    6.0   6.3   4.9  -1.2   19.    1.0     400.     254.
+##  4 theta[2]   5.3    5.1   4.6   4.3  -2.0   13.    1.0     564.     372.
+##  5 theta[3]   3.0    4.0   6.8   4.9 -10.    12.    1.0     312.     205.
+##  6 theta[4]   4.9    5.0   4.9   4.5  -3.6   12.    1.0     695.     252.
+##  7 theta[5]   3.2    3.7   5.1   4.4  -5.9   11.    1.0     523.     306.
+##  8 theta[6]   4.0    4.1   5.2   4.8  -4.3   12.    1.0     548.     205.
+##  9 theta[7]   6.5    5.9   5.3   4.5  -1.2   15.    1.0     434.     308.
+## 10 theta[8]   4.6    4.6   5.3   4.9  -3.8   12.    1.0     355.     146.</code></pre>
+<p>The result is a data frame with one row per variable and one column
+per summary statistic or convergence diagnostic. The summaries
+<code>rhat</code>, <code>ess_bulk</code>, and <code>ess_tail</code> are
+described in Vehtari et al. (2020). We can choose which summaries to
+compute by passing additional arguments, either functions or names of
+functions. For instance, if we only wanted the mean and its
+corresponding Monte Carlo Standard Error (MCSE) we could use either of
+these options:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="co"># the function mcse_mean is provided by the posterior package</span></span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>s1 <span class="ot">&lt;-</span> <span class="fu">summarise_draws</span>(eight_schools_df, <span class="st">&quot;mean&quot;</span>, <span class="st">&quot;mcse_mean&quot;</span>) </span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a>s2 <span class="ot">&lt;-</span> <span class="fu">summarise_draws</span>(eight_schools_df, mean, mcse_mean) </span>
+<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a><span class="fu">identical</span>(s1, s2)</span></code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">print</span>(s1)</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 3
+##    variable  mean mcse_mean
+##    &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 mu         4.2      0.15
+##  2 tau        4.2      0.21
+##  3 theta[1]   6.7      0.32
+##  4 theta[2]   5.3      0.20
+##  5 theta[3]   3.0      0.45
+##  6 theta[4]   4.9      0.19
+##  7 theta[5]   3.2      0.23
+##  8 theta[6]   4.0      0.22
+##  9 theta[7]   6.5      0.25
+## 10 theta[8]   4.6      0.27</code></pre>
+</div>
+<div id="changing-column-names" class="section level3">
+<h3>Changing column names</h3>
+<p>The column names in the output can be changed by providing the
+functions as name-value pairs, where the name is the name to use in the
+output and the value is a function name or definition. For example, here
+we change the names <code>mean</code> and <code>sd</code> to
+<code>posterior_mean</code> and <code>posterior_sd</code>.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="fu">summarise_draws</span>(eight_schools_df, <span class="at">posterior_mean =</span> mean, <span class="at">posterior_sd =</span> sd)</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 3
+##    variable posterior_mean posterior_sd
+##    &lt;chr&gt;             &lt;dbl&gt;        &lt;dbl&gt;
+##  1 mu                  4.2          3.4
+##  2 tau                 4.2          3.6
+##  3 theta[1]            6.7          6.3
+##  4 theta[2]            5.3          4.6
+##  5 theta[3]            3.0          6.8
+##  6 theta[4]            4.9          4.9
+##  7 theta[5]            3.2          5.1
+##  8 theta[6]            4.0          5.2
+##  9 theta[7]            6.5          5.3
+## 10 theta[8]            4.6          5.3</code></pre>
+</div>
+<div id="using-custom-functions" class="section level3">
+<h3>Using custom functions</h3>
+<p>For a function to work with <code>summarise_draws()</code>, it needs
+to take a vector or matrix of numeric values and return a single numeric
+value or a named vector of numeric values. Additional arguments to the
+function can be specified in a list passed to the <code>.args</code>
+argument.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>weighted_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(x, wts) {</span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a>  <span class="fu">sum</span>(x <span class="sc">*</span> wts)<span class="sc">/</span><span class="fu">sum</span>(wts)</span>
+<span id="cb43-3"><a href="#cb43-3" tabindex="-1"></a>}</span>
+<span id="cb43-4"><a href="#cb43-4" tabindex="-1"></a><span class="fu">summarise_draws</span>(</span>
+<span id="cb43-5"><a href="#cb43-5" tabindex="-1"></a>  eight_schools_df, </span>
+<span id="cb43-6"><a href="#cb43-6" tabindex="-1"></a>  weighted_mean, </span>
+<span id="cb43-7"><a href="#cb43-7" tabindex="-1"></a>  <span class="at">.args =</span> <span class="fu">list</span>(<span class="at">wts =</span> <span class="fu">rexp</span>(<span class="fu">ndraws</span>(eight_schools_df)))</span>
+<span id="cb43-8"><a href="#cb43-8" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 2
+##    variable weighted_mean
+##    &lt;chr&gt;            &lt;dbl&gt;
+##  1 mu                 4.2
+##  2 tau                4.0
+##  3 theta[1]           6.6
+##  4 theta[2]           5.3
+##  5 theta[3]           3.3
+##  6 theta[4]           5.0
+##  7 theta[5]           3.3
+##  8 theta[6]           4.2
+##  9 theta[7]           7.0
+## 10 theta[8]           4.9</code></pre>
+</div>
+<div id="specifying-functions-using-lambda-like-syntax" class="section level3">
+<h3>Specifying functions using lambda-like syntax</h3>
+<p>It is also possible to specify a summary function using a one-sided
+formula that follows the conventions supported by
+<code>rlang::as_function()</code>. For example, the function</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.6</span>))</span></code></pre></div>
+<p>can be simplified to</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="co"># for multiple arguments `.x` and `.y` can be used, see ?rlang::as_function</span></span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a><span class="sc">~</span><span class="fu">quantile</span>(., <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.6</span>))</span></code></pre></div>
+<p>Both can be used with <code>summarise_draws()</code> and produce the
+same output:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="fu">summarise_draws</span>(eight_schools_df, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.6</span>)))</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 3
+##    variable `40%` `60%`
+##    &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;
+##  1 mu         3.4   5.4
+##  2 tau        2.5   4.0
+##  3 theta[1]   4.9   7.0
+##  4 theta[2]   4.3   6.1
+##  5 theta[3]   2.5   5.3
+##  6 theta[4]   3.8   6.1
+##  7 theta[5]   2.7   4.7
+##  8 theta[6]   2.9   5.5
+##  9 theta[7]   4.8   7.3
+## 10 theta[8]   3.5   5.9</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="fu">summarise_draws</span>(eight_schools_df, <span class="sc">~</span><span class="fu">quantile</span>(.x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.6</span>)))</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 3
+##    variable `40%` `60%`
+##    &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;
+##  1 mu         3.4   5.4
+##  2 tau        2.5   4.0
+##  3 theta[1]   4.9   7.0
+##  4 theta[2]   4.3   6.1
+##  5 theta[3]   2.5   5.3
+##  6 theta[4]   3.8   6.1
+##  7 theta[5]   2.7   4.7
+##  8 theta[6]   2.9   5.5
+##  9 theta[7]   4.8   7.3
+## 10 theta[8]   3.5   5.9</code></pre>
+<p>See <code>help(&quot;as_function&quot;, &quot;rlang&quot;)</code> for details on
+specifying these functions.</p>
+</div>
+<div id="other-diagnostics" class="section level3">
+<h3>Other diagnostics</h3>
+<p>In addition to the default diagnostic functions used by
+<code>summarise_draws()</code> (<code>rhat()</code>,
+<code>ess_bulk()</code>, <code>ess_tail()</code>), posterior also
+provides additional diagnostics like effective sample sizes and Monte
+Carlo standard errors for quantiles and standard deviations, an
+experimental new diagnostic called R*, and others. For a list of
+available diagnostics and links to their individual help pages see
+<code>help(&quot;diagnostics&quot;, &quot;posterior&quot;)</code>.</p>
+<p>If you have suggestions for additional diagnostics that should be
+implemented in posterior, please open an issue at <a href="https://github.com/stan-dev/posterior/issues" class="uri">https://github.com/stan-dev/posterior/issues</a>.</p>
+</div>
+</div>
+<div id="other-methods-for-working-with-draws-objects" class="section level2">
+<h2>Other methods for working with <code>draws</code> objects</h2>
+<p>In addition to the methods demonstrated in this vignette, posterior
+has various other methods available for working with <code>draws</code>
+objects. The following is a (potentially incomplete) list.</p>
+<table>
+<colgroup>
+<col width="40%" />
+<col width="59%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><strong>Method</strong></th>
+<th align="left"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>order_draws()</code></td>
+<td align="left">Order <code>draws</code> objects according to iteration
+and chain number</td>
+</tr>
+<tr class="even">
+<td align="left"><code>repair_draws()</code></td>
+<td align="left">Repair indices of <code>draws</code> objects so that
+iterations chains, and draws are continuously and consistently
+numbered</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>resample_draws()</code></td>
+<td align="left">Resample <code>draws</code> objects according to
+provided weights</td>
+</tr>
+<tr class="even">
+<td align="left"><code>thin_draws()</code></td>
+<td align="left">Thin <code>draws</code> objects to reduce size and
+autocorrelation</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>weight_draws()</code></td>
+<td align="left">Add weights to draws objects, with one weight per draw,
+for use in subsequent weighting operations</td>
+</tr>
+<tr class="even">
+<td align="left"><code>extract_variable()</code></td>
+<td align="left">Extract a vector of draws of a single variable</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>extract_variable_matrix()</code></td>
+<td align="left">Extract an iterations x chains matrix of draws of a
+single variable</td>
+</tr>
+<tr class="even">
+<td align="left"><code>merge_chains()</code></td>
+<td align="left">Merge chains of <code>draws</code> objects into a
+single chain.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>split_chains()</code></td>
+<td align="left">Split chains of <code>draws</code> objects by halving
+the number of iterations per chain and doubling the number of
+chains.</td>
+</tr>
+</tbody>
+</table>
+<p>If you have suggestions for additional methods that would be useful
+for working with <code>draws</code> objects, please open an issue at <a href="https://github.com/stan-dev/posterior/issues" class="uri">https://github.com/stan-dev/posterior/issues</a>.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Vehtari,
+A., &amp; Rubin D. B. (2013). <em>Bayesian Data Analysis, Third
+Edition</em>. Chapman and Hall/CRC.</p>
+<p>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C.
+(2020). Rank-normalization, folding, and localization: An improved Rhat
+for assessing convergence of MCMC. <em>Bayesian Analysis</em>,
+16(2):667-718.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

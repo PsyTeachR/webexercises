@@ -1,0 +1,13 @@
+# 2025-11-04
+
+  add ~@string{j-GUTENBERG = Gutenberg journal}~ at the beginning of Cousquer*
+  since now undefined bibtex names cause warnings.
+
+
+# older
+
+=easyPubMedvig.xml=  is from the example in the vignette for R package easyPubMed.
+
+=Putnam1992.end= is /Example 1 Example refer format file/ from the man page of bibutils.
+
+=ex1.endx= is from https://gist.githubusercontent.com/raw/3831049/80f1315ba03d278b4f5f0d916fb1999709fc40e6/endnote.xml

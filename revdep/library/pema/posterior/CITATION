@@ -1,0 +1,84 @@
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("R package version %s", meta$Version)
+authors <- meta$`Authors@R`
+authors <- eval(str2expression(authors))
+authors <- grep("\\[cre|\\[aut", authors, value = TRUE)
+
+bibentry(bibtype = "Misc",
+         title = "posterior: Tools for Working with Posterior Distributions",
+         author = authors,
+         year = year,
+         note = note,
+         url = "https://mc-stan.org/posterior/",
+         header = "To cite the posterior R package:"
+)
+
+bibentry(bibtype = "Article",
+         title = "Rank-normalization, folding, and localization: An improved Rhat
+for assessing convergence of MCMC (with discussion)",
+         author = c(person("Aki", "Vehtari"),
+                    person("Andrew", "Gelman"),
+                    person("Daniel", "Simpson"),
+                    person("Bob", "Carpenter"),
+                    person("Paul-Christian", "Bürkner")),
+         journal = "Bayesian Analysis",
+         year = "2021",
+         volume = "16",
+         number = "2",
+         pages = "667-718",
+         header = "To cite the MCMC convergence diagnostics (`rhat`, `ess_bulk`, `ess_tail`,
+ `ess_median`, `ess_quantile`, `mcse_median`, and `mcse_quantile`):"
+)
+
+bibentry(
+  title = "Nested Rhat: Assessing the convergence of Markov chain Monte Carlo when running many short chains",
+  bibtype = "Article",
+  author = c(
+    person("Charles C.", "Margossian"),
+    person("Matthew D.", "Hoffman"),
+    person("Pavel", "Sountsov"),
+    person("Lionel", "Riou-Durand"),
+    person("Aki", "Vehtari"),
+    person("Andrew", "Gelman")
+  ),
+  journal = "Bayesian Analysis",
+  year = 2024,
+  doi = "10.1214/24-BA1453",
+  header = "To cite MCMC convergence diagnostic `nested_rhat`:"
+)
+
+bibentry(
+  title = "Rstar: A robust MCMC convergence diagnostic with uncertainty using decision tree classifiers",
+  bibtype = "Article",
+  author = c(
+    person("Ben", "Lambert"),
+    person("Aki", "Vehtari")
+  ),
+  journal = "Bayesian Analysis",
+  year = 2022,
+  volume = 17,
+  number = 2,
+  pages = "353-379",
+  doi = "10.1214/20-BA1252",
+  header = "To cite MCMC convergence diagnostic `rstar`:"
+)
+
+bibentry(
+  title = "Pareto smoothed importance sampling",
+  bibtype = "Article",
+  author = c(
+    person("Aki", "Vehtari"),
+    person("Daniel", "Simpson"),
+    person("Andrew", "Gelman"),
+    person("Yuling", "Yao"),
+    person("Jonah", "Gabry")
+  ),
+  journal = "Journal of Machine Learning Research",
+  year = 2024,
+  volume = 25,
+  number = 72,
+  pages = "1-58",
+  header = "To cite Pareto-k diagnostics and Pareto smoothing (`pareto_khat`, `pareto_min_ss`,
+`pareto_convergence_rate`, `khat_threshold`, `pareto_diags`, and
+`pareto_smooth`):"
+)

@@ -1,0 +1,14 @@
+bain                    Bayes factors for informative hypotheses
+bain_sensitivity        Sensitivity analysis for bain
+kuiper2013              The Effect of Prior Interaction on Trust
+pbf                     Product Bayes Factor
+seBeta                  Standard Errors and CIs for Standardized
+                        Regression Coefficients
+sesamesim               Simulated Sesame Street Data
+synthetic_dk            Simulated data about morality and politics in
+                        Denmark
+synthetic_nl            Simulated data about morality and politics in
+                        The Netherlands
+synthetic_us            Simulated data about morality and politics in
+                        the USA
+t_test                  Student's t-test

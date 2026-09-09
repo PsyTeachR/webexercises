@@ -1,0 +1,37 @@
+Package: ordinal
+Type: Package
+Title: Regression Models for Ordinal Data
+Version: 2026.7-26
+Date: 2026-07-26
+Authors@R: person(given="Rune Haubo Bojesen", family="Christensen",
+    email="rune.haubo@gmail.com", role=c("aut", "cre"), 
+    comment = c(ORCID = "0000-0002-4494-3399"))
+LazyData: true
+ByteCompile: yes
+Depends: R (>= 2.13.0), stats, methods
+Imports: ucminf, MASS, Matrix, numDeriv, nlme
+Suggests: lme4, nnet, xtable, testthat (>= 0.8), tools
+Description: Implementation of cumulative link (mixed) models also known
+    as ordered regression models, proportional odds models, proportional
+    hazards models for grouped survival times and ordered logit/probit/...
+    models. Estimation is via maximum likelihood and mixed models are fitted
+    with the Laplace approximation and adaptive Gauss-Hermite quadrature.
+    Multiple random effect terms are allowed and they may be nested, crossed or
+    partially nested/crossed. Restrictions of symmetry and equidistance can be
+    imposed on the thresholds (cut-points/intercepts). Standard model
+    methods are available (summary, anova, drop-methods, step,
+    confint, predict etc.) in addition to profile methods and slice
+    methods for visualizing the likelihood function and checking
+    convergence.
+License: GPL (>= 2)
+NeedsCompilation: yes
+URL: https://github.com/runehaubo/ordinal
+BugReports: https://github.com/runehaubo/ordinal/issues
+Packaged: 2026-07-26 18:07:15 UTC; runechristensen
+Author: Rune Haubo Bojesen Christensen [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-4494-3399>)
+Maintainer: Rune Haubo Bojesen Christensen <rune.haubo@gmail.com>
+Repository: CRAN
+Date/Publication: 2026-07-27 09:30:02 UTC
+Built: R 4.6.1; x86_64-w64-mingw32; 2026-09-02 02:52:59 UTC; windows
+Archs: x64

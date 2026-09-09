@@ -1,0 +1,38 @@
+Package: webexercises
+Version: 2.0.1
+Title: Create Interactive Web Exercises in 'R Markdown' and 'Quarto'
+Description: Functions for easily creating interactive web exercises that
+    students can use in self-guided learning.
+Authors@R: c(
+    person("Dale","Barr",
+           email = "dalejbarr@protonmail.com",
+	         role = c("aut")),
+    person("Lisa", "DeBruine",
+           email = "debruine@gmail.com",
+           role = c("aut")),
+    person(
+      given = c("Caspar", "J."),
+      family = "Van Lissa",
+      email = "c.j.vanlissa@tilburguniversity.edu",
+      role = c("aut", "cre"),
+      comment = c(ORCID = "0000-0002-0808-5024")
+    ))
+URL: https://github.com/psyteachr/webexercises
+Depends: R (>= 3.1.2)
+Imports: stats, utils, jsonlite, knitr, yaml, utils, grDevices,
+        rstudioapi, htmltools, cli, usethis, rmarkdown (>= 2.2)
+License: CC BY-SA 4.0
+Suggests: testthat, bookdown, quarto, xfun, pkgdown, pdftools
+Encoding: UTF-8
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
+RemoteType: local
+RemoteUrl: C:\git_repositories\webexercises
+NeedsCompilation: no
+Packaged: 2026-09-09 06:07:22 UTC; Studio
+Author: Dale Barr [aut],
+  Lisa DeBruine [aut],
+  Caspar J. Van Lissa [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-0808-5024>)
+Maintainer: Caspar J. Van Lissa <c.j.vanlissa@tilburguniversity.edu>
+Built: R 4.6.0; ; 2026-09-09 06:07:23 UTC; windows

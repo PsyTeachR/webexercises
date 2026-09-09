@@ -1,0 +1,14 @@
+bibentry(
+  bibtype  = "InBook",
+  title    = "Small sample meta-analyses: exploring heterogeneity using metaForest.",
+  author   = person("C. J.", "Van Lissa", role = "aut"),
+  booktitle = "Small sample size solutions (open access): A guide for applied researchers and practitioners.",
+  chapter = "13",
+  editor = c(person("R.", "Van De Schoot", role = "aut"),
+       person("M.", "Miočević", role = c("aut"))
+     ),
+  year     = 2020,
+  publisher = "CRC Press",
+  pages    = "186–202",
+  doi      = "10.4324/9780429273872-16"
+)

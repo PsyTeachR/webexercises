@@ -1,0 +1,35 @@
+Package: ranger
+Type: Package
+Title: A Fast Implementation of Random Forests
+Version: 0.18.0
+Date: 2026-01-15
+Authors@R: c(
+    person("Marvin N.", "Wright", email = "cran@wrig.de", role = c("aut", "cre")),
+    person("Stefan", "Wager", role = "ctb"),
+    person("Philipp", "Probst", role = "ctb"))
+Description: A fast implementation of Random Forests, particularly suited for high
+          dimensional data. Ensembles of classification, regression, survival and
+          probability prediction trees are supported. Data from genome-wide association
+          studies can be analyzed efficiently. In addition to data frames, datasets of
+          class 'gwaa.data' (R package 'GenABEL') and 'dgCMatrix' (R package 'Matrix') 
+          can be directly analyzed.
+License: GPL-3
+Imports: Rcpp (>= 0.11.2), Matrix
+LinkingTo: Rcpp, RcppEigen
+Depends: R (>= 3.1)
+Suggests: survival, testthat
+Encoding: UTF-8
+RoxygenNote: 7.3.3
+URL: https://imbs-hl.github.io/ranger/,
+        https://github.com/imbs-hl/ranger
+BugReports: https://github.com/imbs-hl/ranger/issues
+NeedsCompilation: yes
+Packaged: 2026-01-16 14:12:01 UTC; wright
+Author: Marvin N. Wright [aut, cre],
+  Stefan Wager [ctb],
+  Philipp Probst [ctb]
+Maintainer: Marvin N. Wright <cran@wrig.de>
+Repository: CRAN
+Date/Publication: 2026-01-16 16:30:02 UTC
+Built: R 4.6.1; x86_64-w64-mingw32; 2026-09-02 02:53:38 UTC; windows
+Archs: x64

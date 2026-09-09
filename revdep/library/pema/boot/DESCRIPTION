@@ -1,0 +1,34 @@
+Package: boot
+Priority: recommended
+Version: 1.3-32
+Date: 2025-08-29
+Authors@R: c(person("Angelo", "Canty", role = "aut",
+	             email = "cantya@mcmaster.ca", 
+                     comment = "author of original code for S"),
+             person("Brian", "Ripley", role = c("aut", "trl"),
+                    email = "Brian.Ripley@R-project.org",
+		    comment = "conversion to R, maintainer 1999--2022, author of parallel support"),
+             person("Alessandra R.", "Brazzale", role = c("ctb", "cre"),
+                    email = "brazzale@stat.unipd.it",
+		    comment = "minor bug fixes"))
+Maintainer: Alessandra R. Brazzale <brazzale@stat.unipd.it>
+Note: Maintainers are not available to give advice on using a package
+        they did not author.
+Description: Functions and datasets for bootstrapping from the
+  book "Bootstrap Methods and Their Application" by A. C. Davison and 
+  D. V. Hinkley (1997, CUP), originally written by Angelo Canty for S.
+Title: Bootstrap Functions
+Depends: R (>= 3.0.0), graphics, stats
+Suggests: MASS, survival
+LazyData: yes
+ByteCompile: yes
+License: Unlimited
+NeedsCompilation: no
+Packaged: 2025-08-29 10:01:31 UTC; brazzale
+Author: Angelo Canty [aut] (author of original code for S),
+  Brian Ripley [aut, trl] (conversion to R, maintainer 1999--2022, author
+    of parallel support),
+  Alessandra R. Brazzale [ctb, cre] (minor bug fixes)
+Repository: CRAN
+Date/Publication: 2025-08-29 13:00:08 UTC
+Built: R 4.6.1; ; 2026-09-02 01:26:37 UTC; windows

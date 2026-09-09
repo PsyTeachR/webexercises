@@ -1,0 +1,432 @@
+
+R version 4.6.0 (2026-04-24 ucrt) -- "Because it was There"
+Copyright (C) 2026 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "theorytools"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> options(pager = "console")
+> library('theorytools')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("add_readme_fair_theory")
+> ### * add_readme_fair_theory
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: add_readme_fair_theory
+> ### Title: Add Readme File
+> ### Aliases: add_readme_fair_theory
+> 
+> ### ** Examples
+> 
+> add_readme_fair_theory(path = tempdir(), title = "My Theory")
+> 
+> 
+> 
+> cleanEx()
+> nameEx("add_significance")
+> ### * add_significance
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: add_significance
+> ### Title: Add Significance Asterisks
+> ### Aliases: add_significance
+> 
+> ### ** Examples
+> 
+> tmp <- add_significance(head(iris))
+> 
+> 
+> 
+> cleanEx()
+> nameEx("add_theory_file")
+> ### * add_theory_file
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: add_theory_file
+> ### Title: Add Theory File
+> ### Aliases: add_theory_file
+> 
+> ### ** Examples
+> 
+> add_theory_file(path = tempdir(), theory_file = "theory.txt")
+> 
+> 
+> 
+> cleanEx()
+> nameEx("add_zenodo_json")
+> ### * add_zenodo_json
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: add_zenodo_json
+> ### Title: Add 'Zenodo' JSON File
+> ### Aliases: add_zenodo_json add_zenodo_json_theory
+> 
+> ### ** Examples
+> 
+> add_zenodo_json(path = tempdir(), title = "Theory Title",
++                 upload_type = "software", keywords = "R")
+> add_zenodo_json_theory(path = tempdir(), title = "My Theory",
++                        keywords = "secondkeyword")
+> add_zenodo_json_theory(path = tempdir(), title = "My Theory",
++                        keywords = c("secondkeyword", "thirdkeyword"))
+> 
+> 
+> 
+> cleanEx()
+> nameEx("code")
+> ### * code
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: code
+> ### Title: Code Text Data
+> ### Aliases: code code.character code.code_list add_level
+> 
+> ### ** Examples
+> 
+> x <- c("autonomy [satisfaction] increases",
++ "competence [satisfaction] increases", "relatedness [satisfaction] increases"
++ , "motivation is more internalized", "motivation is more internalized",
++ "motivation is more internalized1", "event is more controlling",
++ "event is more controlling",
++ "event communicates more effectance information")
+> coded <- code(x)
+> coded <- code(coded, "need_satisfaction", 1:3)
+> coded <- code(coded, "internalization", 1:3)
+> coded <- code(coded, "functional_significance", 1:3)
+> coded <- add_level(coded)
+> coded <- code(coded, "random_level1", 1:2)
+> coded <- code(coded, "random_level2", 1)
+> coded
+No more unassigned items.> 
+> 
+> 
+> cleanEx()
+> nameEx("create_fair_theory")
+> ### * create_fair_theory
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: create_fair_theory
+> ### Title: Create FAIR Theory Repository
+> ### Aliases: create_fair_theory
+> 
+> ### ** Examples
+> 
+> # Create a theory with no remote repository (for safe testing)
+> theory_dir <- file.path(tempdir(), "theory")
+> create_fair_theory(path = theory_dir,
++                    title = "This is My Theory",
++                    theory_file = "theory.txt",
++                    remote_repo = NULL,
++                    add_license = "cc0")
+> 
+> # Create a theory with a remote repository
+> ## Not run: 
+> ##D theory_dir <- file.path(tempdir(), "theory_github")
+> ##D out <- create_fair_theory(path = theory_dir,
+> ##D                           title = "This is My GitHub Theory",
+> ##D                           theory_file = "theory.txt",
+> ##D                           remote_repo = "delete_test",
+> ##D                           add_license = "ccby")
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("derive_formula")
+> ### * derive_formula
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: derive_formula
+> ### Title: Derive Formulae From Augmented DAG
+> ### Aliases: derive_formula
+> 
+> ### ** Examples
+> 
+> x <- dagitty::dagitty('dag {
++ C
++ O
++ X
++ Y
++ O <- X [form="I(X^2)"]
++ C -> X
++ Y -> O [form="Y*X"]
++ }')
+> f1 <- derive_formula(x, outcome = "O", exposure = "X")
+> f2 <- derive_formula(x, outcome = "O", exposure = "Y")
+> 
+> 
+> 
+> cleanEx()
+> nameEx("download_theory")
+> ### * download_theory
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: download_theory
+> ### Title: Download FAIR Theory
+> ### Aliases: download_theory
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D # These examples require internet access and may fail if resources are unavailable
+> ##D download_theory(id = "https://github.com/cjvanlissa/tripartite_model.git",
+> ##D path = file.path(tempdir(), "tripartite_git"))
+> ##D download_theory(id = "10.5281/zenodo.14921521",
+> ##D path = file.path(tempdir(), "tripartite_zenodo"))
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("filter_conditional_independencies")
+> ### * filter_conditional_independencies
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: filter_conditional_independencies
+> ### Title: Filter Conditional Independencies
+> ### Aliases: filter_conditional_independencies
+> 
+> ### ** Examples
+> 
+> dag <- dagitty::dagitty('dag {
++ x1 -> y
++ x2 -> y}')
+> df <- data.frame(x1 = rnorm(10), y = rnorm(10))
+> cis <- dagitty::impliedConditionalIndependencies(dag)
+> cis <- filter_conditional_independencies(cis, df)
+> is.null(cis)
+[1] TRUE
+> 
+> 
+> 
+> cleanEx()
+> nameEx("get_embeddings")
+> ### * get_embeddings
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: get_embeddings
+> ### Title: Get Vector Embeddings (uses Python)
+> ### Aliases: get_embeddings
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D if(requireNamespace("reticulate", quietly = TRUE)){
+> ##D  tmp <- get_embeddings(c("cat", "my cat", "dog"),
+> ##D  model_path = "scibert_scivocab_uncased")
+> ##D  }
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("prune_dag")
+> ### * prune_dag
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: prune_dag
+> ### Title: Prune DAG Based on Adjustment Sets
+> ### Aliases: prune_dag
+> 
+> ### ** Examples
+> 
+> dag <- dagitty::dagitty('dag {x -> y}')
+> prune_dag(dag, exposure = "x", outcome = "y")
+dag {
+x
+y
+x -> y
+}
+> 
+> 
+> 
+> cleanEx()
+> nameEx("quizz")
+> ### * quizz
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: quizz
+> ### Title: Create a Quiz
+> ### Aliases: quizz
+> 
+> ### ** Examples
+> 
+> # Quiz from arguments:
+> invisible(capture.output(theorytools:::quizz(
++ "The answer to this question is true." = TRUE,
++ "This multiple choice question has three answers." =
++  c(answer = "Correct", "Incorrect", "Not sure"),
++ "Provide an exact floating point answer of 0.81" = 0.81,
++ render_if = TRUE
++ )))
+> # From a file:
+> quizz_file <- tempfile()
+> writeLines(
++ c("The answer is true. = TRUE",
++ "The answer is correct = c(answer = \"Correct\", \"Incorrect\", \"Not sure\")",
++ "The answer is exactly .81 = 0.81",
++ "But here, .8 is also fine = c(0.81, .01)",
++ "Write the word 'true' = c('true', 'TRUE')",
++ "Here, answer exactly 4. = 4L")
++ , quizz_file)
+> invisible(capture.output(theorytools:::quizz(quizz_file, render_if = TRUE)))
+> 
+> 
+> 
+> cleanEx()
+> nameEx("select_controls")
+> ### * select_controls
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: select_controls
+> ### Title: Select Covariate Adjustment Sets from Data
+> ### Aliases: select_controls
+> 
+> ### ** Examples
+> 
+> dag <- dagitty::dagitty('dag {x -> y}')
+> df <- data.frame(x = rnorm(10), y = rnorm(10))
+> df1 <- select_controls(dag, df, exposure = "x", outcome = "y")
+> class(df1) == "data.frame"
+[1] TRUE
+> df2 <- select_controls(dag, df, exposure = "x", outcome = "y", which_set = "sample")
+> class(df2) == "data.frame"
+[1] TRUE
+> lst1 <- select_controls(dag, df, exposure = "x", outcome = "y", which_set = "all")
+> class(lst1) == "list"
+[1] TRUE
+> 
+> 
+> 
+> cleanEx()
+> nameEx("similarity_cosine")
+> ### * similarity_cosine
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: similarity_cosine
+> ### Title: Cosine Similarity
+> ### Aliases: similarity_cosine
+> 
+> ### ** Examples
+> 
+> set.seed(1)
+> similarity_cosine(matrix(runif(30), nrow = 3))
+          [,1]      [,2]      [,3]
+[1,] 1.0000000 0.7817204 0.8946771
+[2,] 0.7817204 1.0000000 0.8068776
+[3,] 0.8946771 0.8068776 1.0000000
+> 
+> 
+> 
+> cleanEx()
+> nameEx("similarity_stringdist")
+> ### * similarity_stringdist
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: similarity_stringdist
+> ### Title: String Similarity
+> ### Aliases: similarity_stringdist
+> 
+> ### ** Examples
+> 
+> similarity_stringdist(c("cat", "a cat", "dog"))
+      cat a cat dog
+cat   1.0   0.6 0.4
+a cat 0.6   1.0 0.0
+dog   0.4   0.0 1.0
+> 
+> 
+> 
+> cleanEx()
+> nameEx("simulate_data")
+> ### * simulate_data
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: simulate_data
+> ### Title: Simulate Data from DAG
+> ### Aliases: simulate_data
+> 
+> ### ** Examples
+> 
+> x <- dagitty::dagitty('
++ dag {
++   X [distribution="rbinom(size = 2, prob = .5)"]
++   Z [distribution="rexp()"]
++   Y [distribution="rnorm()"]
++ 
++   X -> Y [form="0.5+X"]
++   Z -> Y [form="2*Z"]
++   A -> X
++ }
++ ')
+> txt <- simulate_data(x, n = 5, run = FALSE)
+> df <- simulate_data(x, n = 5, run = TRUE)
+> df_from_txt <- eval(parse(text = txt))
+> 
+> 
+> 
+> cleanEx()
+> nameEx("use_webex_vignette")
+> ### * use_webex_vignette
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: use_webex_vignette
+> ### Title: Create a webexercises vignette
+> ### Aliases: use_webex_vignette
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D use_webex_vignette("vignette_with_quiz.Rmd", "Quiz people with webexercises")
+> ## End(Not run)
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> cleanEx()
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  2.14 0.27 2.88 NA NA 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

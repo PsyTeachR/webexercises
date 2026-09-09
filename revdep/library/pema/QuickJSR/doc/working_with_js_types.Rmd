@@ -1,0 +1,113 @@
+---
+title: "Working with R and JS Types"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Working with R and JS Types}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(QuickJSR)
+```
+
+## Mappings and Conversions Between R and JS Types
+
+`QuickJSR` uses the respective `C` APIs of `R` and `QuickJS` in order to pass values between the two. This allows for increased efficiency in passing and returning values (as no serialisation or de-serialisation is required) and also allows for greater flexibility in working with R closures, functions, and environments in JS code.
+
+`QuickJSR` aims to broadly follow the conventions of `jsonlite` in terms of how R types are converted to JS types and vice-versa. 
+
+### Primitive & Scalar Types
+
+The following table outlines the basic mappings of primitive types between R and JS types:
+
+| R Type | JS Type |
+|--------|---------|
+| NULL   | null    |
+| logical| boolean |
+| integer| number  |
+| double | number  |
+| character| string|
+| date   | date    |
+| POSIXct| date    |
+| factor | string  |
+
+Note that the handling of `Date`/`POSIXct` types differs from `jsonlite`, where they are converted to strings. In `QuickJSR`, they are treated directly as `Date` objects in JS.
+
+### Container Types
+
+The following table outlines the basic mappings of container types between R and JS types:
+
+| R Type | JS Type |
+|--------|---------|
+| named list   | object  |
+| unnamed list | array   |
+| vector       | array   |
+| array        | array   |
+| matrix       | 2D number array   |
+| data.frame   | array of objects  |
+
+Examples of the `matrix` and `data.frame` conversions are shown below:
+
+```{r}
+m <- matrix(1:6, nrow = 2)
+cat(to_json(m))
+```
+
+```{r}
+df <- data.frame(a = 1:3, b = c("x", "y", "z"))
+cat(to_json(df))
+```
+
+Note that the `to_json()` function operates by converting R objects to their JS equivalents, and then calling `JSON.stringify()` on the result. This allows you to explore how different types are being converted to JS.
+
+### Functions and Closures
+
+Functions and closures can be passed between R and JS code. In JS, functions are represented as `Function` objects, and can be called directly from JS code. 
+
+```{r}
+ctx <- JSContext$new()
+ctx$source(code = "function callRFunction(f, x, y) { return f(x, y); }")
+
+ctx$call("callRFunction", function(x, y) x + y, 1, 2)
+ctx$call("callRFunction", function(x, y) paste0(x, ",", y), "a", "b")
+```
+
+
+## Working with R Environments
+
+R environments are represented in JS as a custom class: `REnv`. The `REnv` class simply wraps the pointer to the R environment, and provides methods for getting and setting values - this means that there is only a 'cost' for conversion when values or accessed or updated.
+
+Environment values can be accessed using either `env.value` or `env["value"]` syntax:
+
+```{r}
+ctx$source(code = 'function env_test(env) { return env.a + env["b"]; }')
+env <- new.env()
+env$a <- 1
+env$b <- 2
+ctx$call("env_test", env)
+```
+
+Values in the environment can also be updated from JS code:
+
+```{r}
+ctx$source(code = "function env_update(env) { env.a = 10; env.b = 20; }")
+ctx$call("env_update", env)
+env$a
+env$b
+```
+
+## Accessing Package Namespaces & Functions
+
+`QuickJSR` automatically adds a global object `R` to each context, which can be used to access the namespaces of installed packages - and subsequently extract and use functions and objects from them. 
+
+```{r}
+qjs_eval('R.package("base").getwd()')
+```

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Covariance Structures</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Covariance Structures</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The current version of <code>lme4</code> offers four covariance
+classes/structures: <code>Covariance.us</code> (unstructured),
+<code>Covariance.diag</code> (diagonal), <code>Covariance.cs</code>
+(compound symmetry), and <code>Covariance.ar1</code> (autoregressive
+order 1). The syntax for use is similar to the <code>glmmTMB</code>
+package (see <a href="https://glmmtmb.github.io/glmmTMB/articles/covstruct.html">covariance
+structures in glmmTMB</a>), although the results are slightly
+different.</p>
+<p>This vignette provides a detailed mathematical exposition of the new
+machinery, along with brief notes on the appropriate syntax. In a
+separate document, we provide comparisons of results between
+<code>glmmTMB</code> and <code>lme4</code> (the computations are too
+slow to satisfy CRAN timing requirements; if we tried to store and
+re-load saved fits, they would be too big to satisfy CRAN package size
+requirements).</p>
+<div id="background" class="section level3">
+<h3>Background</h3>
+<p>For exact details of this structure, refer to the <code>lmer</code>
+<a href="https://cran.r-project.org/package=lme4/vignettes/lmer.pdf">vignette</a>
+<span class="citation">(Bates et al. 2015)</span>. We provide a quick
+summary in this vignette.</p>
+<p>In matrix notation, a linear mixed model can be represented as: <span class="math display">\[
+\mathbf{y} = \mathbf{X} \boldsymbol \beta + \mathbf Z \mathbf{b} +
+\boldsymbol{\epsilon}
+\]</span> Where <span class="math inline">\(\mathbf{b}\)</span>
+represents an unknown vector of random effects, with <span class="math inline">\(\mathbf b \sim \textrm{MVN}(\mathbf 0, \boldsymbol
+\Sigma)\)</span>.</p>
+<!-- can't use \usepackage{bm} for MathJax output: https://stackoverflow.com/a/33226711/190277 -->
+<p>We create the relative co-factor <span class="math inline">\(\mathbf
+\Lambda_{\mathbf \theta}\)</span> which is a <span class="math inline">\(q \times q\)</span> block diagonal matrix that
+depends on the variance-component parameter vector <span class="math inline">\(\boldsymbol \theta\)</span>. Let <span class="math inline">\(\sigma\)</span> be the scale parameter of the
+variance of a linear mixed model. In <code>lme4</code>, the
+variance-covariance matrix is constructed by: <span class="math display">\[
+{\mathbf \Sigma}_{\mathbf{\theta}} =
+\sigma^2 {\mathbf \Lambda}_{\mathbf \theta} {\mathbf \Lambda}_{\mathbf
+\theta}^{\top},
+\]</span></p>
+<p>For generalized linear mixed models, <span class="math inline">\(\mathbf \Lambda_\theta\)</span> instead represents
+the <em>unscaled</em> Cholesky factor; that is, the scaling term <span class="math inline">\(\sigma^2\)</span> is omitted from the equation
+above.</p>
+<p>The major difference between the four covariance classes
+(<code>Covariance.us</code> (unstructured), <code>Covariance.diag</code>
+(diagonal), <code>Covariance.cs</code> (compound symmetry), and
+<code>Covariance.ar1</code> (autoregressive order 1)) is in the
+construction of the the relative Cholesky factor <span class="math inline">\(\mathbf \Lambda_{\mathbf \theta}\)</span>.</p>
+</div>
+<div id="covariance-structures" class="section level3">
+<h3>Covariance Structures</h3>
+<p>Suppose that a particular random-effects term has <span class="math inline">\(p_i\)</span> varying effects (i.e., the number of
+columns of the model matrix constructed from the left-hand side
+<code>f</code> of the random-effects formula <code>(f|g)</code>. If the
+grouping variable (<code>g</code>) has <span class="math inline">\(\ell_i\)</span> levels and <span class="math inline">\(q_i = \ell_i p_i\)</span>. In general the
+covariance matrix for the term, <span class="math inline">\(\mathbf
+\Sigma_i\)</span>, is a <span class="math inline">\(q \times q\)</span>
+block diagonal matrix composed of homogeneous <span class="math inline">\(p_i \times p_i\)</span> blocks; the (relative)
+Cholesky factor <span class="math inline">\(\boldsymbol
+\Lambda_i\)</span> has a similar structure. In what follows we will
+describe the construction of these <em>template matrices</em>, for
+either the covariance matrix or the Cholesky factor.</p>
+<p>The <em>unstructured covariance</em>, which is the default in
+<code>lme4</code>, of size <span class="math inline">\(p \times
+p\)</span> has the following form: <span class="math display">\[
+\mathbf{\Sigma}
+= \begin{bmatrix}
+\sigma^{2}_{1} &amp; \sigma_{12} &amp; \dots &amp; \sigma_{1p} \\
+\sigma_{21} &amp; \sigma^{2}_{2} &amp; \dots &amp; \sigma_{2p} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\sigma_{p1} &amp; \sigma_{p2} &amp; \dots &amp; \sigma^{2}_{p} \\
+\end{bmatrix}   
+\]</span></p>
+<p>To specify unstructured (general positive-semidefinite) covariances
+for a particular term, specify either <code>(f|g)</code> (as in
+<code>lme4</code> &lt; 2.0) or <code>us(f|g)</code>.</p>
+<p>The next three covariance structures can either be heterogeneous or
+homogeneous. If we have a homogeneous covariance structure
+(<code>hom = TRUE</code>), then we assume <span class="math inline">\(\sigma_{1} = \sigma_{2} = \dots =
+\sigma_{p}\)</span>.</p>
+<p>The <em>diagonal covariance</em> has the following form: <span class="math display">\[
+\mathbf{\Sigma}
+= \begin{bmatrix}
+\sigma^{2}_{1} &amp; 0 &amp; \dots &amp; 0 \\
+0 &amp; \sigma^{2}_{2} &amp; \dots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \dots &amp; \sigma^{2}_{p} \\
+\end{bmatrix}   
+\]</span> By default, we assume a heterogeneous diagonal covariance
+structure.</p>
+<p>To specify a diagonal covariance structure, use
+<code>diag(f|g)</code> (or <code>diag(f|g, hom = FALSE)</code>). Unlike
+the unstructured covariance matrix, which is invariant to the
+parameterization of the terms in the varying effects model
+<code>f</code>, the diagonal covariance matrix (and the others described
+below) depend on the contrasts assigned to factor variables and on the
+inclusion of an intercept term. For example, suppose that <code>f</code>
+represents a factor variable with <span class="math inline">\(n\)</span>
+levels, and that the standard treatment contrasts are used. The template
+matrices will be <span class="math inline">\(n \times n\)</span>.</p>
+<ul>
+<li>If the intercept is not included (i.e. the term is specified as
+<code>(0+f|g)</code> or <code>(f-1|g)</code>), then the variances <span class="math inline">\(\sigma^2_1, \dots, \sigma^2_n\)</span> will
+represent variances of observations in each level of the factor around
+the population mean;</li>
+<li>if the intercept is included (the term is specified as
+<code>(f|g)</code> or <code>(1+f|g)</code>), <span class="math inline">\(\sigma^2_1\)</span> will represent the
+among-cluster variance of observations from the first (baseline) level
+of <code>f</code>; $^2_2, <span class="math inline">\(\sigma^2_n\)</span> will represent variances of
+<em>differences</em> in expected values between observations from levels
+2 to <span class="math inline">\(n\)</span> and those in the baseline
+level.</li>
+</ul>
+<p>If a different, non-default contrast is used, then the variances
+describe variation in the corresponding parameters. For example, with
+successive-difference contrasts (<code>MASS::contr.sdif()</code>) <span class="math inline">\(\sigma^2_1\)</span> would estimate among-cluster
+variance for observations at the first level, <span class="math inline">\(\sigma^2_2\)</span> would estimate variance in the
+difference between level 2 and level 1, and so forth.</p>
+<p>Similar points apply to the compound symmetric and autoregressive
+covariance structures below.</p>
+<p>The <em>compound symmetric covariance</em> has the following form:
+<span class="math display">\[
+\mathbf{\Sigma}
+= \begin{bmatrix}
+\sigma^{2}_{1}              &amp; \sigma_{1}\sigma_{2}\rho  &amp;
+\sigma_{1}\sigma_{3}\rho  &amp; \dots  &amp; \sigma_{1}\sigma_{p}\rho \\
+\sigma_{2}\sigma_{1} \rho   &amp; \sigma^{2}_{2}             &amp;
+\sigma_{2}\sigma_{3}\rho  &amp; \dots  &amp; \sigma_{2}\sigma_{p}\rho \\
+\sigma_{3}\sigma_{1} \rho   &amp; \sigma_{3}\sigma_{2}\rho   &amp;
+\sigma^{2}_{3}            &amp; \dots  &amp; \sigma_{3}\sigma_{p}\rho \\
+\vdots                      &amp; \vdots                     &amp;
+\vdots                    &amp; \ddots &amp; \vdots \\
+\sigma_{p}\sigma_{1} \rho   &amp; \sigma_{p}\sigma_{2}\rho   &amp;
+\sigma_{p}\sigma_{3}\rho  &amp; \dots  &amp; \sigma^{2}_{p}
+\end{bmatrix}   
+\]</span> By default, we assume a heterogeneous compound symmetric
+covariance structure.</p>
+<p>Use <code>cs(f|g)</code> or <code>cs(f|g, hom = TRUE)</code> to
+specify a compound symmetric structure.</p>
+<p>The <em>AR1 (auto-regressive order 1) covariance</em> has the
+following form: <span class="math display">\[
+\mathbf{\Sigma}
+= \begin{bmatrix}
+\sigma^{2}_{1}                  &amp; \sigma_{1}\sigma_{2}
+\rho      &amp; \sigma_{1}\sigma_{3}\rho^{2}   &amp; \dots  &amp;
+\sigma_{1}\sigma_{p}\rho^{p-1} \\
+\sigma_{2}\sigma_{1} \rho       &amp;
+\sigma^{2}_{2}                 &amp;
+\sigma_{2}\sigma_{3}\rho       &amp; \dots  &amp;
+\sigma_{2}\sigma_{p}\rho^{p-2} \\
+\sigma_{3}\sigma_{1} \rho^{2}   &amp;
+\sigma_{3}\sigma_{2}\rho       &amp;
+\sigma^{2}_{3}                 &amp; \dots  &amp;
+\sigma_{3}\sigma_{p}\rho^{p-3} \\
+\vdots                          &amp;
+\vdots                         &amp;
+\vdots                         &amp; \ddots &amp; \vdots \\
+\sigma_{p}\sigma_{1} \rho^{p-1} &amp; \sigma_{p}\sigma_{2}\rho^{p-2}
+&amp; \sigma_{p}\sigma_{3}\rho^{p-3} &amp; \dots  &amp; \sigma^{2}_{p}
+\end{bmatrix}   
+\]</span> Unlike the diagonal and compound symmetric structures, by
+default we assume a homogeneous ar1 covariance structure.</p>
+<p>Use <code>ar1(f|g)</code> or <code>ar1(f|g, het = TRUE)</code> to
+specify an AR1 structure.</p>
+</div>
+<div id="construction-of-the-relative-co-factor" class="section level3">
+<h3>Construction of the Relative Co-factor</h3>
+<p>For the unstructured covariance matrix, <code>lme4</code> estimates
+the following parameters in <code>par</code>: <span class="math inline">\(\mathbf{\theta} = (\theta_{1}, \theta_{2}, \dots,
+\theta_{p(p+1)/2})\)</span> to construct the relative co-factor <span class="math inline">\({\mathbf \Lambda}_{\mathbf{\theta}}\)</span> (this
+procedure is the same as in pre-2.0 versions of <code>lme4</code>):
+<span class="math display">\[
+\Lambda_{\mathbf{\theta}} = \begin{bmatrix}
+\theta_1 &amp; 0 &amp; 0 &amp; \dots &amp; 0 \\
+\theta_2 &amp; \theta_3 &amp; 0 &amp; \dots &amp; 0 \\
+\theta_4 &amp; \theta_5 &amp; \theta_6 &amp; \dots &amp; 0 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\theta_{...} &amp; \theta_{...} &amp; \theta_{...} &amp; \dots &amp;
+\theta_{p(p+1)/2}
+\end{bmatrix}
+\]</span></p>
+<p>The definition of the parameter vectors differs for the other
+covariance structures. In the diagonal covariance matrix case, <span class="math inline">\(\mathbf{\theta}\)</span> (or <code>par</code>)
+only contains the standard deviations. The relative co-factor <span class="math inline">\({\mathbf \Lambda}_{\mathbf{\theta}}\)</span> is:
+<span class="math display">\[
+{\mathbf \Lambda}_{\mathbf{\theta}} = \begin{bmatrix}
+\theta_1 &amp; 0 &amp; 0 &amp; \dots &amp; 0 \\
+0 &amp; \theta_2 &amp; 0 &amp; \dots &amp; 0 \\
+0 &amp; 0 &amp; \theta_3 &amp; \dots &amp; 0 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; 0 &amp; \dots &amp; \theta_{p}
+\end{bmatrix}
+\]</span></p>
+<p>For the compound symmetry covariance structure, the parameter vector
+<code>par</code> contains the <span class="math inline">\(p\)</span>
+standard deviations <span class="math inline">\((\sigma_1, \sigma_2,
+\ldots, \sigma_p)\)</span> and the common correlation <span class="math inline">\(\rho\)</span>. In contrast to
+<code>glmmTMB</code>, the correlation is estimated on its original scale
+(bounded between -1 and 1), rather than on an unconstrained, transformed
+scale.</p>
+<p>The relative co-factor <span class="math inline">\({\mathbf
+\Lambda}_{\mathbf{\theta}}\)</span> is a lower triangular <span class="math inline">\(p \times p\)</span> matrix. Consider the form:
+<span class="math display">\[
+{\mathbf \Lambda}_{\mathbf{\theta}} = \begin{bmatrix}
+\theta_{11} &amp; 0 &amp; 0 &amp; \cdots &amp; 0 \\
+\theta_{21} &amp; \theta_{22} &amp; 0 &amp; \cdots &amp; 0 \\
+\theta_{31} &amp; \theta_{32} &amp; \theta_{33} &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\theta_{p1} &amp; \theta_{p2} &amp; \theta_{p3} &amp; \cdots &amp;
+\theta_{pp}
+\end{bmatrix}
+\]</span></p>
+<p>Its elements <span class="math inline">\(\theta_{ij}\)</span> are
+constructed as follows. First, define the sequence <span class="math inline">\(\{a_j\}\)</span> recursively: <span class="math display">\[
+a_1 = 0, \quad a_{j+1} = a_j + \frac{(1 - \rho \cdot a_j)^2}{1 - \rho^2
+\cdot a_j} \quad \text{for } j = 1, \ldots, p-1
+\]</span></p>
+<p>Then the elements of <span class="math inline">\({\mathbf
+\Lambda}\)</span> are given by: <span class="math display">\[
+\theta_{ij} = \begin{cases}
+\sqrt{1 - \rho^2 a_j} &amp; \text{if } i = j \text{ (diagonal)}
+\\[0.5em]
+\dfrac{\rho - \rho^2 a_j}{\sqrt{1 - \rho^2 a_j}} &amp; \text{if } i &gt;
+j \text{ (below diagonal)} \\[0.5em]
+0 &amp; \text{if } i &lt; j \text{ (above diagonal)}
+\end{cases}
+\]</span> Users can extract the values <span class="math inline">\(\theta_{ij}\)</span> via the
+<code>getTheta()</code> function of the <code>Covariance.cs</code>
+object, in which <code>theta</code> will be a vector in the column-wise
+elements of <span class="math inline">\({\mathbf \Lambda}\)</span>.</p>
+<p>The setup is similar for the autoregressive order 1 (AR1) covariance
+structure. Again, the parameter vector contains the <span class="math inline">\(p\)</span> standard deviations <span class="math inline">\((\sigma_1, \sigma_2, \ldots, \sigma_p)\)</span>
+and the autocorrelation parameter <span class="math inline">\(\rho\)</span>. The relative co-factor <span class="math inline">\({\mathbf \Lambda}_{\mathbf{\theta}}\)</span> is a
+lower triangular <span class="math inline">\(p \times p\)</span> matrix
+whose form is similar to the compound symmetric case.</p>
+<p>The elements <span class="math inline">\(\theta_{ij}\)</span> are
+given by: <span class="math display">\[
+\theta_{ij} = \begin{cases}
+\rho^{i-1} &amp; \text{if } j = 1 \text{ (first column)} \\[0.5em]
+\rho^{i-j} \sqrt{1 - \rho^2} &amp; \text{if } 1 &lt; j \leq i \text{
+(below diagonal)} \\[0.5em]
+0 &amp; \text{if } i &lt; j \text{ (above diagonal)}
+\end{cases}
+\]</span> Again, these values can be extracted using
+<code>getTheta()</code> function of the <code>Covariance.ar1</code>
+object, in which <code>theta</code> will be still be a vector in the
+column-wise elements of <span class="math inline">\({\mathbf
+\Lambda}\)</span>.</p>
+</div>
+<div id="extracting-model-components" class="section level3">
+<h3>Extracting model components</h3>
+<p>This section illustrates how to extract <code>par</code>,
+<code>theta</code>, <code>Lambda</code>, as described in the previous
+section, as well as the variance covariance matrices of a model, from a
+<code>merMod</code> object.</p>
+<p>We’ll fit the standard <code>sleepstudy</code> example, except that
+we will use a model with a compound symmetric covariance structure.
+Because this model has only two varying effects (intercept and slope
+with respect to day) per subject, and hence the covariance matrix is
+<span class="math inline">\(2 \times 2\)</span>, there is no difference
+in overall model fit between the compound-symmetric and the unstructured
+covariance matrices. However, the models are parameterized differently,
+so this example will highlight the differences between <code>par</code>
+and <code>theta</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>fm1.cs <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> Days <span class="sc">+</span> <span class="fu">cs</span>(<span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">|</span> Subject), sleepstudy)</span></code></pre></div>
+<p>Extracting the covariance structure:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">print</span>(fm1.cs_cov <span class="ot">&lt;-</span> <span class="fu">getReCovs</span>(fm1.cs))</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; An object of class &quot;Covariance.cs&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; Slot &quot;hom&quot;:</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Slot &quot;nc&quot;:</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; Slot &quot;par&quot;:</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; [1] 0.96679232 0.23140420 0.06561148</span></span></code></pre></div>
+<p>The result is a list with only one element as we only have one
+random-effects term (<code>cs(1 + Days | Subject)</code>). To see the
+values of <code>par</code> and <code>theta</code> for this object, we
+can call:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">getME</span>(fm1.cs, <span class="st">&quot;par&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; Subject.(Intercept)        Subject.Days         Subject.rho </span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt;          0.96679232          0.23140420          0.06561148</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">getME</span>(fm1.cs, <span class="st">&quot;theta&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;      Subject.(Intercept) Subject.Days.(Intercept)             Subject.Days </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;               0.96679232               0.01518277               0.23090558</span></span></code></pre></div>
+<p>The <span class="math inline">\({\mathbf \Lambda}\)</span> matrix is
+large, so we’ll view it instead of printing:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">image</span>(<span class="fu">getME</span>(fm1.cs, <span class="st">&quot;Lambda&quot;</span>))</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>To most users, the most crucial information is simply the
+variance-covariance matrices. Extract these via
+<code>VarCorr.merMod()</code> (the list has one element per
+random-effect term in the model — in this case, only one):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>vc_mat <span class="ot">&lt;-</span> <span class="fu">VarCorr</span>(fm1.cs)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>vc_mat<span class="sc">$</span>Subject</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;             (Intercept)      Days</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; (Intercept)  612.160273  9.613533</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; Days           9.613533 35.070443</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;class&quot;)</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;vcmat_cs&quot; &quot;matrix&quot;   &quot;array&quot;   </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;stddev&quot;)</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; (Intercept)        Days </span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt;    24.74187     5.92203 </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;correlation&quot;)</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;             (Intercept)       Days</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; (Intercept)  1.00000000 0.06561148</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; Days         0.06561148 1.00000000</span></span></code></pre></div>
+<p>For detailed comparisons with <code>glmmTMB</code>, see
+<code>browseURL(system.file(&quot;extra_docs&quot;, &quot;covariance_structure_comparison.html&quot;, package = &quot;lme4&quot;))</code>.</p>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-Bates_JSS" class="csl-entry">
+Bates, Douglas, Martin Mächler, Ben Bolker, and Steve Walker. 2015.
+<span>“Fitting Linear Mixed-Effects Models Using <span class="nocase">lme4</span>.”</span> <em>Journal of Statistical
+Software</em> 67 (1): 1–48. <a href="https://doi.org/10.18637/jss.v067.i01">https://doi.org/10.18637/jss.v067.i01</a>.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+RHSForm                 extract right-hand side of a formula
+anySpecial              Detect whether there are any 'specials' in a
+                        formula term
+expandDoubleVerts       Expand terms with "||" notation into separate
+                        "|" terms
+expandGrpVar            apply operator expansion (e.g. a/b -> a + a:b)
+                        to a formula term
+findReTrmClasses        list of specials - taken from enum.R
+formatVC                Format the 'VarCorr' Matrix of Random Effects
+format_sdvar            Format columns corresponding to std. dev.
+                        and/or variance.
+isNested                Is f1 nested within f2?
+mkReTrms                Create list of structures needed for models
+                        with random effects
+no_specials             Drop 'specials' from a formula
+nobars                  Omit terms separated by vertical bars in a
+                        formula
+randint                 Remove all random slopes from a formula, while
+                        retaining random intercepts.
+subbars                 "Substitute bars"

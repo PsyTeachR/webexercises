@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Stan Development Team" />
+
+<meta name="date" content="2025-03-10" />
+
+<title>Simulation Based Calibration</title>
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Simulation Based Calibration</h1>
+<h4 class="author">Stan Development Team</h4>
+<h4 class="date">2025-03-10</h4>
+
+
+
+<p>Here is a Stan program for a beta-binomial model</p>
+<pre class="stan"><code>data {
+  int&lt;lower = 1&gt; N;
+  real&lt;lower = 0&gt; a;
+  real&lt;lower = 0&gt; b;
+}
+transformed data { // these adhere to the conventions above
+  real pi_ = beta_rng(a, b);
+  int y = binomial_rng(N, pi_);
+}
+parameters {
+  real&lt;lower = 0, upper = 1&gt; pi;
+}
+model {
+  target += beta_lpdf(pi | a, b);
+  target += binomial_lpmf(y | N, pi);
+}
+generated quantities { // these adhere to the conventions above
+  int y_ = y;
+  vector[1] pars_;
+  int ranks_[1] = {pi &gt; pi_};
+  vector[N] log_lik;
+  pars_[1] = pi_;
+  for (n in 1:y) log_lik[n] = bernoulli_lpmf(1 | pi);
+  for (n in (y + 1):N) log_lik[n] = bernoulli_lpmf(0 | pi);
+}</code></pre>
+<p>Notice that it adheres to the following conventions:</p>
+<ul>
+<li>Realizations of the unknown parameters are drawn in the <code>transformed data</code> block are postfixed with an underscore, such as <code>pi_</code>. These are considered the “true” parameters being estimated by the corresponding symbol declared in the <code>parameters</code> block, which have the same names except for the trailing underscore, such as <code>pi</code>.</li>
+<li>The realizations of the unknown parameters are then conditioned on when drawing from the prior predictive distribution in <code>transformed data</code> block, which in this case is <code>int y = binomial_rng(N, pi_);</code>. To avoid confusion, <code>y</code> does not have a training underscore.</li>
+<li>The realizations of the unknown parameters are copied into a <code>vector</code> in the <code>generated quantities</code> block named <code>pars_</code></li>
+<li>The realizations from the prior predictive distribution are copied into an object (of the same type) in the <code>generated quantities</code> block named `y_. This is optional.</li>
+<li>The <code>generated quantities</code> block contains an integer array named <code>ranks_</code> whose only values are zero or one, depending on whether the realization of a parameter from the posterior distribution exceeds the corresponding “true” realization, which in this case is <code>ranks_[1] = {pi &gt; pi_};</code>. These are not actually “ranks” but can be used afterwards to reconstruct (thinned) ranks.</li>
+<li>The <code>generated quantities</code> block contains a vector named <code>log_lik</code> whose values are the contribution to the log-likelihood by each observation. In this case, the “observations” are the implicit successes and failures that are aggregated into a binomial likelihood. This is optional but facilitates calculating the Pareto k shape parameter estimates that indicate whether the posterior distribution is sensitive to particular observations.</li>
+</ul>
+<p>Assuming the above is compile to a code <code>stanmodel</code> named <code>beta_binomial</code>, we can then call the <code>sbc</code> function</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">output &lt;-<span class="st"> </span><span class="kw">sbc</span>(beta_binomial, <span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">N =</span> <span class="dv">10</span>, <span class="dt">a =</span> <span class="dv">1</span>, <span class="dt">b =</span> <span class="dv">1</span>), <span class="dt">M =</span> <span class="dv">500</span>, <span class="dt">refresh =</span> <span class="dv">0</span>)</a></code></pre></div>
+<p>At which point, we can then call</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">print</span>(output)</a></code></pre></div>
+<pre><code>## 0 chains had divergent transitions after warmup</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">plot</span>(output, <span class="dt">bins =</span> <span class="dv">10</span>) <span class="co"># it is best to specify the bins argument yourself</span></a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Talts, S., Betancourt, M., Simpson, D., Vehtari, A., and Gelman, A. (2018). Validating Bayesian Inference Algorithms with Simulation-Based Calibration. <a href="https://arxiv.org/abs/1804.06788">arXiv preprint arXiv:1804.06788</a></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

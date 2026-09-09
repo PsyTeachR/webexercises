@@ -1,0 +1,87 @@
+Demo.growth             Demo dataset for illustrating a linear growth
+                        model
+Demo.twolevel           Demo dataset for illustrating a multilevel CFA
+HolzingerSwineford1939
+                        Holzinger and Swineford Dataset (9 Variables)
+PoliticalDemocracy      Industrialization And Political Democracy
+                        Dataset
+cfa                     Fit Confirmatory Factor Analysis Models
+efa                     Exploratory Factor Analysis
+estimator_iv            Instrumental Variable (MIIV-2SLS) Estimation
+fitMeasures             Fit Measures for a Latent Variable Model
+growth                  Fit Growth Curve Models
+lavBootstrap            Bootstrapping a Lavaan Model
+lavCor                  Polychoric, polyserial and Pearson correlations
+lavEffects              Indirect and Total Effects
+lavExport               lavaan Export
+lavInspect              Inspect or extract information from a fitted
+                        lavaan object
+lavInspectSampleCov     Observed Variable Covariance Matrix from a
+                        Model and Data
+lavListInspect          Inspect or extract information from a
+                        lavaanList object
+lavMatrixRepresentation
+                        lavaan matrix representation
+lavNames                lavaan Names
+lavOptions              lavaan Options
+lavParameterEstimates   Parameter Estimates
+lavPredict              Predict the values of latent variables (and
+                        their indicators)
+lavPredictY             Predict the values of y-variables given the
+                        values of x-variables
+lavPredictY_cv          Determine an optimal lambda penalty value
+                        through cross-validation
+lavResiduals            Residuals
+lavResidualsY           Compute residuals for the y-variables given the
+                        values of the x-variables
+lavScores               Extract Empirical Estimating Functions
+lavSimulateData         Simulate Data From a Lavaan Model Syntax
+lavTables               lavaan frequency tables
+lavTablesFitCp          Pairwise maximum likelihood fit statistics
+lavTest                 Test of exact fit
+lavTestLRT              LRT test
+lavTestScore            Score test
+lavTestWald             Wald test
+lav_con_parse           Utility Functions: Constraints
+lav_data_update         lavaan data functions
+lav_efalist_summary     Summarizing EFA Fits
+lav_export_estimation   lav_export_estimation
+lav_func_grad_complex   Utility Functions: Gradient and Jacobian
+lav_getcov              Utility Functions For Covariance Matrices
+lav_label_code          Provides a formatted label for use in tikz, svg
+                        or Rplot
+lav_mat_vec             Utility Functions: Matrices and Vectors
+lav_matrix_duplication_ginv_pre_post
+                        Deprecated functions with long names
+lav_model_get_parameters
+                        lavaan model functions
+lav_model_plotinfo      Get model information
+lav_mplus_lavaan        mplus to lavaan converter
+lav_mplus_syntax_model
+                        Convert Mplus model syntax to lavaan
+lav_plot                Create diagram code for tikz or svg, or produce
+                        an R plot
+lav_plotinfo_positions
+                        Position the nodes in the diagram
+lav_plotinfo_rgraph     Plots a graph in R
+lav_plotinfo_svgcode    Creates code to show a diagram in svg format
+lav_plotinfo_tikzcode   Creates code to show a diagram in tikz format
+lav_pt_independence     lavaan partable functions
+lav_samp_from_data      lavaan samplestats functions
+lavaan                  Fit a Latent Variable Model
+lavaan-class            Class For Representing A (Fitted) Latent
+                        Variable Model
+lavaan-deprecated       Deprecated functions in lavaan package
+lavaanList              Fit List of Latent Variable Models
+lavaanList-class        Class For Representing A List of (Fitted)
+                        Latent Variable Models
+mimic                   The mimic= option
+model.syntax            The Lavaan Model Syntax
+modificationIndices     Modification Indices
+open_parser             The open parser configuration
+parTable                Parameter Table
+sam                     Fit Structural Equation Models using the SAM
+                        approach
+sem                     Fit Structural Equation Models
+standardizedSolution    Standardized Solution
+varTable                Variable Table

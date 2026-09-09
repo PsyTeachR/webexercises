@@ -1,0 +1,348 @@
+---
+title: "Conducting a Bayesian Regularized Meta-analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Conducting a Bayesian Regularized Meta-analysis}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  echo = TRUE,
+  eval = FALSE,
+  comment = "#>"
+)
+options(digits=2)
+run_everything = FALSE
+```
+
+## Packages
+
+First, load in the necessary packages. In addition, if you are running the model locally on a multi-core machine, you can set `options(mc.cores = 4)`. This ensures the different MCMC chains will be run in parallel, making estimation faster.
+
+```{r, eval = FALSE, echo = TRUE}
+library(pema)
+library(tidySEM)
+library(ggplot2)
+options(mc.cores = 4)
+```
+```{r, eval = TRUE, echo = FALSE}
+library(pema)
+library(ggplot2)
+options(mc.cores = 4)
+data("bonapersona")
+```
+
+
+## Data
+
+In this application, we will work with the bonapersona data (Bonapersona et al., 2019). The data and codebook can be found [here](https://zenodo.org/record/2540657#.XEGPP2ko9aR). First, we read in the data and make sure all relevant variables are of the correct type. 
+
+```{r, eval = run_everything, echo = FALSE}
+descs <- tidySEM::descriptives(bonapersona)[, c("name", "type", "n", "unique", "mean", "sd", "v")]
+saveRDS(descs, "descs.RData")
+```
+```{r data, eval = FALSE}
+descriptives(bonapersona)[, c("name", "type", "n", "unique", "mean", "sd", "v")]
+```
+```{r, echo = FALSE, eval = TRUE}
+descs <- readRDS("descs.RData")
+descs
+```
+
+
+## Impute missings
+
+```{r}
+bonapersona$ageWeek[is.na(bonapersona$ageWeek)] <- median(bonapersona$ageWeek, na.rm = TRUE)
+```
+
+## Moderators
+
+For this application, we use a smaller selection of moderators than in Bonapersona et al. (2019).
+
+```{r}
+datsel <- bonapersona[ , c("yi", "vi", "author", "mTimeLength", "year", "model", "ageWeek", "strainGrouped", "bias", "species", "domain", "sex")]
+```
+
+## Two-level model
+
+First, for simplicity, we run a two-level model ignoring the fact that certain effect sizes come from the same study.
+
+```{r}
+dat2l <- datsel
+dat2l[["author"]] <- NULL
+```
+
+### Two-level model with the lasso prior
+
+We start with running a penalized meta-analysis using the lasso prior. Compared to the horseshoe prior, the lasso is easier to use because it has only two hyperparameters to set. However, the lighter tails of the lasso can result in large coefficients being shrunken too much towards zero thereby leading to potentially more bias compared to the regularized horseshoe prior. 
+
+For the lasso prior, we need to specify the degrees of freedom `df` and the `scale`. Both default to 1. The degrees of freedom determines the chi-square prior that is specified for the inverse-tuning parameter. Increasing the degrees of freedom will allow larger values for the inverse-tuning parameter, leading to less shrinkage. Increasing the scale parameter will also result in less shrinkage. The influence of these hyperparameters can be visualized through the implemented shiny app, which can be called via `shiny_prior()`.
+
+```{r, echo = TRUE, eval = F}
+fit_lasso <- brma(yi ~ .,
+                  data = dat2l,
+                  vi = "vi",
+                  method = "lasso",
+                  prior = c(df = 1, scale = 1),
+                  mute_stan = FALSE)
+```
+```{r, echo = FALSE, eval = TRUE}
+if(run_everything){
+  bonapersona$ageWeek[is.na(bonapersona$ageWeek)] <- median(bonapersona$ageWeek, na.rm = TRUE)
+  datsel <- bonapersona[ , c("yi", "vi", "author", "mTimeLength", "year", "model", "ageWeek", "strainGrouped", "bias", "species", "domain", "sex")]
+  dat2l <- datsel
+  dat2l[["author"]] <- NULL
+  fit_lasso <- brma(yi ~ .,
+                    data = dat2l,
+                    vi = "vi",
+                    method = "lasso",
+                    prior = c(df = 1, scale = 1),
+                    mute_stan = FALSE)
+  saveRDS(fit_lasso, "fitlasso.RData")
+  sum <- summary(fit_lasso)
+  saveRDS(sum$coefficients[, c("mean", "sd", "2.5%", "97.5%", "n_eff", "Rhat")], "sum.RData")
+  saveRDS(I2(fit_lasso), "i2.RData")
+}
+sums <- readRDS("sum.RData")
+i2s <- readRDS("i2.RData")
+```
+
+#### Assessing convergence and interpreting the results
+
+We can request the results using the `summary` function. Before we interpret the results, we need to ensure that the MCMC chains have converged to the posterior distribution. Two helpful diagnostics provided in the summary are the number of effective posterior samples `n_eff` and the potential scale reduction factor `Rhat`. `n_eff` is an estimate of the number of independent samples from the posterior. Ideally, the ratio `n_eff` to total samples is as close to 1 as possible. `Rhat` compares the between- and within-chain estimates and is ideally close to 1 (indicating the chains have mixed well). Should any values for `n_eff` or `Rhat` be far from these ideal values, you can try increasing the number of iterations through the `iter` argument. By default, the `brma` function runs four MCMC chains with 2000 iterations each, half of which is discarded as burn-in. As a result, a total of 4000 iterations is available on which posterior summaries are based. If this does not help, non-convergence might indicate a problem with the model specification.
+
+```{r, eval = F}
+sum <- summary(fit_lasso)
+sum$coefficients[, c("mean", "sd", "2.5%", "97.5%", "n_eff", "Rhat")]
+```
+```{r, eval = TRUE, echo = FALSE}
+sums
+```
+
+If we are satisfied with the convergence, we can continue looking at the posterior summary statistics. The `summary` function provides the posterior mean estimate for the effect of each moderator. Since Bayesian penalization does not automatically shrink estimates exactly to zero, some additional criterion is needed to determine which moderators should be selected in the model. Currently, this is done using the 95% credible intervals, with a moderator being selected if zero is excluded in this interval. In the `summary` this is denoted by an asterisk for that moderator. In this model, the only significant moderator is the dummy variable for sex. All other coefficients are not significant after being shrunken towards zero by the lasso prior.
+
+Also note the summary statistics for `tau2`, the (unexplained) residual between-studies heterogeneity.
+The 95% credible interval for this coefficient excludes zero, indicating that there is a non-zero amount of unexplained heterogeneity.
+It is customary to express this heterogeneity in terms of $I^2$, the percentage of variation across studies that is due to heterogeneity rather than chance (Higgins and Thompson, 2002; Higgins et al., 2003).
+The helper function `I2()` computes the posterior distribution of $I^2$ based on the MCMC draws of `tau2`:
+
+```{r}
+I2(fit_lasso)
+```
+```{r, echo = FALSE, eval = TRUE}
+i2s
+```
+
+
+
+### Two-level model with the horseshoe prior
+
+Next, we look into the regularized horseshoe prior. The horseshoe prior has five hyperparameters that can be set. Three parameters are degrees of freedom parameters which influence the tails of the distributions in the prior. Generally, it is not needed to specify different values for these hyperparameters. Here, we focus instead on the global scale parameter and the scale of the slab.
+
+```{r hs, echo = TRUE, eval = F}
+# use the default settings
+fit_hs1 <- brma(yi ~ .,
+                data = dat2l,
+                vi = "vi",
+                method = "hs",
+                prior = c(df = 1, df_global = 1, df_slab = 4, scale_global = 1, scale_slab = 1, relevant_pars = NULL),
+                mute_stan = FALSE)
+
+# reduce the global scale
+fit_hs2 <- brma(yi ~ .,
+                data = dat2l,
+                vi = "vi",
+                method = "hs",
+                prior = c(df = 1, df_global = 1, df_slab = 4, scale_global = 0.1, scale_slab = 1, relevant_pars = NULL),
+                mute_stan = FALSE)
+
+# increase the scale of the slab
+fit_hs3 <- brma(yi ~ .,
+                data = dat2l,
+                vi = "vi",
+                method = "hs",
+                prior = c(df = 1, df_global = 1, df_slab = 4, scale_global = 1, scale_slab = 5, relevant_pars = NULL),
+                mute_stan = FALSE)
+
+```
+
+```{r, echo = FALSE, eval = TRUE}
+if(run_everything){
+  # use the default settings
+  fit_hs1 <- brma(yi ~ .,
+                  data = dat2l,
+                  vi = "vi",
+                  method = "hs",
+                  prior = c(df = 1, df_global = 1, df_slab = 4, scale_global = 1, scale_slab = 1, relevant_pars = NULL),
+                  mute_stan = FALSE)
+  
+  # reduce the global scale
+  fit_hs2 <- brma(yi ~ .,
+                  data = dat2l,
+                  vi = "vi",
+                  method = "hs",
+                  prior = c(df = 1, df_global = 1, df_slab = 4, scale_global = 0.1, scale_slab = 1, relevant_pars = NULL),
+                  mute_stan = FALSE)
+  
+  # increase the scale of the slab
+  fit_hs3 <- brma(yi ~ .,
+                  data = dat2l,
+                  vi = "vi",
+                  method = "hs",
+                  prior = c(df = 1, df_global = 1, df_slab = 4, scale_global = 1, scale_slab = 5, relevant_pars = NULL),
+                  mute_stan = FALSE)
+  saveRDS(fit_hs1, "fit_hs1.RData")
+  saveRDS(fit_hs2, "fit_hs2.RData")
+  saveRDS(fit_hs3, "fit_hs3.RData")
+  fit_hs1 <- readRDS("fit_hs1.RData")
+fit_hs2 <- readRDS("fit_hs2.RData")
+fit_hs3 <- readRDS("fit_hs3.RData")
+}
+
+```
+
+
+Note that the horseshoe prior results in some divergent transitions. This can be an indication of non-convergence. However, these divergences arise often when using the horseshoe prior and as long as there are not too many of them, the results can still be used.<!-- CJ Reference? -->
+
+Next, we plot the posterior mean estimates for a selection of moderators for the different priors. 
+
+```{r, eval = FALSE, echo = TRUE}
+make_plotdat <- function(fit, prior){
+  plotdat <- data.frame(fit$coefficients)
+  plotdat$par <- rownames(plotdat)
+  plotdat$Prior <- prior
+  return(plotdat)
+}
+
+df0 <- make_plotdat(fit_lasso, prior = "lasso")
+df1 <- make_plotdat(fit_hs1, prior = "hs default")
+df2 <- make_plotdat(fit_hs2, prior = "hs reduced global scale")
+df3 <- make_plotdat(fit_hs3, prior = "hs increased slab scale")
+
+df <- rbind.data.frame(df0, df1, df2, df3)
+df <- df[!df$par %in% c("Intercept", "tau2"), ]
+pd <- 0.5
+ggplot(df, aes(x=mean, y=par, group = Prior)) + 
+  geom_errorbar(aes(xmin=X2.5., xmax=X97.5., colour = Prior), width=.1, position = position_dodge(width = pd)) +
+  geom_point(aes(colour = Prior), position = position_dodge(width = pd)) +
+  geom_vline(xintercept = 0) +
+  theme_bw() + xlab("Posterior mean") + ylab("")
+```
+```{r, eval = TRUE, echo = FALSE, out.width='80%'}
+# make_plotdat <- function(fit, prior){
+#   plotdat <- data.frame(fit$coefficients)
+#   plotdat$par <- rownames(plotdat)
+#   plotdat$Prior <- prior
+#   return(plotdat)
+# }
+# 
+# df0 <- make_plotdat(fit_lasso, prior = "lasso")
+# df1 <- make_plotdat(fit_hs1, prior = "hs default")
+# df2 <- make_plotdat(fit_hs2, prior = "hs reduced global scale")
+# df3 <- make_plotdat(fit_hs3, prior = "hs increased slab scale")
+# 
+# df <- rbind.data.frame(df0, df1, df2, df3)
+# df <- df[!df$par %in% c("Intercept", "tau2"), ]
+# pd <- 0.5
+# p <- ggplot(df, aes(x=mean, y=par, group = Prior)) + 
+#   geom_errorbar(aes(xmin=X2.5., xmax=X97.5., colour = Prior), width=.1, position = position_dodge(width = pd)) +
+#   geom_point(aes(colour = Prior), position = position_dodge(width = pd)) +
+#   geom_vline(xintercept = 0) +
+#   theme_bw() + xlab("Posterior mean") + ylab("")
+# ggsave("sensitivity.png", p, device = "png", width = 3, height = 1.5, dpi = 300, scale = 2.5)
+knitr::include_graphics("sensitivity.png")
+```
+
+We can see that, in general, the different priors give quite similar results in this application. A notable exception is the estimate for the dummy variable `testAuthorGrouped_stepDownAvoidance` which is much smaller for the lasso compared to the horseshoe specification. This indicates that the lasso can shrink large coefficients more towards zero whereas the horseshoe is better at keeping them large.
+
+## Three-level model
+
+Finally, we can also take into account the fact that some effect sizes might come from the same study by fitting a three-level model as follows:
+
+```{r, echo = TRUE, eval = F}
+fit_3l <- brma(yi ~ .,
+               data = datsel,
+               vi = "vi",
+               study = "author",
+               method = "lasso",
+               standardize = FALSE,
+               prior = c(df = 1, scale = 1),
+               mute_stan = FALSE)
+```
+```{r, eval = TRUE, echo = F}
+if(run_everything){
+  fit_3l <- brma(yi ~ .,
+                 data = datsel,
+                 vi = "vi",
+                 study = "author",
+                 method = "lasso",
+                 prior = c(df = 1, scale = 1),
+                 mute_stan = FALSE)
+  saveRDS(fit_3l, "fit_3l.RData")
+  fit_3l <- readRDS("fit_3l.RData")
+}
+
+```
+
+
+
+## Standardization
+
+It is possible to override the default standardization, which standardizes all variables (including dummies).
+To do so, first manually standardize any variables that must be standardized.
+Then, in the call to `brma()`, provide a named list with elements `list(center = ..., scale = ...)`.
+For variables that are **not** to be standardized, use `center = 0, scale = 1`.
+This retains their original scale.
+For variables that are to be standardized, use their original `center` and `scale` to restore the coefficients to their original scale.
+
+In the example below, we standardize a continuous predictor, but we do not standardize the dummies:
+
+```{r echo = FALSE, eval = TRUE}
+
+if(run_everything){
+  moderators <- model.matrix(yi~ageWeek + strainGrouped, data = datsel)[, -1]
+  scale_age <- scale(moderators[,1])
+  stdz <- list(center = c(attr(scale_age, "scaled:center"), rep(0, length(levels(datsel$strainGrouped))-1)),
+               scale = c(attr(scale_age, "scaled:scale"),   rep(1, length(levels(datsel$strainGrouped))-1)))
+  moderators <- data.frame(datsel[c("yi", "vi", "author")], moderators)
+  fit_std <- brma(yi ~ .,
+                  data = moderators,
+                  vi = "vi",
+                  study = "author",
+                  method = "lasso",
+                  prior = c(df = 1, scale = 1),
+                  standardize = stdz,
+                  mute_stan = FALSE)
+  saveRDS(fit_std, "fit_std.RData")
+  fit_std <- readRDS("fit_std.RData")
+}
+
+
+```
+
+```{r echo = TRUE, eval = FALSE}
+moderators <- model.matrix(yi~ageWeek + strainGrouped, data = datsel)[, -1]
+scale_age <- scale(moderators[,1])
+stdz <- list(center = c(attr(scale_age, "scaled:center"), rep(0, length(levels(datsel$strainGrouped))-1)),
+             scale = c(attr(scale_age, "scaled:scale"),   rep(1, length(levels(datsel$strainGrouped))-1)))
+moderators <- data.frame(datsel[c("yi", "vi", "author")], moderators)
+fit_std <- brma(yi ~ .,
+                data = moderators,
+                vi = "vi",
+                study = "author",
+                method = "lasso",
+                prior = c(df = 1, scale = 1),
+                standardize = stdz,
+                mute_stan = FALSE)
+
+```
+
+Note that, in this example, only `ageWeek` is standardized; the remaining (dummy) variables are untouched.
+The object `stdz` provides the original center and scale for `ageWeek`, which allows `brma()` to properly rescale the coefficient for this moderator.
+As the center and scale for all remaining (dummy) variables are 0 and 1, these coefficients are **not** rescaled.
+See the `pema` paper for a discussion of standardization and further references.
+

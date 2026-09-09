@@ -1,0 +1,88 @@
+RStudio_reprompt        Call reprompt based on RStudio editor contents
+Rd_combo                Manipulate a number of Rd files
+Rdapply                 Apply a function over an Rd object
+Rdo2Rdf                 Convert an Rd object to Rd file format
+Rdo_append_argument     Append an item for a new argument to an Rd
+                        object
+Rdo_collect_aliases     Collect aliases or other metadata from an Rd
+                        object
+Rdo_empty_sections      Find or remove empty sections in Rd objects
+Rdo_fetch               Get help pages as Rd objects
+Rdo_flatinsert          Insert or remove content in an Rd fragment
+Rdo_get_argument_names
+                        Get the names of arguments in usage sections of
+                        Rd objects
+Rdo_get_insert_pos      Find the position of an "Rd_tag"
+Rdo_get_item_labels     Get the labels of items in an Rd object
+Rdo_insert              Insert a new element in an Rd object possibly
+                        surrounding it with new lines
+Rdo_insert_element      Insert a new element in an Rd object
+Rdo_is_newline          Check if an Rd fragment represents a newline
+                        character
+Rdo_locate              Find positions of elements in an Rd object
+Rdo_locate_leaves       Find leaves of an Rd object using a predicate
+Rdo_macro               Format Rd fragments as macros (todo: a baffling
+                        title!)
+Rdo_modify              Replace or modify parts of Rd objects
+Rdo_modify_simple       Simple modification of Rd objects
+Rdo_piecetag            Give information about Rd elements
+Rdo_predefined_sections
+                        Tables of predefined sections and types of
+                        pieces of Rd objects
+Rdo_remove_srcref       Remove srcref attributes from Rd objects
+Rdo_reparse             Reparse an Rd object
+Rdo_sections            Locate the sections in Rd objects
+Rdo_set_section         Replace a section in an Rd file
+Rdo_show                Convert an Rd object to text and show it
+Rdo_tag                 Set the Rd_tag of an object
+Rdo_tags                Give the Rd tags at the top level of an Rd
+                        object
+Rdo_which               Find elements of Rd objects for which a
+                        condition is true
+Rdpack-package          Update and Manipulate Rd Documentation Objects
+Rdpack_bibstyles        Set up a custom style for references in help
+                        pages
+Rdreplace_section       Replace the contents of a section in one or
+                        more Rd files
+S4formals               Give the formal arguments of an S4 method
+append_to_Rd_list       Add content to the element of an Rd object or
+                        fragment at a given position
+c_Rd                    Concatenate Rd objects or pieces
+char2Rdpiece            Convert a character vector to Rd piece
+compare_usage1          Compare usage entries for a function to its
+                        actual arguments
+deparse_usage           Convert f_usage objects to text appropriate for
+                        usage sections in Rd files
+ereprompt               Update an Rd file and open it in an editor
+format_funusage         Format the usage text of functions
+get_bibentries          Get all references from a Bibtex file
+get_sig_text            Produce the textual form of the signatures of
+                        available methods for an S4 generic function
+get_usage_text          Get the text of the usage section of Rd
+                        documentation
+insert_all_ref          Insert references cited in packages
+insert_citeOnly         Generate citations from bibtex keys
+insert_ref              Insert bibtex references in Rd and roxygen2
+                        documentation
+inspect_Rd              Inspect and update an Rd object or file
+inspect_args            Inspect the argument section of an Rd object
+inspect_signatures      Inspect signatures of S4 methods
+inspect_slots           Inspect the slots of an S4 class
+inspect_usage           Inspect the usage section in an Rd object
+list_Rd                 Combine Rd fragments
+makeVignetteReference   Make bibtex references for vignettes
+parse_Rdname            Parse the name section of an Rd object
+parse_Rdpiece           Parse a piece of Rd source text
+parse_Rdtext            Parse Rd source text as the contents of a
+                        section
+parse_pairlist          Parse formal arguments of functions
+parse_usage_text        Parse usage text
+promptPackageSexpr      Generates a shell of documentation for an
+                        installed package
+promptUsage             Generate usage text for functions and methods
+rdo_text_restore        Ensure exported fragments of Rd are as the
+                        original
+rebib                   Work with bibtex references in Rd documentation
+reprompt                Update the documentation of a topic
+update_aliases_tmp      Update aliases for methods in Rd objects
+viewRd                  View Rd files in a source package

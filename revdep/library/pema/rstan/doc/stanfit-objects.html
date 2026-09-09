@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Stan Development Team" />
+
+<meta name="date" content="2025-03-10" />
+
+<title>Accessing the contents of a stanfit object</title>
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Accessing the contents of a stanfit object</h1>
+<h4 class="author">Stan Development Team</h4>
+<h4 class="date">2025-03-10</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#posterior-draws">Posterior draws</a></li>
+<li><a href="#posterior-summary-statistics-and-convergence-diagnostics">Posterior summary statistics and convergence diagnostics</a></li>
+<li><a href="#sampler-diagnostics">Sampler diagnostics</a></li>
+<li><a href="#model-code">Model code</a></li>
+<li><a href="#initial-values">Initial values</a></li>
+<li><a href="#prng-seed">(P)RNG seed</a></li>
+<li><a href="#warmup-and-sampling-times">Warmup and sampling times</a></li>
+</ul>
+</div>
+
+<p>This vignette demonstrates how to access most of data stored in a stanfit object. A stanfit object (an object of class <code>&quot;stanfit&quot;</code>) contains the output derived from fitting a Stan model using Markov chain Monte Carlo or one of Stan’s variational approximations (meanfield or full-rank). Throughout the document we’ll use the stanfit object obtained from fitting the Eight Schools example model:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(rstan)</a>
+<a class="sourceLine" id="cb1-2" title="2">fit &lt;-<span class="st"> </span><span class="kw">stan_demo</span>(<span class="st">&quot;eight_schools&quot;</span>, <span class="dt">refresh =</span> <span class="dv">0</span>)</a></code></pre></div>
+<pre><code>Warning: There were 2 divergent transitions after warmup. See
+https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
+to find out why this is a problem and how to eliminate them.</code></pre>
+<pre><code>Warning: Examine the pairs() plot to diagnose sampling problems</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">class</span>(fit)</a></code></pre></div>
+<pre><code>[1] &quot;stanfit&quot;
+attr(,&quot;package&quot;)
+[1] &quot;rstan&quot;</code></pre>
+<div id="posterior-draws" class="section level2">
+<h2>Posterior draws</h2>
+<p>There are several functions that can be used to access the draws from the posterior distribution stored in a stanfit object. These are <code>extract</code>, <code>as.matrix</code>, <code>as.data.frame</code>, and <code>as.array</code>, each of which returns the draws in a different format.</p>
+<p><br></p>
+<div id="extract" class="section level4">
+<h4>extract()</h4>
+<p>The <code>extract</code> function (with its default arguments) returns a list with named components corresponding to the model parameters.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">list_of_draws &lt;-<span class="st"> </span><span class="kw">extract</span>(fit)</a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">print</span>(<span class="kw">names</span>(list_of_draws))</a></code></pre></div>
+<pre><code>[1] &quot;mu&quot;    &quot;tau&quot;   &quot;eta&quot;   &quot;theta&quot; &quot;lp__&quot; </code></pre>
+<p>In this model the parameters <code>mu</code> and <code>tau</code> are scalars and <code>theta</code> is a vector with eight elements. This means that the draws for <code>mu</code> and <code>tau</code> will be vectors (with length equal to the number of post-warmup iterations times the number of chains) and the draws for <code>theta</code> will be a matrix, with each column corresponding to one of the eight components:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">head</span>(list_of_draws<span class="op">$</span>mu)</a></code></pre></div>
+<pre><code>[1]  1.488474 12.571451 13.223202 13.182046  9.952339  6.912193</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">head</span>(list_of_draws<span class="op">$</span>tau)</a></code></pre></div>
+<pre><code>[1]  7.348914  2.445517 11.517335  6.213301  2.031371  6.779524</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">head</span>(list_of_draws<span class="op">$</span>theta)</a></code></pre></div>
+<pre><code>          
+iterations      [,1]      [,2]      [,3]      [,4]       [,5]       [,6]
+      [1,]  1.421816  8.687649 -4.603498  3.790294  -7.045458  0.2615451
+      [2,] 18.550676  7.680755  8.966955  9.016272  11.423769 11.2204210
+      [3,] 19.469451 15.344126 -7.727168 12.178930 -10.599775 -0.3549827
+      [4,] 17.924275 18.694583  5.284061  6.666718  15.316291  7.8929871
+      [5,]  6.701938  9.075823  7.907170  9.715682   8.907089  8.4608342
+      [6,] 18.766974  4.349427 17.361541 15.550801  10.938264  8.9511055
+          
+iterations      [,7]      [,8]
+      [1,]  5.431451  3.543596
+      [2,] 10.538840 11.336251
+      [3,] 22.247510 15.918756
+      [4,] 12.085506  6.242551
+      [5,] 11.771131 10.389010
+      [6,]  1.082676 16.802566</code></pre>
+<p><br></p>
+</div>
+<div id="as.matrix-as.data.frame-as.array" class="section level4">
+<h4>as.matrix(), as.data.frame(), as.array()</h4>
+<p>The <code>as.matrix</code>, <code>as.data.frame</code>, and <code>as.array</code> functions can also be used to retrieve the posterior draws from a stanfit object:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">matrix_of_draws &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(fit)</a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="kw">print</span>(<span class="kw">colnames</span>(matrix_of_draws))</a></code></pre></div>
+<pre><code> [1] &quot;mu&quot;       &quot;tau&quot;      &quot;eta[1]&quot;   &quot;eta[2]&quot;   &quot;eta[3]&quot;   &quot;eta[4]&quot;  
+ [7] &quot;eta[5]&quot;   &quot;eta[6]&quot;   &quot;eta[7]&quot;   &quot;eta[8]&quot;   &quot;theta[1]&quot; &quot;theta[2]&quot;
+[13] &quot;theta[3]&quot; &quot;theta[4]&quot; &quot;theta[5]&quot; &quot;theta[6]&quot; &quot;theta[7]&quot; &quot;theta[8]&quot;
+[19] &quot;lp__&quot;    </code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">df_of_draws &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(fit)</a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="kw">print</span>(<span class="kw">colnames</span>(df_of_draws))</a></code></pre></div>
+<pre><code> [1] &quot;mu&quot;       &quot;tau&quot;      &quot;eta[1]&quot;   &quot;eta[2]&quot;   &quot;eta[3]&quot;   &quot;eta[4]&quot;  
+ [7] &quot;eta[5]&quot;   &quot;eta[6]&quot;   &quot;eta[7]&quot;   &quot;eta[8]&quot;   &quot;theta[1]&quot; &quot;theta[2]&quot;
+[13] &quot;theta[3]&quot; &quot;theta[4]&quot; &quot;theta[5]&quot; &quot;theta[6]&quot; &quot;theta[7]&quot; &quot;theta[8]&quot;
+[19] &quot;lp__&quot;    </code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">array_of_draws &lt;-<span class="st"> </span><span class="kw">as.array</span>(fit)</a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="kw">print</span>(<span class="kw">dimnames</span>(array_of_draws))</a></code></pre></div>
+<pre><code>$iterations
+NULL
+
+$chains
+[1] &quot;chain:1&quot; &quot;chain:2&quot; &quot;chain:3&quot; &quot;chain:4&quot;
+
+$parameters
+ [1] &quot;mu&quot;       &quot;tau&quot;      &quot;eta[1]&quot;   &quot;eta[2]&quot;   &quot;eta[3]&quot;   &quot;eta[4]&quot;  
+ [7] &quot;eta[5]&quot;   &quot;eta[6]&quot;   &quot;eta[7]&quot;   &quot;eta[8]&quot;   &quot;theta[1]&quot; &quot;theta[2]&quot;
+[13] &quot;theta[3]&quot; &quot;theta[4]&quot; &quot;theta[5]&quot; &quot;theta[6]&quot; &quot;theta[7]&quot; &quot;theta[8]&quot;
+[19] &quot;lp__&quot;    </code></pre>
+<p>The <code>as.matrix</code> and <code>as.data.frame</code> methods essentially return the same thing except in matrix and data frame form, respectively. The <code>as.array</code> method returns the draws from each chain separately and so has an additional dimension:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">print</span>(<span class="kw">dim</span>(matrix_of_draws))</a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="kw">print</span>(<span class="kw">dim</span>(df_of_draws))</a>
+<a class="sourceLine" id="cb20-3" title="3"><span class="kw">print</span>(<span class="kw">dim</span>(array_of_draws))</a></code></pre></div>
+<pre><code>[1] 4000   19
+[1] 4000   19
+[1] 1000    4   19</code></pre>
+<p>By default all of the functions for retrieving the posterior draws return the draws for <em>all</em> parameters (and generated quantities). The optional argument <code>pars</code> (a character vector) can be used if only a subset of the parameters is desired, for example:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">mu_and_theta1 &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(fit, <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;mu&quot;</span>, <span class="st">&quot;theta[1]&quot;</span>))</a>
+<a class="sourceLine" id="cb22-2" title="2"><span class="kw">head</span>(mu_and_theta1)</a></code></pre></div>
+<pre><code>          parameters
+iterations        mu  theta[1]
+      [1,]  9.113228 16.140227
+      [2,]  7.255361 13.368290
+      [3,]  8.528363  6.428964
+      [4,] 11.081210 10.227082
+      [5,]  6.307817 17.404911
+      [6,]  9.964439 10.520016</code></pre>
+<p><br></p>
+</div>
+</div>
+<div id="posterior-summary-statistics-and-convergence-diagnostics" class="section level2">
+<h2>Posterior summary statistics and convergence diagnostics</h2>
+<p>Summary statistics are obtained using the <code>summary</code> function. The object returned is a list with two components:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">fit_summary &lt;-<span class="st"> </span><span class="kw">summary</span>(fit)</a>
+<a class="sourceLine" id="cb24-2" title="2"><span class="kw">print</span>(<span class="kw">names</span>(fit_summary))</a></code></pre></div>
+<pre><code>[1] &quot;summary&quot;   &quot;c_summary&quot;</code></pre>
+<p>In <code>fit_summary$summary</code> all chains are merged whereas <code>fit_summary$c_summary</code> contains summaries for each chain individually. Typically we want the summary for all chains merged, which is what we’ll focus on here.</p>
+<p>The summary is a matrix with rows corresponding to parameters and columns to the various summary quantities. These include the posterior mean, the posterior standard deviation, and various quantiles computed from the draws. The <code>probs</code> argument can be used to specify which quantiles to compute and <code>pars</code> can be used to specify a subset of parameters to include in the summary.</p>
+<p>For models fit using MCMC, also included in the summary are the Monte Carlo standard error (<code>se_mean</code>), the effective sample size (<code>n_eff</code>), and the R-hat statistic (<code>Rhat</code>).</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="kw">print</span>(fit_summary<span class="op">$</span>summary)</a></code></pre></div>
+<pre><code>                  mean    se_mean        sd        2.5%         25%
+mu         8.007536523 0.11552570 4.9513594  -1.9222026   4.8085181
+tau        6.603336325 0.20329568 5.9753551   0.1728432   2.3550279
+eta[1]     0.405848953 0.01740855 0.9445708  -1.5378558  -0.2115446
+eta[2]    -0.005753395 0.01536444 0.8715120  -1.7185355  -0.5699245
+eta[3]    -0.193857013 0.01468770 0.9281523  -1.9635021  -0.7952254
+eta[4]    -0.029155838 0.01411412 0.8804588  -1.7737136  -0.6176649
+eta[5]    -0.375402748 0.01516514 0.8448021  -2.0341022  -0.9238896
+eta[6]    -0.241978864 0.01642085 0.8841485  -1.9634660  -0.8197734
+eta[7]     0.359738764 0.01419410 0.8817446  -1.4207733  -0.2133717
+eta[8]     0.042265806 0.01497848 0.9345390  -1.8312333  -0.5703946
+theta[1]  11.617935090 0.15769026 8.0765444  -1.7867502   6.2750730
+theta[2]   7.861712373 0.09983657 6.1704677  -4.3241709   3.9818037
+theta[3]   6.206286455 0.14492356 7.7547427 -11.6068964   2.2516888
+theta[4]   7.716195812 0.10641752 6.4435087  -5.8913169   3.8734140
+theta[5]   5.135076545 0.10994314 6.3509612  -8.5487429   1.3567338
+theta[6]   6.066552756 0.11290372 6.5880615  -8.2913121   2.2740856
+theta[7]  10.848994521 0.11477964 6.6068494  -0.6215770   6.3721026
+theta[8]   8.423405371 0.16037401 7.7122152  -6.9216603   3.9199716
+lp__     -39.511483098 0.08383706 2.7126153 -45.6854960 -41.0851014
+                  50%         75%      97.5%     n_eff      Rhat
+mu         7.99938904  11.2302155  17.788888 1836.9262 1.0008051
+tau        5.32920107   9.1688847  20.906005  863.9153 1.0092509
+eta[1]     0.42352102   1.0301003   2.286020 2944.0421 1.0015993
+eta[2]    -0.01734074   0.5535907   1.747688 3217.4620 0.9995929
+eta[3]    -0.22615731   0.4379316   1.668864 3993.2935 0.9998402
+eta[4]    -0.02884515   0.5350051   1.766398 3891.4407 1.0001105
+eta[5]    -0.38248559   0.1727490   1.348492 3103.2517 1.0001840
+eta[6]    -0.25233752   0.3164041   1.546743 2899.0733 1.0004464
+eta[7]     0.37455001   0.9322649   2.112452 3858.9593 0.9992021
+eta[8]     0.03593027   0.6630956   1.892417 3892.7749 0.9999310
+theta[1]  10.58113818  15.7662776  30.691080 2623.2604 1.0027785
+theta[2]   7.86537082  11.7120898  20.491776 3819.9426 1.0007652
+theta[3]   6.73261820  10.9262648  20.222523 2863.2339 1.0005658
+theta[4]   7.78588984  11.7445980  20.171425 3666.2201 1.0008216
+theta[5]   5.67497248   9.4494177  16.407779 3336.8956 1.0012809
+theta[6]   6.44470369  10.3757100  18.241870 3404.8561 1.0017153
+theta[7]  10.25285845  14.6639662  25.201119 3313.2870 1.0007526
+theta[8]   8.20517778  12.7200294  25.290306 2312.5454 0.9996591
+lp__     -39.23347400 -37.6547307 -34.883334 1046.8978 1.0039047</code></pre>
+<p>If, for example, we wanted the only quantiles included to be 10% and 90%, and for only the parameters included to be <code>mu</code> and <code>tau</code>, we would specify that like this:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1">mu_tau_summary &lt;-<span class="st"> </span><span class="kw">summary</span>(fit, <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;mu&quot;</span>, <span class="st">&quot;tau&quot;</span>), <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>))<span class="op">$</span>summary</a>
+<a class="sourceLine" id="cb28-2" title="2"><span class="kw">print</span>(mu_tau_summary)</a></code></pre></div>
+<pre><code>        mean   se_mean       sd       10%      90%     n_eff     Rhat
+mu  8.007537 0.1155257 4.951359 1.7419720 14.30474 1836.9262 1.000805
+tau 6.603336 0.2032957 5.975355 0.7929309 13.71782  863.9153 1.009251</code></pre>
+<p>Since <code>mu_tau_summary</code> is a matrix we can pull out columns using their names:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1">mu_tau_80pct &lt;-<span class="st"> </span>mu_tau_summary[, <span class="kw">c</span>(<span class="st">&quot;10%&quot;</span>, <span class="st">&quot;90%&quot;</span>)]</a>
+<a class="sourceLine" id="cb30-2" title="2"><span class="kw">print</span>(mu_tau_80pct)</a></code></pre></div>
+<pre><code>          10%      90%
+mu  1.7419720 14.30474
+tau 0.7929309 13.71782</code></pre>
+<p><br></p>
+</div>
+<div id="sampler-diagnostics" class="section level2">
+<h2>Sampler diagnostics</h2>
+<p>For models fit using MCMC the stanfit object will also contain the values of parameters used for the sampler. The <code>get_sampler_params</code> function can be used to access this information.</p>
+<p>The object returned by <code>get_sampler_params</code> is a list with one component (a matrix) per chain. Each of the matrices has number of columns corresponding to the number of sampler parameters and the column names provide the parameter names. The optional argument inc_warmup (defaulting to <code>TRUE</code>) indicates whether to include the warmup period.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1">sampler_params &lt;-<span class="st"> </span><span class="kw">get_sampler_params</span>(fit, <span class="dt">inc_warmup =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb32-2" title="2">sampler_params_chain1 &lt;-<span class="st"> </span>sampler_params[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb32-3" title="3"><span class="kw">colnames</span>(sampler_params_chain1)</a></code></pre></div>
+<pre><code>[1] &quot;accept_stat__&quot; &quot;stepsize__&quot;    &quot;treedepth__&quot;   &quot;n_leapfrog__&quot; 
+[5] &quot;divergent__&quot;   &quot;energy__&quot;     </code></pre>
+<p>To do things like calculate the average value of <code>accept_stat__</code> for each chain (or the maximum value of <code>treedepth__</code> for each chain if using the NUTS algorithm, etc.) the <code>sapply</code> function is useful as it will apply the same function to each component of <code>sampler_params</code>:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1">mean_accept_stat_by_chain &lt;-<span class="st"> </span><span class="kw">sapply</span>(sampler_params, <span class="cf">function</span>(x) <span class="kw">mean</span>(x[, <span class="st">&quot;accept_stat__&quot;</span>]))</a>
+<a class="sourceLine" id="cb34-2" title="2"><span class="kw">print</span>(mean_accept_stat_by_chain)</a></code></pre></div>
+<pre><code>[1] 0.8294264 0.8707689 0.8714515 0.8549241</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1">max_treedepth_by_chain &lt;-<span class="st"> </span><span class="kw">sapply</span>(sampler_params, <span class="cf">function</span>(x) <span class="kw">max</span>(x[, <span class="st">&quot;treedepth__&quot;</span>]))</a>
+<a class="sourceLine" id="cb36-2" title="2"><span class="kw">print</span>(max_treedepth_by_chain)</a></code></pre></div>
+<pre><code>[1] 4 4 4 5</code></pre>
+<p><br></p>
+</div>
+<div id="model-code" class="section level2">
+<h2>Model code</h2>
+<p>The Stan program itself is also stored in the stanfit object and can be accessed using <code>get_stancode</code>:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1">code &lt;-<span class="st"> </span><span class="kw">get_stancode</span>(fit)</a></code></pre></div>
+<p>The object <code>code</code> is a single string and is not very intelligible when printed:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="kw">print</span>(code)</a></code></pre></div>
+<pre><code>[1] &quot;data {\n  int&lt;lower=0&gt; J;          // number of schools\n  real y[J];               // estimated treatment effects\n  real&lt;lower=0&gt; sigma[J];  // s.e. of effect estimates\n}\nparameters {\n  real mu;\n  real&lt;lower=0&gt; tau;\n  vector[J] eta;\n}\ntransformed parameters {\n  vector[J] theta;\n  theta = mu + tau * eta;\n}\nmodel {\n  target += normal_lpdf(eta | 0, 1);\n  target += normal_lpdf(y | theta, sigma);\n}&quot;
+attr(,&quot;model_name2&quot;)
+[1] &quot;schools&quot;</code></pre>
+<p>A readable version can be printed using <code>cat</code>:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="kw">cat</span>(code)</a></code></pre></div>
+<pre><code>data {
+  int&lt;lower=0&gt; J;          // number of schools
+  real y[J];               // estimated treatment effects
+  real&lt;lower=0&gt; sigma[J];  // s.e. of effect estimates
+}
+parameters {
+  real mu;
+  real&lt;lower=0&gt; tau;
+  vector[J] eta;
+}
+transformed parameters {
+  vector[J] theta;
+  theta = mu + tau * eta;
+}
+model {
+  target += normal_lpdf(eta | 0, 1);
+  target += normal_lpdf(y | theta, sigma);
+}</code></pre>
+<p><br></p>
+</div>
+<div id="initial-values" class="section level2">
+<h2>Initial values</h2>
+<p>The <code>get_inits</code> function returns initial values as a list with one component per chain. Each component is itself a (named) list containing the initial values for each parameter for the corresponding chain:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1">inits &lt;-<span class="st"> </span><span class="kw">get_inits</span>(fit)</a>
+<a class="sourceLine" id="cb43-2" title="2">inits_chain1 &lt;-<span class="st"> </span>inits[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb43-3" title="3"><span class="kw">print</span>(inits_chain1)</a></code></pre></div>
+<pre><code>$mu
+[1] -1.816114
+
+$tau
+[1] 0.2009296
+
+$eta
+[1]  0.62080058  1.59983405  1.94531031 -0.31126034  1.52920856  0.08217944
+[7] -1.04723954  1.18908654
+
+$theta
+[1] -1.691376 -1.494659 -1.425243 -1.878655 -1.508850 -1.799601 -2.026535
+[8] -1.577191</code></pre>
+<p><br></p>
+</div>
+<div id="prng-seed" class="section level2">
+<h2>(P)RNG seed</h2>
+<p>The <code>get_seed</code> function returns the (P)RNG seed as an integer:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="kw">print</span>(<span class="kw">get_seed</span>(fit))</a></code></pre></div>
+<pre><code>[1] 750571131</code></pre>
+<p><br></p>
+</div>
+<div id="warmup-and-sampling-times" class="section level2">
+<h2>Warmup and sampling times</h2>
+<p>The <code>get_elapsed_time</code> function returns a matrix with the warmup and sampling times for each chain:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="kw">print</span>(<span class="kw">get_elapsed_time</span>(fit))</a></code></pre></div>
+<pre><code>        warmup sample
+chain:1  0.034  0.029
+chain:2  0.035  0.034
+chain:3  0.033  0.029
+chain:4  0.033  0.032</code></pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

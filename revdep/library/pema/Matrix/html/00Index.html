@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Sparse and Dense Matrix Classes and Methods</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Sparse and Dense Matrix Classes and Methods
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;Matrix&rsquo; version 1.7-6</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../NEWS.Rd">Package NEWS</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#K">K</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#Q">Q</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#U">U</a>
+<a href="#W">W</a>
+<a href="#Z">Z</a>
+<a href="#misc">misc</a>
+</p>
+
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="abIndex-class.html">abIndex-class</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="abIseq.html">abIseq</a></td>
+<td>Sequence Generation of "abIndex", Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="abIseq.html">abIseq1</a></td>
+<td>Sequence Generation of "abIndex", Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="asUniqueT.html">aggregateT</a></td>
+<td>Standardize a Sparse Matrix in Triplet Format</td></tr>
+<tr><td style="width: 25%;"><a href="all.equal-methods.html">all.equal</a></td>
+<td>Matrix Package Methods for Function all.equal()</td></tr>
+<tr><td style="width: 25%;"><a href="all.equal-methods.html">all.equal-method</a></td>
+<td>Matrix Package Methods for Function all.equal()</td></tr>
+<tr><td style="width: 25%;"><a href="all.equal-methods.html">all.equal-methods</a></td>
+<td>Matrix Package Methods for Function all.equal()</td></tr>
+<tr><td style="width: 25%;"><a href="asUniqueT.html">anyDuplicatedT</a></td>
+<td>Standardize a Sparse Matrix in Triplet Format</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">anyNA</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">anyNA-method</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">anyNA-methods</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="CsparseMatrix-class.html">Arith-method</a></td>
+<td>Class "CsparseMatrix" of Sparse Matrices in Column-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">Arith-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">Arith-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="dMatrix-class.html">Arith-method</a></td>
+<td>(Virtual) Class "dMatrix" of "double" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddenseMatrix-class.html">Arith-method</a></td>
+<td>Virtual Class "ddenseMatrix" of Numeric Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddiMatrix-class.html">Arith-method</a></td>
+<td>Class "ddiMatrix" of Diagonal Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dgCMatrix-class.html">Arith-method</a></td>
+<td>Compressed, sparse, column-oriented numeric matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dgeMatrix-class.html">Arith-method</a></td>
+<td>Class "dgeMatrix" of Dense Numeric (S4 Class) Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dpoMatrix-class.html">Arith-method</a></td>
+<td>Positive Semi-definite Dense (Packed | Non-packed) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsCMatrix-class.html">Arith-method</a></td>
+<td>Numeric Symmetric Sparse (column compressed) Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsparseMatrix-class.html">Arith-method</a></td>
+<td>Virtual Class "dsparseMatrix" of Numeric Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dtCMatrix-class.html">Arith-method</a></td>
+<td>Triangular, (compressed) sparse column matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">Arith-method</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lgeMatrix-class.html">Arith-method</a></td>
+<td>Class "lgeMatrix" of General Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">Arith-method</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nMatrix-class.html">Arith-method</a></td>
+<td>Class "nMatrix" of Non-zero Pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ngeMatrix-class.html">Arith-method</a></td>
+<td>Class "ngeMatrix" of General Dense Nonzero-pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">Arith-method</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">Arith-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="triangularMatrix-class.html">Arith-method</a></td>
+<td>Virtual Class of Triangular Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">as.array-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">as.array-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">as.complex-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">as.complex-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">as.integer-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">as.integer-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">as.integer-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">as.logical-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">as.logical-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">as.matrix-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">as.matrix-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">as.numeric-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">as.numeric-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">as.numeric-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">as.vector-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">as.vector-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">as.vector-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="invertPerm.html">asPerm</a></td>
+<td>Utilities for Permutation Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="asUniqueT.html">asUniqueT</a></td>
+<td>Standardize a Sparse Matrix in Triplet Format</td></tr>
+</table>
+
+<h2><a id="B">-- B --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="band-methods.html">band</a></td>
+<td>Extract bands of a matrix</td></tr>
+<tr><td style="width: 25%;"><a href="band-methods.html">band-method</a></td>
+<td>Extract bands of a matrix</td></tr>
+<tr><td style="width: 25%;"><a href="band-methods.html">band-methods</a></td>
+<td>Extract bands of a matrix</td></tr>
+<tr><td style="width: 25%;"><a href="bandSparse.html">bandSparse</a></td>
+<td>Construct Sparse Banded Matrix from (Sup-/Super-) Diagonals</td></tr>
+<tr><td style="width: 25%;"><a href="bdiag.html">bdiag</a></td>
+<td>Construct a Block Diagonal Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="boolmatmult-methods.html">boolmatmult-methods</a></td>
+<td>Boolean Arithmetic Matrix Products: '%&amp;%' and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="BunchKaufman-methods.html">BunchKaufman</a></td>
+<td>Methods for Bunch-Kaufman Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="BunchKaufman-class.html">BunchKaufman-class</a></td>
+<td>Dense Bunch-Kaufman Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="BunchKaufman-methods.html">BunchKaufman-method</a></td>
+<td>Methods for Bunch-Kaufman Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="BunchKaufman-methods.html">BunchKaufman-methods</a></td>
+<td>Methods for Bunch-Kaufman Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">BunchKaufmanFactorization-class</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="abIseq.html">c.abIndex</a></td>
+<td>Sequence Generation of "abIndex", Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">c.Matrix</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">c.sparseVector</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="CAex.html">CAex</a></td>
+<td>Albers' example Matrix with "Difficult" Eigen Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="cbind2-methods.html">cbind2</a></td>
+<td>'cbind()' and 'rbind()' recursively built on cbind2/rbind2</td></tr>
+<tr><td style="width: 25%;"><a href="cbind2-methods.html">cbind2-method</a></td>
+<td>'cbind()' and 'rbind()' recursively built on cbind2/rbind2</td></tr>
+<tr><td style="width: 25%;"><a href="cbind2-methods.html">cbind2-methods</a></td>
+<td>'cbind()' and 'rbind()' recursively built on cbind2/rbind2</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">CHMfactor-class</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">CHMsimpl-class</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">CHMsuper-class</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="chol-methods.html">chol</a></td>
+<td>Compute the Cholesky Factor of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="chol-methods.html">chol-method</a></td>
+<td>Compute the Cholesky Factor of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="chol-methods.html">chol-methods</a></td>
+<td>Compute the Cholesky Factor of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="chol2inv-methods.html">chol2inv</a></td>
+<td>Inverse from Cholesky Factor</td></tr>
+<tr><td style="width: 25%;"><a href="chol2inv-methods.html">chol2inv-method</a></td>
+<td>Inverse from Cholesky Factor</td></tr>
+<tr><td style="width: 25%;"><a href="chol2inv-methods.html">chol2inv-methods</a></td>
+<td>Inverse from Cholesky Factor</td></tr>
+<tr><td style="width: 25%;"><a href="Cholesky-methods.html">Cholesky</a></td>
+<td>Methods for Cholesky Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="Cholesky-class.html">Cholesky-class</a></td>
+<td>Dense Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="Cholesky-methods.html">Cholesky-method</a></td>
+<td>Methods for Cholesky Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="Cholesky-methods.html">Cholesky-methods</a></td>
+<td>Methods for Cholesky Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">CholeskyFactorization-class</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="BunchKaufman-class.html">coerce-method</a></td>
+<td>Dense Bunch-Kaufman Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">coerce-method</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="Cholesky-class.html">coerce-method</a></td>
+<td>Dense Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="CsparseMatrix-class.html">coerce-method</a></td>
+<td>Class "CsparseMatrix" of Sparse Matrices in Column-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">coerce-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="RsparseMatrix-class.html">coerce-method</a></td>
+<td>Class "RsparseMatrix" of Sparse Matrices in Row-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="TsparseMatrix-class.html">coerce-method</a></td>
+<td>Class "TsparseMatrix" of Sparse Matrices in Triplet Form</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">coerce-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="coerce-methods-SparseM.html">coerce-method</a></td>
+<td>Sparse Matrix Coercion from and to those from package 'SparseM'</td></tr>
+<tr><td style="width: 25%;"><a href="coerce-methods-graph.html">coerce-method</a></td>
+<td>Conversions "graph" &lt;-&gt; (sparse) Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="dMatrix-class.html">coerce-method</a></td>
+<td>(Virtual) Class "dMatrix" of "double" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddenseMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class "ddenseMatrix" of Numeric Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="denseLU-class.html">coerce-method</a></td>
+<td>Dense LU Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dgCMatrix-class.html">coerce-method</a></td>
+<td>Compressed, sparse, column-oriented numeric matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">coerce-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dpoMatrix-class.html">coerce-method</a></td>
+<td>Positive Semi-definite Dense (Packed | Non-packed) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsparseMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class "dsparseMatrix" of Numeric Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsyMatrix-class.html">coerce-method</a></td>
+<td>Symmetric Dense (Packed or Unpacked) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="generalMatrix-class.html">coerce-method</a></td>
+<td>Class "generalMatrix" of General Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">coerce-method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">coerce-method</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nMatrix-class.html">coerce-method</a></td>
+<td>Class "nMatrix" of Non-zero Pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ndenseMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class "ndenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">coerce-method</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="pMatrix-class.html">coerce-method</a></td>
+<td>Permutation matrices</td></tr>
+<tr><td style="width: 25%;"><a href="packedMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class '"packedMatrix"' of Packed Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">coerce-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="symmetricMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class of Symmetric Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="triangularMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class of Triangular Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="unpackedMatrix-class.html">coerce-method</a></td>
+<td>Virtual Class '"unpackedMatrix"' of Unpacked Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="coerce-methods-graph.html">coerce-methods-graph</a></td>
+<td>Conversions "graph" &lt;-&gt; (sparse) Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="coerce-methods-SparseM.html">coerce-methods-SparseM</a></td>
+<td>Sparse Matrix Coercion from and to those from package 'SparseM'</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">colMeans</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">colMeans-method</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">colMeans-methods</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="dimScale.html">colScale</a></td>
+<td>Scale the Rows and Columns of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">colSums</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">colSums-method</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">colSums-methods</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="CsparseMatrix-class.html">Compare-method</a></td>
+<td>Class "CsparseMatrix" of Sparse Matrices in Column-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="dMatrix-class.html">Compare-method</a></td>
+<td>(Virtual) Class "dMatrix" of "double" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lgeMatrix-class.html">Compare-method</a></td>
+<td>Class "lgeMatrix" of General Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nMatrix-class.html">Compare-method</a></td>
+<td>Class "nMatrix" of Non-zero Pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ngeMatrix-class.html">Compare-method</a></td>
+<td>Class "ngeMatrix" of General Dense Nonzero-pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="triangularMatrix-class.html">Compare-method</a></td>
+<td>Virtual Class of Triangular Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="condest.html">condest</a></td>
+<td>Compute Approximate CONDition number and 1-Norm of (Large) Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dpoMatrix-class.html">copMatrix-class</a></td>
+<td>Positive Semi-definite Dense (Packed | Non-packed) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dpoMatrix-class.html">corMatrix-class</a></td>
+<td>Positive Semi-definite Dense (Packed | Non-packed) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="packedMatrix-class.html">cov2cor-method</a></td>
+<td>Virtual Class '"packedMatrix"' of Packed Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">cov2cor-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="unpackedMatrix-class.html">cov2cor-method</a></td>
+<td>Virtual Class '"unpackedMatrix"' of Unpacked Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">crossprod</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">crossprod-method</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">crossprod-methods</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="CsparseMatrix-class.html">CsparseMatrix-class</a></td>
+<td>Class "CsparseMatrix" of Sparse Matrices in Column-compressed Form</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">dCHMsimpl-class</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">dCHMsuper-class</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="ddenseMatrix-class.html">ddenseMatrix-class</a></td>
+<td>Virtual Class "ddenseMatrix" of Numeric Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddiMatrix-class.html">ddiMatrix-class</a></td>
+<td>Class "ddiMatrix" of Diagonal Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="denseLU-class.html">denseLU-class</a></td>
+<td>Dense LU Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">denseMatrix-class</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">det</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="BunchKaufman-class.html">determinant-method</a></td>
+<td>Dense Bunch-Kaufman Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">determinant-method</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="Cholesky-class.html">determinant-method</a></td>
+<td>Dense Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">determinant-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">determinant-method</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="Schur-class.html">determinant-method</a></td>
+<td>Schur Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="denseLU-class.html">determinant-method</a></td>
+<td>Dense LU Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="dgCMatrix-class.html">determinant-method</a></td>
+<td>Compressed, sparse, column-oriented numeric matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dgRMatrix-class.html">determinant-method</a></td>
+<td>Sparse Compressed, Row-oriented Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dgTMatrix-class.html">determinant-method</a></td>
+<td>Sparse matrices in triplet form</td></tr>
+<tr><td style="width: 25%;"><a href="dgeMatrix-class.html">determinant-method</a></td>
+<td>Class "dgeMatrix" of Dense Numeric (S4 Class) Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">determinant-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dpoMatrix-class.html">determinant-method</a></td>
+<td>Positive Semi-definite Dense (Packed | Non-packed) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsCMatrix-class.html">determinant-method</a></td>
+<td>Numeric Symmetric Sparse (column compressed) Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsRMatrix-class.html">determinant-method</a></td>
+<td>Symmetric Sparse Compressed Row Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsyMatrix-class.html">determinant-method</a></td>
+<td>Symmetric Dense (Packed or Unpacked) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">determinant-method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="pMatrix-class.html">determinant-method</a></td>
+<td>Permutation matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseLU-class.html">determinant-method</a></td>
+<td>Sparse LU Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">determinant-method</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="triangularMatrix-class.html">determinant-method</a></td>
+<td>Virtual Class of Triangular Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="dgCMatrix-class.html">dgCMatrix-class</a></td>
+<td>Compressed, sparse, column-oriented numeric matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dgeMatrix-class.html">dgeMatrix-class</a></td>
+<td>Class "dgeMatrix" of Dense Numeric (S4 Class) Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dgRMatrix-class.html">dgRMatrix-class</a></td>
+<td>Sparse Compressed, Row-oriented Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dgTMatrix-class.html">dgTMatrix-class</a></td>
+<td>Sparse matrices in triplet form</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">diag-method</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="Cholesky-class.html">diag-method</a></td>
+<td>Dense Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="CsparseMatrix-class.html">diag-method</a></td>
+<td>Class "CsparseMatrix" of Sparse Matrices in Column-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="RsparseMatrix-class.html">diag-method</a></td>
+<td>Class "RsparseMatrix" of Sparse Matrices in Row-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="TsparseMatrix-class.html">diag-method</a></td>
+<td>Class "TsparseMatrix" of Sparse Matrices in Triplet Form</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">diag-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">diag-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">diag-method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="CsparseMatrix-class.html">diag&lt;--method</a></td>
+<td>Class "CsparseMatrix" of Sparse Matrices in Column-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="RsparseMatrix-class.html">diag&lt;--method</a></td>
+<td>Class "RsparseMatrix" of Sparse Matrices in Row-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="TsparseMatrix-class.html">diag&lt;--method</a></td>
+<td>Class "TsparseMatrix" of Sparse Matrices in Triplet Form</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">diag&lt;--method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">diag&lt;--method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">diag&lt;--method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagU2N.html">diagN2U</a></td>
+<td>Transform Triangular Matrices from Unit Triangular to General Triangular and Back</td></tr>
+<tr><td style="width: 25%;"><a href="Diagonal.html">Diagonal</a></td>
+<td>Construct a Diagonal Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">diagonalMatrix-class</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagU2N.html">diagU2N</a></td>
+<td>Transform Triangular Matrices from Unit Triangular to General Triangular and Back</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">diff-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">diff-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">diff-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">dim-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">dim-method</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">dim&lt;--method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">dim&lt;--method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">dim&lt;--method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">dimnames-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">dimnames-method</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="symmetricMatrix-class.html">dimnames-method</a></td>
+<td>Virtual Class of Symmetric Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">dimnames&lt;--method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">dimnames&lt;--method</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="generalMatrix-class.html">dimnames&lt;--method</a></td>
+<td>Class "generalMatrix" of General Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="symmetricMatrix-class.html">dimnames&lt;--method</a></td>
+<td>Virtual Class of Symmetric Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="dimScale.html">dimScale</a></td>
+<td>Scale the Rows and Columns of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="dMatrix-class.html">dMatrix-class</a></td>
+<td>(Virtual) Class "dMatrix" of "double" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dmperm.html">dmperm</a></td>
+<td>Dulmage-Mendelsohn Permutation / Decomposition</td></tr>
+<tr><td style="width: 25%;"><a href="dpoMatrix-class.html">dpoMatrix-class</a></td>
+<td>Positive Semi-definite Dense (Packed | Non-packed) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dpoMatrix-class.html">dppMatrix-class</a></td>
+<td>Positive Semi-definite Dense (Packed | Non-packed) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">drop-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">drop-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="drop0.html">drop0</a></td>
+<td>Drop Non-Structural Zeros from a Sparse Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="dsCMatrix-class.html">dsCMatrix-class</a></td>
+<td>Numeric Symmetric Sparse (column compressed) Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsparseMatrix-class.html">dsparseMatrix-class</a></td>
+<td>Virtual Class "dsparseMatrix" of Numeric Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">dsparseVector-class</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="dsyMatrix-class.html">dspMatrix-class</a></td>
+<td>Symmetric Dense (Packed or Unpacked) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsRMatrix-class.html">dsRMatrix-class</a></td>
+<td>Symmetric Sparse Compressed Row Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsCMatrix-class.html">dsTMatrix-class</a></td>
+<td>Numeric Symmetric Sparse (column compressed) Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsyMatrix-class.html">dsyMatrix-class</a></td>
+<td>Symmetric Dense (Packed or Unpacked) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dtCMatrix-class.html">dtCMatrix-class</a></td>
+<td>Triangular, (compressed) sparse column matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dtpMatrix-class.html">dtpMatrix-class</a></td>
+<td>Packed Triangular Dense Matrices - "dtpMatrix"</td></tr>
+<tr><td style="width: 25%;"><a href="dtRMatrix-class-sparse.html">dtRMatrix-class</a></td>
+<td>Triangular Sparse Compressed Row Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dtrMatrix-class-dense.html">dtrMatrix-class</a></td>
+<td>Triangular, dense, numeric matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dtCMatrix-class.html">dtTMatrix-class</a></td>
+<td>Triangular, (compressed) sparse column matrices</td></tr>
+</table>
+
+<h2><a id="E">-- E --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="expand-methods.html">expand</a></td>
+<td>Expand Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="expand-methods.html">expand-method</a></td>
+<td>Expand Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="expand-methods.html">expand-methods</a></td>
+<td>Expand Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="expand-methods.html">expand1</a></td>
+<td>Expand Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="expand-methods.html">expand1-method</a></td>
+<td>Expand Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="expand-methods.html">expand1-methods</a></td>
+<td>Expand Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="expand-methods.html">expand2</a></td>
+<td>Expand Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="expand-methods.html">expand2-method</a></td>
+<td>Expand Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="expand-methods.html">expand2-methods</a></td>
+<td>Expand Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="expm-methods.html">expm</a></td>
+<td>Matrix Exponential</td></tr>
+<tr><td style="width: 25%;"><a href="expm-methods.html">expm-method</a></td>
+<td>Matrix Exponential</td></tr>
+<tr><td style="width: 25%;"><a href="expm-methods.html">expm-methods</a></td>
+<td>Matrix Exponential</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="sparse.model.matrix.html">fac2Sparse</a></td>
+<td>Construct Sparse Design / Model Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparse.model.matrix.html">fac2sparse</a></td>
+<td>Construct Sparse Design / Model Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="facmul-methods.html">facmul</a></td>
+<td>Multiplication by Factors from Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="facmul-methods.html">facmul-methods</a></td>
+<td>Multiplication by Factors from Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">fastMisc</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="forceSymmetric-methods.html">forceSymmetric</a></td>
+<td>Force a Matrix to 'symmetricMatrix' Without Symmetry Checks</td></tr>
+<tr><td style="width: 25%;"><a href="forceSymmetric-methods.html">forceSymmetric-method</a></td>
+<td>Force a Matrix to 'symmetricMatrix' Without Symmetry Checks</td></tr>
+<tr><td style="width: 25%;"><a href="forceSymmetric-methods.html">forceSymmetric-methods</a></td>
+<td>Force a Matrix to 'symmetricMatrix' Without Symmetry Checks</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">format-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="formatSparseM.html">formatSparseM</a></td>
+<td>Formatting Sparse Numeric Matrices Utilities</td></tr>
+<tr><td style="width: 25%;"><a href="printSpMatrix.html">formatSpMatrix</a></td>
+<td>Format and Print Sparse Matrices Flexibly</td></tr>
+</table>
+
+<h2><a id="G">-- G --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="generalMatrix-class.html">generalMatrix-class</a></td>
+<td>Class "generalMatrix" of General Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="coerce-methods-graph.html">graph2T</a></td>
+<td>Conversions "graph" &lt;-&gt; (sparse) Matrix</td></tr>
+</table>
+
+<h2><a id="H">-- H --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="Matrix-class.html">head-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">head-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Hilbert.html">Hilbert</a></td>
+<td>Generate a Hilbert matrix</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="image-methods.html">image</a></td>
+<td>Methods for image() in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="image-methods.html">image-method</a></td>
+<td>Methods for image() in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="image-methods.html">image-methods</a></td>
+<td>Methods for image() in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-notyet.html">iMatrix-class</a></td>
+<td>Virtual Classes Not Yet Really Implemented and Used</td></tr>
+<tr><td style="width: 25%;"><a href="index-class.html">index-class</a></td>
+<td>Virtual Class "index" of Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">indMatrix-class</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">initialize-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">initialize-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="invertPerm.html">invertPerm</a></td>
+<td>Utilities for Permutation Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="invertPerm.html">invPerm</a></td>
+<td>Utilities for Permutation Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.finite</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.finite-method</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.finite-methods</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.infinite</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.infinite-method</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.infinite-methods</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.na</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.na-method</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.na-methods</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.nan</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.nan-method</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.na-methods.html">is.nan-methods</a></td>
+<td>is.na(), is.finite() Methods for 'Matrix' Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.null.DN.html">is.null.DN</a></td>
+<td>Are the Dimnames 'dn' NULL-like ?</td></tr>
+<tr><td style="width: 25%;"><a href="isTriangular-methods.html">isDiagonal</a></td>
+<td>Test whether a Matrix is Triangular or Diagonal</td></tr>
+<tr><td style="width: 25%;"><a href="isTriangular-methods.html">isDiagonal-method</a></td>
+<td>Test whether a Matrix is Triangular or Diagonal</td></tr>
+<tr><td style="width: 25%;"><a href="isTriangular-methods.html">isDiagonal-methods</a></td>
+<td>Test whether a Matrix is Triangular or Diagonal</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">isLDL</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">isparseVector-class</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="invertPerm.html">isPerm</a></td>
+<td>Utilities for Permutation Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="isSymmetric-methods.html">isSymmetric</a></td>
+<td>Methods for Function 'isSymmetric' in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="isSymmetric-methods.html">isSymmetric-method</a></td>
+<td>Methods for Function 'isSymmetric' in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="isSymmetric-methods.html">isSymmetric-methods</a></td>
+<td>Methods for Function 'isSymmetric' in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="isTriangular-methods.html">isTriangular</a></td>
+<td>Test whether a Matrix is Triangular or Diagonal</td></tr>
+<tr><td style="width: 25%;"><a href="isTriangular-methods.html">isTriangular-method</a></td>
+<td>Test whether a Matrix is Triangular or Diagonal</td></tr>
+<tr><td style="width: 25%;"><a href="isTriangular-methods.html">isTriangular-methods</a></td>
+<td>Test whether a Matrix is Triangular or Diagonal</td></tr>
+<tr><td style="width: 25%;"><a href="asUniqueT.html">isUniqueT</a></td>
+<td>Standardize a Sparse Matrix in Triplet Format</td></tr>
+</table>
+
+<h2><a id="K">-- K --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="KhatriRao.html">KhatriRao</a></td>
+<td>Khatri-Rao Matrix Product</td></tr>
+<tr><td style="width: 25%;"><a href="KNex.html">KNex</a></td>
+<td>Koenker-Ng Example Sparse Model Matrix and Response Vector</td></tr>
+<tr><td style="width: 25%;"><a href="kronecker-methods.html">kronecker</a></td>
+<td>Methods for Function 'kronecker()' in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="kronecker-methods.html">kronecker-method</a></td>
+<td>Methods for Function 'kronecker()' in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="kronecker-methods.html">kronecker-methods</a></td>
+<td>Methods for Function 'kronecker()' in Package 'Matrix'</td></tr>
+</table>
+
+<h2><a id="L">-- L --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">ldenseMatrix-class</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">ldiMatrix-class</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">length-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">length-method</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">length-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">length-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">lgCMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lgeMatrix-class.html">lgeMatrix-class</a></td>
+<td>Class "lgeMatrix" of General Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">lgRMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">lgTMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dMatrix-class.html">lMatrix-class</a></td>
+<td>(Virtual) Class "dMatrix" of "double" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">log-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">log-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">log-method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">log-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">log-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="CsparseMatrix-class.html">Logic-method</a></td>
+<td>Class "CsparseMatrix" of Sparse Matrices in Column-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">Logic-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dMatrix-class.html">Logic-method</a></td>
+<td>(Virtual) Class "dMatrix" of "double" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">Logic-method</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lgeMatrix-class.html">Logic-method</a></td>
+<td>Class "lgeMatrix" of General Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">Logic-method</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nMatrix-class.html">Logic-method</a></td>
+<td>Class "nMatrix" of Non-zero Pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ngeMatrix-class.html">Logic-method</a></td>
+<td>Class "ngeMatrix" of General Dense Nonzero-pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">Logic-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="triangularMatrix-class.html">Logic-method</a></td>
+<td>Virtual Class of Triangular Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">lsCMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">lsparseMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">lsparseMatrix-classes</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">lsparseVector-class</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="lsyMatrix-class.html">lspMatrix-class</a></td>
+<td>Symmetric Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">lsRMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">lsTMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsyMatrix-class.html">lsyMatrix-class</a></td>
+<td>Symmetric Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">ltCMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ltrMatrix-class.html">ltpMatrix-class</a></td>
+<td>Triangular Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">ltRMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ltrMatrix-class.html">ltrMatrix-class</a></td>
+<td>Triangular Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">ltTMatrix-class</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lu-methods.html">lu</a></td>
+<td>Methods for LU Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">LU-class</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="lu-methods.html">lu-method</a></td>
+<td>Methods for LU Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="lu-methods.html">lu-methods</a></td>
+<td>Methods for LU Factorization</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="mat2triplet.html">mat2triplet</a></td>
+<td>Map Matrix to its Triplet Representation</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">Math-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">Math-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">Math-method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">Math-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">Math-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">Math2-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">Math2-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">matmult-methods</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix.html">Matrix</a></td>
+<td>Construct a Classed Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">Matrix-class</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-notyet.html">Matrix-notyet</a></td>
+<td>Virtual Classes Not Yet Really Implemented and Used</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">Matrix.Version</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixClass.html">MatrixClass</a></td>
+<td>The Matrix (Super-) Class of a Class</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">MatrixFactorization-class</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">mean-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">mean-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">mean-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+</table>
+
+<h2><a id="N">-- N --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">nCHMsimpl-class</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">nCHMsuper-class</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="ndenseMatrix-class.html">ndenseMatrix-class</a></td>
+<td>Virtual Class "ndenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">ndiMatrix-class</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nearPD.html">nearPD</a></td>
+<td>Nearest Positive Definite Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">ngCMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ngeMatrix-class.html">ngeMatrix-class</a></td>
+<td>Class "ngeMatrix" of General Dense Nonzero-pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">ngRMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">ngTMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nMatrix-class.html">nMatrix-class</a></td>
+<td>Class "nMatrix" of Non-zero Pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nnzero-methods.html">nnzero</a></td>
+<td>The Number of Non-Zero Values of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="nnzero-methods.html">nnzero-method</a></td>
+<td>The Number of Non-Zero Values of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="nnzero-methods.html">nnzero-methods</a></td>
+<td>The Number of Non-Zero Values of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="norm-methods.html">norm</a></td>
+<td>Matrix Norms</td></tr>
+<tr><td style="width: 25%;"><a href="norm-methods.html">norm-method</a></td>
+<td>Matrix Norms</td></tr>
+<tr><td style="width: 25%;"><a href="norm-methods.html">norm-methods</a></td>
+<td>Matrix Norms</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">nsCMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">nsparseMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">nsparseMatrix-classes</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">nsparseVector-class</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="nsyMatrix-class.html">nspMatrix-class</a></td>
+<td>Symmetric Dense Nonzero-Pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">nsRMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">nsTMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsyMatrix-class.html">nsyMatrix-class</a></td>
+<td>Symmetric Dense Nonzero-Pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">ntCMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ntrMatrix-class.html">ntpMatrix-class</a></td>
+<td>Triangular Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">ntRMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ntrMatrix-class.html">ntrMatrix-class</a></td>
+<td>Triangular Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">ntTMatrix-class</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+</table>
+
+<h2><a id="O">-- O --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="condest.html">onenormest</a></td>
+<td>Compute Approximate CONDition number and 1-Norm of (Large) Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">Ops-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">Ops-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="dMatrix-class.html">Ops-method</a></td>
+<td>(Virtual) Class "dMatrix" of "double" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddiMatrix-class.html">Ops-method</a></td>
+<td>Class "ddiMatrix" of Diagonal Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">Ops-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dpoMatrix-class.html">Ops-method</a></td>
+<td>Positive Semi-definite Dense (Packed | Non-packed) Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dsparseMatrix-class.html">Ops-method</a></td>
+<td>Virtual Class "dsparseMatrix" of Numeric Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">Ops-method</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">Ops-method</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">Ops-method</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nMatrix-class.html">Ops-method</a></td>
+<td>Class "nMatrix" of Non-zero Pattern Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ndenseMatrix-class.html">Ops-method</a></td>
+<td>Virtual Class "ndenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">Ops-method</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">Ops-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">Ops-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="pack-methods.html">pack</a></td>
+<td>Representation of Packed and Unpacked Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="pack-methods.html">pack-method</a></td>
+<td>Representation of Packed and Unpacked Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="pack-methods.html">pack-methods</a></td>
+<td>Representation of Packed and Unpacked Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="packedMatrix-class.html">packedMatrix-class</a></td>
+<td>Virtual Class '"packedMatrix"' of Packed Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="BunchKaufman-class.html">pBunchKaufman-class</a></td>
+<td>Dense Bunch-Kaufman Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="Cholesky-class.html">pCholesky-class</a></td>
+<td>Dense Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="pMatrix-class.html">pMatrix-class</a></td>
+<td>Permutation matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">print-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">print-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">print.sparseMatrix</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="printSpMatrix.html">printSpMatrix</a></td>
+<td>Format and Print Sparse Matrices Flexibly</td></tr>
+<tr><td style="width: 25%;"><a href="printSpMatrix.html">printSpMatrix2</a></td>
+<td>Format and Print Sparse Matrices Flexibly</td></tr>
+</table>
+
+<h2><a id="Q">-- Q --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="qr-methods.html">qr</a></td>
+<td>Methods for QR Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">QR-class</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="qr-methods.html">qr-method</a></td>
+<td>Methods for QR Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="qr-methods.html">qr-methods</a></td>
+<td>Methods for QR Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">qr.coef-method</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">qr.fitted-method</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">qr.Q-method</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">qr.qty-method</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">qr.qy-method</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">qr.R-method</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">qr.resid-method</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">qr.X-method</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="rankMatrix.html">qr2rankMatrix</a></td>
+<td>Rank of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">qrR</a></td>
+<td>Sparse QR Factorizations</td></tr>
+</table>
+
+<h2><a id="R">-- R --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rankMatrix.html">rankMatrix</a></td>
+<td>Rank of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="cbind2-methods.html">rbind2</a></td>
+<td>'cbind()' and 'rbind()' recursively built on cbind2/rbind2</td></tr>
+<tr><td style="width: 25%;"><a href="cbind2-methods.html">rbind2-method</a></td>
+<td>'cbind()' and 'rbind()' recursively built on cbind2/rbind2</td></tr>
+<tr><td style="width: 25%;"><a href="cbind2-methods.html">rbind2-methods</a></td>
+<td>'cbind()' and 'rbind()' recursively built on cbind2/rbind2</td></tr>
+<tr><td style="width: 25%;"><a href="rcond-methods.html">rcond</a></td>
+<td>Estimate the Reciprocal Condition Number</td></tr>
+<tr><td style="width: 25%;"><a href="rcond-methods.html">rcond-method</a></td>
+<td>Estimate the Reciprocal Condition Number</td></tr>
+<tr><td style="width: 25%;"><a href="rcond-methods.html">rcond-methods</a></td>
+<td>Estimate the Reciprocal Condition Number</td></tr>
+<tr><td style="width: 25%;"><a href="externalFormats.html">readHB</a></td>
+<td>Read and write external matrix formats</td></tr>
+<tr><td style="width: 25%;"><a href="externalFormats.html">readMM</a></td>
+<td>Read and write external matrix formats</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">rep-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">rep-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">rep-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="rep2abI.html">rep2abI</a></td>
+<td>Replicate Vectors into 'abIndex' Result</td></tr>
+<tr><td style="width: 25%;"><a href="rleDiff-class.html">rleDiff-class</a></td>
+<td>Class "rleDiff" of rle(diff(.)) Stored Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">rowMeans</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">rowMeans-method</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">rowMeans-methods</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="dimScale.html">rowScale</a></td>
+<td>Scale the Rows and Columns of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">rowSums</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">rowSums-method</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="colSums-methods.html">rowSums-methods</a></td>
+<td>Form Row and Column Sums and Means</td></tr>
+<tr><td style="width: 25%;"><a href="rsparsematrix.html">rsparsematrix</a></td>
+<td>Random Sparse Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="RsparseMatrix-class.html">RsparseMatrix-class</a></td>
+<td>Class "RsparseMatrix" of Sparse Matrices in Row-compressed Form</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="Schur-methods.html">Schur</a></td>
+<td>Methods for Schur Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="Schur-class.html">Schur-class</a></td>
+<td>Schur Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="Schur-methods.html">Schur-method</a></td>
+<td>Methods for Schur Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="Schur-methods.html">Schur-methods</a></td>
+<td>Methods for Schur Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">SchurFactorization-class</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">seqMat-class</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">show-method</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">show-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">show-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">show-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="rleDiff-class.html">show-method</a></td>
+<td>Class "rleDiff" of rle(diff(.)) Stored Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">show-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">show-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="invertPerm.html">signPerm</a></td>
+<td>Utilities for Permutation Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="symmpart-methods.html">skewpart</a></td>
+<td>Symmetric Part and Skew(symmetric) Part of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="symmpart-methods.html">skewpart-method</a></td>
+<td>Symmetric Part and Skew(symmetric) Part of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="symmpart-methods.html">skewpart-methods</a></td>
+<td>Symmetric Part and Skew(symmetric) Part of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="solve-methods.html">solve</a></td>
+<td>Methods in Package 'Matrix' for Function 'solve'</td></tr>
+<tr><td style="width: 25%;"><a href="solve-methods.html">solve-method</a></td>
+<td>Methods in Package 'Matrix' for Function 'solve'</td></tr>
+<tr><td style="width: 25%;"><a href="solve-methods.html">solve-methods</a></td>
+<td>Methods in Package 'Matrix' for Function 'solve'</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">sort-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="sparse.model.matrix.html">sparse.model.matrix</a></td>
+<td>Construct Sparse Design / Model Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseLU-class.html">sparseLU-class</a></td>
+<td>Sparse LU Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix.html">sparseMatrix</a></td>
+<td>General Sparse Matrix Construction from Nonzero Entries</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">sparseMatrix-class</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseQR-class.html">sparseQR-class</a></td>
+<td>Sparse QR Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector.html">sparseVector</a></td>
+<td>Sparse Vector Construction from Nonzero Entries</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">sparseVector-class</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="spMatrix.html">spMatrix</a></td>
+<td>Sparse Matrix Constructor From Triplet</td></tr>
+<tr><td style="width: 25%;"><a href="subassign-methods.html">subassign-methods</a></td>
+<td>Methods for "[&lt;-" - Assigning to Subsets for 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="subscript-methods.html">subscript-methods</a></td>
+<td>Methods for "[": Extraction or Subsetting in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="abIndex-class.html">Summary-method</a></td>
+<td>Class "abIndex" of Abstract Index Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">Summary-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">Summary-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">Summary-method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">Summary-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">Summary-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">summary-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">summary-method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="symmetricMatrix-class.html">symmetricMatrix-class</a></td>
+<td>Virtual Class of Symmetric Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="symmpart-methods.html">symmpart</a></td>
+<td>Symmetric Part and Skew(symmetric) Part of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="symmpart-methods.html">symmpart-method</a></td>
+<td>Symmetric Part and Skew(symmetric) Part of a Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="symmpart-methods.html">symmpart-methods</a></td>
+<td>Symmetric Part and Skew(symmetric) Part of a Matrix</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="CsparseMatrix-class.html">t-method</a></td>
+<td>Class "CsparseMatrix" of Sparse Matrices in Column-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="RsparseMatrix-class.html">t-method</a></td>
+<td>Class "RsparseMatrix" of Sparse Matrices in Row-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="TsparseMatrix-class.html">t-method</a></td>
+<td>Class "TsparseMatrix" of Sparse Matrices in Triplet Form</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">t-method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">t-method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">t-method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="pMatrix-class.html">t-method</a></td>
+<td>Permutation matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">t-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="coerce-methods-graph.html">T2graph</a></td>
+<td>Conversions "graph" &lt;-&gt; (sparse) Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">tail-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">tail-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">tcrossprod</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">tcrossprod-method</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">tcrossprod-methods</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">toeplitz-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="triangularMatrix-class.html">triangularMatrix-class</a></td>
+<td>Virtual Class of Triangular Matrices in Package Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="band-methods.html">tril</a></td>
+<td>Extract bands of a matrix</td></tr>
+<tr><td style="width: 25%;"><a href="band-methods.html">tril-method</a></td>
+<td>Extract bands of a matrix</td></tr>
+<tr><td style="width: 25%;"><a href="band-methods.html">tril-methods</a></td>
+<td>Extract bands of a matrix</td></tr>
+<tr><td style="width: 25%;"><a href="band-methods.html">triu</a></td>
+<td>Extract bands of a matrix</td></tr>
+<tr><td style="width: 25%;"><a href="band-methods.html">triu-method</a></td>
+<td>Extract bands of a matrix</td></tr>
+<tr><td style="width: 25%;"><a href="band-methods.html">triu-methods</a></td>
+<td>Extract bands of a matrix</td></tr>
+<tr><td style="width: 25%;"><a href="TsparseMatrix-class.html">TsparseMatrix-class</a></td>
+<td>Class "TsparseMatrix" of Sparse Matrices in Triplet Form</td></tr>
+</table>
+
+<h2><a id="U">-- U --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="asUniqueT.html">uniqTsparse</a></td>
+<td>Standardize a Sparse Matrix in Triplet Format</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">unname-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixFactorization-class.html">unname-method</a></td>
+<td>Virtual Class "MatrixFactorization" of Matrix Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="pack-methods.html">unpack</a></td>
+<td>Representation of Packed and Unpacked Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="pack-methods.html">unpack-method</a></td>
+<td>Representation of Packed and Unpacked Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="pack-methods.html">unpack-methods</a></td>
+<td>Representation of Packed and Unpacked Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="unpackedMatrix-class.html">unpackedMatrix-class</a></td>
+<td>Virtual Class '"unpackedMatrix"' of Unpacked Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="CHMfactor-class.html">update-method</a></td>
+<td>Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="updown-methods.html">updown</a></td>
+<td>Updating and Downdating Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="updown-methods.html">updown-method</a></td>
+<td>Updating and Downdating Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="updown-methods.html">updown-methods</a></td>
+<td>Updating and Downdating Sparse Cholesky Factorizations</td></tr>
+<tr><td style="width: 25%;"><a href="USCounties.html">USCounties</a></td>
+<td>Contiguity Matrix of U.S. Counties</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">which-method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">which-method</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">which-method</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">which-method</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ndenseMatrix-class.html">which-method</a></td>
+<td>Virtual Class "ndenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">which-method</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">which-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="externalFormats.html">writeMM</a></td>
+<td>Read and write external matrix formats</td></tr>
+<tr><td style="width: 25%;"><a href="externalFormats.html">writeMM-method</a></td>
+<td>Read and write external matrix formats</td></tr>
+<tr><td style="width: 25%;"><a href="wrld_1deg.html">wrld_1deg</a></td>
+<td>Contiguity Matrix of World One-Degree Grid Cells</td></tr>
+</table>
+
+<h2><a id="Z">-- Z --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="Matrix-class.html">zapsmall-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">zapsmall-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-notyet.html">zMatrix-class</a></td>
+<td>Virtual Classes Not Yet Really Implemented and Used</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">zsparseVector-class</a></td>
+<td>Sparse Vector Classes</td></tr>
+</table>
+
+<h2><a id="misc">-- misc --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="Matrix-class.html">!-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">!-method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">!-method</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">!-method</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">!-method</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ndenseMatrix-class.html">!-method</a></td>
+<td>Virtual Class "ndenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">!-method</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">!-method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="ddiMatrix-class.html">%%-method</a></td>
+<td>Class "ddiMatrix" of Diagonal Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">%%-method</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="boolmatmult-methods.html">%&amp;%</a></td>
+<td>Boolean Arithmetic Matrix Products: '%&amp;%' and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="boolmatmult-methods.html">%&amp;%-method</a></td>
+<td>Boolean Arithmetic Matrix Products: '%&amp;%' and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="boolmatmult-methods.html">%&amp;%-methods</a></td>
+<td>Boolean Arithmetic Matrix Products: '%&amp;%' and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">%*%</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">%*%-method</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="matmult-methods.html">%*%-methods</a></td>
+<td>Matrix (Cross) Products (of Transpose)</td></tr>
+<tr><td style="width: 25%;"><a href="ddiMatrix-class.html">%/%-method</a></td>
+<td>Class "ddiMatrix" of Diagonal Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">%/%-method</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">&amp;-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddenseMatrix-class.html">&amp;-method</a></td>
+<td>Virtual Class "ddenseMatrix" of Numeric Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddiMatrix-class.html">&amp;-method</a></td>
+<td>Class "ddiMatrix" of Diagonal Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">&amp;-method</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">&amp;-method</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ndenseMatrix-class.html">&amp;-method</a></td>
+<td>Virtual Class "ndenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">*-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddenseMatrix-class.html">*-method</a></td>
+<td>Virtual Class "ddenseMatrix" of Numeric Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddiMatrix-class.html">*-method</a></td>
+<td>Class "ddiMatrix" of Diagonal Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">*-method</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">*-method</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ndenseMatrix-class.html">*-method</a></td>
+<td>Virtual Class "ndenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">+-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="dgTMatrix-class.html">+-method</a></td>
+<td>Sparse matrices in triplet form</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">--method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="denseMatrix-class.html">--method</a></td>
+<td>Virtual Class "denseMatrix" of All Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="diagonalMatrix-class.html">--method</a></td>
+<td>Class "diagonalMatrix" of Diagonal Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="indMatrix-class.html">--method</a></td>
+<td>Index Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">--method</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="lsparseMatrix-class.html">--method</a></td>
+<td>Sparse logical matrices</td></tr>
+<tr><td style="width: 25%;"><a href="nsparseMatrix-class.html">--method</a></td>
+<td>Sparse "pattern" Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseMatrix-class.html">--method</a></td>
+<td>Virtual Class "sparseMatrix" - Mother of Sparse Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="sparseVector-class.html">--method</a></td>
+<td>Sparse Vector Classes</td></tr>
+<tr><td style="width: 25%;"><a href="bdiag.html">.bdiag</a></td>
+<td>Construct a Block Diagonal Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.CR2RC</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.CR2T</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.dense2g</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.dense2kind</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.dense2m</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.dense2sparse</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.dense2v</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.diag.dsC</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.diag2dense</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.diag2sparse</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="diagU2N.html">.diagN2U</a></td>
+<td>Transform Triangular Matrices from Unit Triangular to General Triangular and Back</td></tr>
+<tr><td style="width: 25%;"><a href="diagU2N.html">.diagU2N</a></td>
+<td>Transform Triangular Matrices from Unit Triangular to General Triangular and Back</td></tr>
+<tr><td style="width: 25%;"><a href="formatSparseM.html">.formatSparseSimple</a></td>
+<td>Formatting Sparse Numeric Matrices Utilities</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.ind2dense</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.ind2sparse</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2C</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.m2dense</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2diag</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2gen</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2kind</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2m</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2packed</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2R</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.m2sparse</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2sym</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2T</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2tri</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2unpacked</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2V</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.M2v</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.m2V</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.solve.dgC.chol</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.solve.dgC.lu</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.solve.dgC.qr</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.sparse2dense</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.sparse2g</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.sparse2kind</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.sparse2m</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.sparse2v</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="Diagonal.html">.sparseDiagonal</a></td>
+<td>Construct a Diagonal Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="Diagonal.html">.symDiagonal</a></td>
+<td>Construct a Diagonal Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.T2CR</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.tCR2RC</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.tCRT</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="Diagonal.html">.trDiagonal</a></td>
+<td>Construct a Diagonal Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="fastMisc.html">.updateCHMfactor</a></td>
+<td>"Low Level" Coercions and Methods</td></tr>
+<tr><td style="width: 25%;"><a href="CsparseMatrix-class.html">.validateCsparse</a></td>
+<td>Class "CsparseMatrix" of Sparse Matrices in Column-compressed Form</td></tr>
+<tr><td style="width: 25%;"><a href="ddiMatrix-class.html">/-method</a></td>
+<td>Class "ddiMatrix" of Diagonal Numeric Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldiMatrix-class.html">/-method</a></td>
+<td>Class "ldiMatrix" of Diagonal Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="subscript-methods.html">[</a></td>
+<td>Methods for "[": Extraction or Subsetting in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="subscript-methods.html">[-method</a></td>
+<td>Methods for "[": Extraction or Subsetting in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="subscript-methods.html">[-methods</a></td>
+<td>Methods for "[": Extraction or Subsetting in Package 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="subassign-methods.html">[&lt;-</a></td>
+<td>Methods for "[&lt;-" - Assigning to Subsets for 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="subassign-methods.html">[&lt;--method</a></td>
+<td>Methods for "[&lt;-" - Assigning to Subsets for 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="subassign-methods.html">[&lt;--methods</a></td>
+<td>Methods for "[&lt;-" - Assigning to Subsets for 'Matrix'</td></tr>
+<tr><td style="width: 25%;"><a href="Matrix-class.html">^-method</a></td>
+<td>Virtual Class "Matrix" of Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ddenseMatrix-class.html">^-method</a></td>
+<td>Virtual Class "ddenseMatrix" of Numeric Dense Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ldenseMatrix-class.html">^-method</a></td>
+<td>Virtual Class "ldenseMatrix" of Dense Logical Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ndenseMatrix-class.html">^-method</a></td>
+<td>Virtual Class "ndenseMatrix" of Dense Logical Matrices</td></tr>
+</table>
+</div></body></html>

@@ -1,0 +1,26 @@
+MetaForest              Conduct a MetaForest analysis to explore
+                        heterogeneity in meta-analytic data.
+ModelInfo_mf            Returns a MetaForest ModelInfo list for use
+                        with caret
+ModelInfo_rma           Returns an rma ModelInfo list for use with
+                        caret
+PartialDependence       PartialDependence: Partial dependence plots
+SimulateSMD             Simulates a meta-analytic dataset
+VarImpPlot              Plots variable importance for a MetaForest
+                        object.
+WeightedScatter         Plots weighted scatterplots for meta-analytic
+                        data. Can plot effect size as a function of
+                        either continuous (numeric, integer) or
+                        categorical (factor, character) predictors.
+coef_test               Test coefficients of a model
+curry                   Happy to Help?
+extract_proximity       Extract proximity matrix for a MetaForest
+                        object.
+fukkink_lont            Does training matter? A meta-analysis of
+                        caregiver training studies
+plot.MetaForest         Plots cumulative MSE for a MetaForest object.
+predict.MetaForest      MetaForest prediction
+preselect               Preselect variables for MetaForest analysis
+preselect_vars          Extract variable names from mf_preselect object
+print.summary.MetaForest
+                        Prints summary.MetaForest object.

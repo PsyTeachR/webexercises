@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Stan Development Team" />
+
+<meta name="date" content="2026-09-01" />
+
+<title>Using the Stan Math C++ Library</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Using the Stan Math C++ Library</h1>
+<h4 class="author">Stan Development Team</h4>
+<h4 class="date">2026-09-01</h4>
+
+
+
+<div id="using-the-stanheaders-package-from-other-r-packages" class="section level1">
+<h1>Using the <strong>StanHeaders</strong> Package from Other R
+Packages</h1>
+<p>The <strong>StanHeaders</strong> package contains no R functions. To
+use the Stan Math Library in other packages, it is often sufficient to
+specify</p>
+<pre><code>LinkingTo: StanHeaders (&gt;= 2.26.0), RcppParallel (&gt;= 5.0.1)</code></pre>
+<p>in the DESCRIPTION file of another package and put something like</p>
+<pre><code>CXX_STD = CXX17
+PKG_CXXFLAGS = $(shell &quot;$(R_HOME)/bin$(R_ARCH_BIN)/Rscript&quot; -e &quot;RcppParallel::CxxFlags()&quot;) \
+               $(shell &quot;$(R_HOME)/bin$(R_ARCH_BIN)/Rscript&quot; -e &quot;StanHeaders:::CxxFlags()&quot;)
+PKG_LIBS = $(shell &quot;$(R_HOME)/bin$(R_ARCH_BIN)/Rscript&quot; -e &quot;RcppParallel::RcppParallelLibs()&quot;) \
+           $(shell &quot;$(R_HOME)/bin$(R_ARCH_BIN)/Rscript&quot; -e &quot;StanHeaders:::LdFlags()&quot;)</code></pre>
+<p>in the src/Makevars and src/Makevars.win files and put
+<code>GNU make</code> in the <code>SystemRequirements:</code> field of
+the package’s DESCRIPTION file. If, in addition, the other package needs
+to utilize the MCMC, optimization, variational inference, or parsing
+facilities of the Stan Library, then it is also necessary to include the
+<code>src</code> directory of <strong>StanHeaders</strong> in the other
+package’s <code>PKG_CXXFLAGS</code> in the src/Makevars and
+src/Makevars.win files with something like</p>
+<pre><code>STANHEADERS_SRC = $(shell &quot;$(R_HOME)/bin$(R_ARCH_BIN)/Rscript&quot; -e &quot;message()&quot; \
+  -e &quot;cat(system.file(&#39;include&#39;, &#39;src&#39;, package = &#39;StanHeaders&#39;, mustWork = TRUE))&quot; \
+  -e &quot;message()&quot; | grep &quot;StanHeaders&quot;)
+PKG_CXXFLAGS += -I&quot;$(STANHEADERS_SRC)&quot;</code></pre>
+</div>
+<div id="calling-functions-in-the-stanheaders-package-from-r" class="section level1">
+<h1>Calling functions in the <strong>StanHeaders</strong> Package from
+R</h1>
+<p>The only exposed R function in the in the
+<strong>StanHeaders</strong> package is <code>stanFunction</code>, which
+can be used to call most functions in the Stan Math Library.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">example</span>(stanFunction, <span class="at">package =</span> <span class="st">&quot;StanHeaders&quot;</span>, <span class="at">run.dontrun =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;   files &lt;- dir(system.file(&quot;include&quot;, &quot;stan&quot;, &quot;math&quot;, &quot;prim&quot;,</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; stnFnc+                            package = &quot;StanHeaders&quot;), </span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; stnFnc+                pattern = &quot;hpp$&quot;, recursive = TRUE)</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;   functions &lt;- sub(&quot;\\.hpp$&quot;, &quot;&quot;, </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; stnFnc+                    sort(unique(basename(files[dirname(files) != &quot;.&quot;]))))</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;   length(functions) # you could call most of these Stan functions</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; [1] 932</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     log(sum(exp(exp(1)), exp(pi))) # true value</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; [1] 3.645318</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     stanFunction(&quot;log_sum_exp&quot;, x = exp(1), y = pi)</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; [1] 3.645318</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     args(log_sum_exp) # now exists in .GlobalEnv</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; function (x, y) </span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     log_sum_exp(x = pi, y = exp(1))</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; [1] 3.645318</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     # but log_sum_exp() was not defined for a vector or matrix</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     x &lt;- c(exp(1), pi)</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     try(log_sum_exp(x))</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; Error in log_sum_exp(x) : argument &quot;y&quot; is missing, with no default</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     stanFunction(&quot;log_sum_exp&quot;, x = x) # now it is</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; [1] 3.645318</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     # log_sum_exp() is now also defined for a matrix</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     log_sum_exp(as.matrix(x))</span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt; [1] 3.645318</span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     log_sum_exp(t(as.matrix(x)))</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co">#&gt; [1] 3.645318</span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     log_sum_exp(rbind(x, x))</span></span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a><span class="co">#&gt; [1] 4.338465</span></span>
+<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     # but log_sum_exp() was not defined for a list</span></span>
+<span id="cb4-46"><a href="#cb4-46" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     try(log_sum_exp(as.list(x)))</span></span>
+<span id="cb4-47"><a href="#cb4-47" tabindex="-1"></a><span class="co">#&gt; Error in eval(ei, envir) : </span></span>
+<span id="cb4-48"><a href="#cb4-48" tabindex="-1"></a><span class="co">#&gt;   Not compatible with requested type: [type=list; target=double].</span></span>
+<span id="cb4-49"><a href="#cb4-49" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-50"><a href="#cb4-50" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     stanFunction(&quot;log_sum_exp&quot;, x = as.list(x)) # now it is</span></span>
+<span id="cb4-51"><a href="#cb4-51" tabindex="-1"></a><span class="co">#&gt; [1] 3.645318</span></span>
+<span id="cb4-52"><a href="#cb4-52" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-53"><a href="#cb4-53" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     # in rare cases, passing a nested list is needed</span></span>
+<span id="cb4-54"><a href="#cb4-54" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     stanFunction(&quot;dims&quot;, x = list(list(1:3)))</span></span>
+<span id="cb4-55"><a href="#cb4-55" tabindex="-1"></a><span class="co">#&gt; [1] 1 1 3</span></span>
+<span id="cb4-56"><a href="#cb4-56" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-57"><a href="#cb4-57" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     # functions of complex arguments work</span></span>
+<span id="cb4-58"><a href="#cb4-58" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     stanFunction(&quot;eigenvalues&quot;, # different ordering than base:eigen()</span></span>
+<span id="cb4-59"><a href="#cb4-59" tabindex="-1"></a><span class="co">#&gt; stnFnc+                  x = matrix(complex(real = 1:9, imaginary = pi),</span></span>
+<span id="cb4-60"><a href="#cb4-60" tabindex="-1"></a><span class="co">#&gt; stnFnc+                             nrow = 3, ncol = 3))</span></span>
+<span id="cb4-61"><a href="#cb4-61" tabindex="-1"></a><span class="co">#&gt; [1] -8.179880e-17+1.622085e-18i -8.612657e-01+4.854073e-01i  1.586127e+01+8.939371e+00i</span></span>
+<span id="cb4-62"><a href="#cb4-62" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-63"><a href="#cb4-63" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     # nullary functions work but are not that interesting</span></span>
+<span id="cb4-64"><a href="#cb4-64" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     stanFunction(&quot;negative_infinity&quot;)</span></span>
+<span id="cb4-65"><a href="#cb4-65" tabindex="-1"></a><span class="co">#&gt; [1] -Inf</span></span>
+<span id="cb4-66"><a href="#cb4-66" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-67"><a href="#cb4-67" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     # PRNG functions work by adding a seed argument</span></span>
+<span id="cb4-68"><a href="#cb4-68" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     stanFunction(&quot;lkj_corr_rng&quot;, K = 3L, eta = 1)</span></span>
+<span id="cb4-69"><a href="#cb4-69" tabindex="-1"></a><span class="co">#&gt;            [,1]       [,2]       [,3]</span></span>
+<span id="cb4-70"><a href="#cb4-70" tabindex="-1"></a><span class="co">#&gt; [1,]  1.0000000 -0.1191310  0.3659245</span></span>
+<span id="cb4-71"><a href="#cb4-71" tabindex="-1"></a><span class="co">#&gt; [2,] -0.1191310  1.0000000 -0.8277807</span></span>
+<span id="cb4-72"><a href="#cb4-72" tabindex="-1"></a><span class="co">#&gt; [3,]  0.3659245 -0.8277807  1.0000000</span></span>
+<span id="cb4-73"><a href="#cb4-73" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-74"><a href="#cb4-74" tabindex="-1"></a><span class="co">#&gt; stnFnc&gt;     args(lkj_corr_rng) # has a seed argument</span></span>
+<span id="cb4-75"><a href="#cb4-75" tabindex="-1"></a><span class="co">#&gt; function (K, eta, random_seed = sample.int(.Machine$integer.max, </span></span>
+<span id="cb4-76"><a href="#cb4-76" tabindex="-1"></a><span class="co">#&gt;     size = 1L)) </span></span>
+<span id="cb4-77"><a href="#cb4-77" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code></pre></div>
+<style type="text/css">
+.scroll-100 {
+max-height: 100px;
+overflow-y: auto;
+background-color: inherit;
+}
+</style>
+<p>The <code>functions</code> object defined in this example lists the
+many Stan functions that could be called (if all their arguments are
+numeric, see <code>help(stanFunction, package = &quot;StanHeaders&quot;)</code>
+for details)</p>
+<pre><code>#&gt;        [,1]                               [,2]                                        
+#&gt;   [1,] &quot;Eigen&quot;                            &quot;LDLT_factor&quot;                               
+#&gt;   [2,] &quot;Phi&quot;                              &quot;Phi_approx&quot;                                
+#&gt;   [3,] &quot;StdVectorBuilder&quot;                 &quot;VectorBuilder&quot;                             
+#&gt;   [4,] &quot;VectorBuilderHelper&quot;              &quot;abs&quot;                                       
+#&gt;   [5,] &quot;accumulator&quot;                      &quot;acos&quot;                                      
+#&gt;   [6,] &quot;acosh&quot;                            &quot;ad_promotable&quot;                             
+#&gt;   [7,] &quot;add&quot;                              &quot;add_diag&quot;                                  
+#&gt;   [8,] &quot;algebra_solver_adapter&quot;           &quot;all&quot;                                       
+#&gt;   [9,] &quot;any&quot;                              &quot;append_array&quot;                              
+#&gt;  [10,] &quot;append_col&quot;                       &quot;append_return_type&quot;                        
+#&gt;  [11,] &quot;append_row&quot;                       &quot;apply&quot;                                     
+#&gt;  [12,] &quot;apply_scalar_binary&quot;              &quot;apply_scalar_ternary&quot;                      
+#&gt;  [13,] &quot;apply_scalar_unary&quot;               &quot;apply_vector_unary&quot;                        
+#&gt;  [14,] &quot;arg&quot;                              &quot;array_builder&quot;                             
+#&gt;  [15,] &quot;as_array_or_scalar&quot;               &quot;as_bool&quot;                                   
+#&gt;  [16,] &quot;as_column_vector_or_scalar&quot;       &quot;as_value_array_or_scalar&quot;                  
+#&gt;  [17,] &quot;as_value_column_array_or_scalar&quot;  &quot;as_value_column_vector_or_scalar&quot;          
+#&gt;  [18,] &quot;asin&quot;                             &quot;asinh&quot;                                     
+#&gt;  [19,] &quot;assign&quot;                           &quot;atan&quot;                                      
+#&gt;  [20,] &quot;atan2&quot;                            &quot;atanh&quot;                                     
+#&gt;  [21,] &quot;autocorrelation&quot;                  &quot;autocovariance&quot;                            
+#&gt;  [22,] &quot;base_type&quot;                        &quot;bernoulli_ccdf_log&quot;                        
+#&gt;  [23,] &quot;bernoulli_cdf&quot;                    &quot;bernoulli_cdf_log&quot;                         
+#&gt;  [24,] &quot;bernoulli_lccdf&quot;                  &quot;bernoulli_lcdf&quot;                            
+#&gt;  [25,] &quot;bernoulli_logit_glm_lpmf&quot;         &quot;bernoulli_logit_glm_rng&quot;                   
+#&gt;  [26,] &quot;bernoulli_logit_lpmf&quot;             &quot;bernoulli_logit_rng&quot;                       
+#&gt;  [27,] &quot;bernoulli_lpmf&quot;                   &quot;bernoulli_rng&quot;                             
+#&gt;  [28,] &quot;bessel_first_kind&quot;                &quot;bessel_second_kind&quot;                        
+#&gt;  [29,] &quot;beta&quot;                             &quot;beta_binomial_ccdf_log&quot;                    
+#&gt;  [30,] &quot;beta_binomial_cdf&quot;                &quot;beta_binomial_cdf_log&quot;                     
+#&gt;  [31,] &quot;beta_binomial_lccdf&quot;              &quot;beta_binomial_lcdf&quot;                        
+#&gt;  [32,] &quot;beta_binomial_lpmf&quot;               &quot;beta_binomial_rng&quot;                         
+#&gt;  [33,] &quot;beta_ccdf_log&quot;                    &quot;beta_cdf&quot;                                  
+#&gt;  [34,] &quot;beta_cdf_log&quot;                     &quot;beta_lccdf&quot;                                
+#&gt;  [35,] &quot;beta_lcdf&quot;                        &quot;beta_lpdf&quot;                                 
+#&gt;  [36,] &quot;beta_neg_binomial_cdf&quot;            &quot;beta_neg_binomial_lccdf&quot;                   
+#&gt;  [37,] &quot;beta_neg_binomial_lcdf&quot;           &quot;beta_neg_binomial_lpmf&quot;                    
+#&gt;  [38,] &quot;beta_neg_binomial_rng&quot;            &quot;beta_proportion_ccdf_log&quot;                  
+#&gt;  [39,] &quot;beta_proportion_cdf_log&quot;          &quot;beta_proportion_lccdf&quot;                     
+#&gt;  [40,] &quot;beta_proportion_lcdf&quot;             &quot;beta_proportion_lpdf&quot;                      
+#&gt;  [41,] &quot;beta_proportion_rng&quot;              &quot;beta_rng&quot;                                  
+#&gt;  [42,] &quot;binary_log_loss&quot;                  &quot;binomial_ccdf_log&quot;                         
+#&gt;  [43,] &quot;binomial_cdf&quot;                     &quot;binomial_cdf_log&quot;                          
+#&gt;  [44,] &quot;binomial_coefficient_log&quot;         &quot;binomial_lccdf&quot;                            
+#&gt;  [45,] &quot;binomial_lcdf&quot;                    &quot;binomial_logit_glm_lpmf&quot;                   
+#&gt;  [46,] &quot;binomial_logit_lpmf&quot;              &quot;binomial_lpmf&quot;                             
+#&gt;  [47,] &quot;binomial_rng&quot;                     &quot;block&quot;                                     
+#&gt;  [48,] &quot;bool_constant&quot;                    &quot;boost_policy&quot;                              
+#&gt;  [49,] &quot;broadcast_array&quot;                  &quot;categorical_logit_glm_lpmf&quot;                
+#&gt;  [50,] &quot;categorical_logit_lpmf&quot;           &quot;categorical_logit_rng&quot;                     
+#&gt;  [51,] &quot;categorical_lpmf&quot;                 &quot;categorical_rng&quot;                           
+#&gt;  [52,] &quot;cauchy_ccdf_log&quot;                  &quot;cauchy_cdf&quot;                                
+#&gt;  [53,] &quot;cauchy_cdf_log&quot;                   &quot;cauchy_lccdf&quot;                              
+#&gt;  [54,] &quot;cauchy_lcdf&quot;                      &quot;cauchy_lpdf&quot;                               
+#&gt;  [55,] &quot;cauchy_rng&quot;                       &quot;cbrt&quot;                                      
+#&gt;  [56,] &quot;ceil&quot;                             &quot;check_2F1_converges&quot;                       
+#&gt;  [57,] &quot;check_3F2_converges&quot;              &quot;check_bounded&quot;                             
+#&gt;  [58,] &quot;check_cholesky_factor&quot;            &quot;check_cholesky_factor_corr&quot;                
+#&gt;  [59,] &quot;check_column_index&quot;               &quot;check_consistent_size&quot;                     
+#&gt;  [60,] &quot;check_consistent_sizes&quot;           &quot;check_consistent_sizes_mvt&quot;                
+#&gt;  [61,] &quot;check_corr_matrix&quot;                &quot;check_cov_matrix&quot;                          
+#&gt;  [62,] &quot;check_finite&quot;                     &quot;check_flag_sundials&quot;                       
+#&gt;  [63,] &quot;check_greater&quot;                    &quot;check_greater_or_equal&quot;                    
+#&gt;  [64,] &quot;check_ldlt_factor&quot;                &quot;check_less&quot;                                
+#&gt;  [65,] &quot;check_less_or_equal&quot;              &quot;check_lower_triangular&quot;                    
+#&gt;  [66,] &quot;check_matching_dims&quot;              &quot;check_matching_sizes&quot;                      
+#&gt;  [67,] &quot;check_multiplicable&quot;              &quot;check_nonnegative&quot;                         
+#&gt;  [68,] &quot;check_nonzero_size&quot;               &quot;check_not_nan&quot;                             
+#&gt;  [69,] &quot;check_ordered&quot;                    &quot;check_pos_definite&quot;                        
+#&gt;  [70,] &quot;check_pos_semidefinite&quot;           &quot;check_positive&quot;                            
+#&gt;  [71,] &quot;check_positive_finite&quot;            &quot;check_positive_ordered&quot;                    
+#&gt;  [72,] &quot;check_range&quot;                      &quot;check_row_index&quot;                           
+#&gt;  [73,] &quot;check_simplex&quot;                    &quot;check_size_match&quot;                          
+#&gt;  [74,] &quot;check_sorted&quot;                     &quot;check_square&quot;                              
+#&gt;  [75,] &quot;check_std_vector_index&quot;           &quot;check_stochastic_column&quot;                   
+#&gt;  [76,] &quot;check_stochastic_row&quot;             &quot;check_sum_to_zero&quot;                         
+#&gt;  [77,] &quot;check_symmetric&quot;                  &quot;check_unit_vector&quot;                         
+#&gt;  [78,] &quot;check_vector&quot;                     &quot;check_vector_index&quot;                        
+#&gt;  [79,] &quot;chi_square_ccdf_log&quot;              &quot;chi_square_cdf&quot;                            
+#&gt;  [80,] &quot;chi_square_cdf_log&quot;               &quot;chi_square_lccdf&quot;                          
+#&gt;  [81,] &quot;chi_square_lcdf&quot;                  &quot;chi_square_lpdf&quot;                           
+#&gt;  [82,] &quot;chi_square_rng&quot;                   &quot;chol2inv&quot;                                  
+#&gt;  [83,] &quot;cholesky_corr_constrain&quot;          &quot;cholesky_corr_free&quot;                        
+#&gt;  [84,] &quot;cholesky_decompose&quot;               &quot;cholesky_factor_constrain&quot;                 
+#&gt;  [85,] &quot;cholesky_factor_free&quot;             &quot;choose&quot;                                    
+#&gt;  [86,] &quot;col&quot;                              &quot;cols&quot;                                      
+#&gt;  [87,] &quot;columns_dot_product&quot;              &quot;columns_dot_self&quot;                          
+#&gt;  [88,] &quot;common_container_type&quot;            &quot;compiler_attributes&quot;                       
+#&gt;  [89,] &quot;complex_base&quot;                     &quot;complex_schur_decompose&quot;                   
+#&gt;  [90,] &quot;conj&quot;                             &quot;conjunction&quot;                               
+#&gt;  [91,] &quot;constants&quot;                        &quot;constraint_tolerance&quot;                      
+#&gt;  [92,] &quot;contains_std_vector&quot;              &quot;contains_tuple&quot;                            
+#&gt;  [93,] &quot;copysign&quot;                         &quot;corr_constrain&quot;                            
+#&gt;  [94,] &quot;corr_free&quot;                        &quot;corr_matrix_constrain&quot;                     
+#&gt;  [95,] &quot;corr_matrix_free&quot;                 &quot;cos&quot;                                       
+#&gt;  [96,] &quot;cosh&quot;                             &quot;coupled_ode_system&quot;                        
+#&gt;  [97,] &quot;cov_exp_quad&quot;                     &quot;cov_matrix_constrain&quot;                      
+#&gt;  [98,] &quot;cov_matrix_constrain_lkj&quot;         &quot;cov_matrix_free&quot;                           
+#&gt;  [99,] &quot;cov_matrix_free_lkj&quot;              &quot;crossprod&quot;                                 
+#&gt; [100,] &quot;csr_extract&quot;                      &quot;csr_extract_u&quot;                             
+#&gt; [101,] &quot;csr_extract_v&quot;                    &quot;csr_extract_w&quot;                             
+#&gt; [102,] &quot;csr_matrix_times_vector&quot;          &quot;csr_to_dense_matrix&quot;                       
+#&gt; [103,] &quot;csr_u_to_z&quot;                       &quot;cumulative_sum&quot;                            
+#&gt; [104,] &quot;determinant&quot;                      &quot;diag_matrix&quot;                               
+#&gt; [105,] &quot;diag_post_multiply&quot;               &quot;diag_pre_multiply&quot;                         
+#&gt; [106,] &quot;diagonal&quot;                         &quot;digamma&quot;                                   
+#&gt; [107,] &quot;dims&quot;                             &quot;dirichlet_lpdf&quot;                            
+#&gt; [108,] &quot;dirichlet_multinomial_lpmf&quot;       &quot;dirichlet_multinomial_rng&quot;                 
+#&gt; [109,] &quot;dirichlet_rng&quot;                    &quot;discrete_range_ccdf_log&quot;                   
+#&gt; [110,] &quot;discrete_range_cdf&quot;               &quot;discrete_range_cdf_log&quot;                    
+#&gt; [111,] &quot;discrete_range_lccdf&quot;             &quot;discrete_range_lcdf&quot;                       
+#&gt; [112,] &quot;discrete_range_lpmf&quot;              &quot;discrete_range_rng&quot;                        
+#&gt; [113,] &quot;disjunction&quot;                      &quot;distance&quot;                                  
+#&gt; [114,] &quot;divide&quot;                           &quot;divide_columns&quot;                            
+#&gt; [115,] &quot;domain_error&quot;                     &quot;domain_error_vec&quot;                          
+#&gt; [116,] &quot;dot&quot;                              &quot;dot_product&quot;                               
+#&gt; [117,] &quot;dot_self&quot;                         &quot;double_exponential_ccdf_log&quot;               
+#&gt; [118,] &quot;double_exponential_cdf&quot;           &quot;double_exponential_cdf_log&quot;                
+#&gt; [119,] &quot;double_exponential_lccdf&quot;         &quot;double_exponential_lcdf&quot;                   
+#&gt; [120,] &quot;double_exponential_lpdf&quot;          &quot;double_exponential_rng&quot;                    
+#&gt; [121,] &quot;eigen_comparisons&quot;                &quot;eigendecompose&quot;                            
+#&gt; [122,] &quot;eigendecompose_sym&quot;               &quot;eigenvalues&quot;                               
+#&gt; [123,] &quot;eigenvalues_sym&quot;                  &quot;eigenvectors&quot;                              
+#&gt; [124,] &quot;eigenvectors_sym&quot;                 &quot;elementwise_check&quot;                         
+#&gt; [125,] &quot;elt_divide&quot;                       &quot;elt_multiply&quot;                              
+#&gt; [126,] &quot;erf&quot;                              &quot;erfc&quot;                                      
+#&gt; [127,] &quot;error_index&quot;                      &quot;eval&quot;                                      
+#&gt; [128,] &quot;exp&quot;                              &quot;exp2&quot;                                      
+#&gt; [129,] &quot;exp_mod_normal_ccdf_log&quot;          &quot;exp_mod_normal_cdf&quot;                        
+#&gt; [130,] &quot;exp_mod_normal_cdf_log&quot;           &quot;exp_mod_normal_lccdf&quot;                      
+#&gt; [131,] &quot;exp_mod_normal_lcdf&quot;              &quot;exp_mod_normal_lpdf&quot;                       
+#&gt; [132,] &quot;exp_mod_normal_rng&quot;               &quot;expm1&quot;                                     
+#&gt; [133,] &quot;exponential_ccdf_log&quot;             &quot;exponential_cdf&quot;                           
+#&gt; [134,] &quot;exponential_cdf_log&quot;              &quot;exponential_lccdf&quot;                         
+#&gt; [135,] &quot;exponential_lcdf&quot;                 &quot;exponential_lpdf&quot;                          
+#&gt; [136,] &quot;exponential_rng&quot;                  &quot;fabs&quot;                                      
+#&gt; [137,] &quot;factor_U&quot;                         &quot;factor_cov_matrix&quot;                         
+#&gt; [138,] &quot;falling_factorial&quot;                &quot;fdim&quot;                                      
+#&gt; [139,] &quot;fft&quot;                              &quot;fill&quot;                                      
+#&gt; [140,] &quot;filter_map&quot;                       &quot;finite_diff_gradient&quot;                      
+#&gt; [141,] &quot;finite_diff_gradient_auto&quot;        &quot;finite_diff_stepsize&quot;                      
+#&gt; [142,] &quot;floor&quot;                            &quot;fma&quot;                                       
+#&gt; [143,] &quot;fmax&quot;                             &quot;fmin&quot;                                      
+#&gt; [144,] &quot;fmod&quot;                             &quot;for_each&quot;                                  
+#&gt; [145,] &quot;forward_as&quot;                       &quot;frechet_ccdf_log&quot;                          
+#&gt; [146,] &quot;frechet_cdf&quot;                      &quot;frechet_cdf_log&quot;                           
+#&gt; [147,] &quot;frechet_lccdf&quot;                    &quot;frechet_lcdf&quot;                              
+#&gt; [148,] &quot;frechet_lpdf&quot;                     &quot;frechet_rng&quot;                               
+#&gt; [149,] &quot;gamma_ccdf_log&quot;                   &quot;gamma_cdf&quot;                                 
+#&gt; [150,] &quot;gamma_cdf_log&quot;                    &quot;gamma_lccdf&quot;                               
+#&gt; [151,] &quot;gamma_lcdf&quot;                       &quot;gamma_lpdf&quot;                                
+#&gt; [152,] &quot;gamma_p&quot;                          &quot;gamma_q&quot;                                   
+#&gt; [153,] &quot;gamma_rng&quot;                        &quot;gaussian_dlm_obs_lpdf&quot;                     
+#&gt; [154,] &quot;gaussian_dlm_obs_rng&quot;             &quot;generalized_inverse&quot;                       
+#&gt; [155,] &quot;generate_laplace_options&quot;         &quot;get&quot;                                       
+#&gt; [156,] &quot;get_base1&quot;                        &quot;get_base1_lhs&quot;                             
+#&gt; [157,] &quot;get_imag&quot;                         &quot;get_lp&quot;                                    
+#&gt; [158,] &quot;get_real&quot;                         &quot;gp_dot_prod_cov&quot;                           
+#&gt; [159,] &quot;gp_exp_quad_cov&quot;                  &quot;gp_exponential_cov&quot;                        
+#&gt; [160,] &quot;gp_matern32_cov&quot;                  &quot;gp_matern52_cov&quot;                           
+#&gt; [161,] &quot;gp_periodic_cov&quot;                  &quot;grad_2F1&quot;                                  
+#&gt; [162,] &quot;grad_F32&quot;                         &quot;grad_pFq&quot;                                  
+#&gt; [163,] &quot;grad_reg_inc_beta&quot;                &quot;grad_reg_inc_gamma&quot;                        
+#&gt; [164,] &quot;grad_reg_lower_inc_gamma&quot;         &quot;gumbel_ccdf_log&quot;                           
+#&gt; [165,] &quot;gumbel_cdf&quot;                       &quot;gumbel_cdf_log&quot;                            
+#&gt; [166,] &quot;gumbel_lccdf&quot;                     &quot;gumbel_lcdf&quot;                               
+#&gt; [167,] &quot;gumbel_lpdf&quot;                      &quot;gumbel_rng&quot;                                
+#&gt; [168,] &quot;hcubature&quot;                        &quot;head&quot;                                      
+#&gt; [169,] &quot;hmm_check&quot;                        &quot;hmm_hidden_state_prob&quot;                     
+#&gt; [170,] &quot;hmm_latent_rng&quot;                   &quot;hmm_marginal&quot;                              
+#&gt; [171,] &quot;holder&quot;                           &quot;hypergeometric_1F0&quot;                        
+#&gt; [172,] &quot;hypergeometric_2F1&quot;               &quot;hypergeometric_2F2&quot;                        
+#&gt; [173,] &quot;hypergeometric_3F2&quot;               &quot;hypergeometric_lpmf&quot;                       
+#&gt; [174,] &quot;hypergeometric_pFq&quot;               &quot;hypergeometric_rng&quot;                        
+#&gt; [175,] &quot;hypot&quot;                            &quot;i_times&quot;                                   
+#&gt; [176,] &quot;identity_constrain&quot;               &quot;identity_free&quot;                             
+#&gt; [177,] &quot;identity_matrix&quot;                  &quot;if_else&quot;                                   
+#&gt; [178,] &quot;imag&quot;                             &quot;inc_beta&quot;                                  
+#&gt; [179,] &quot;inc_beta_dda&quot;                     &quot;inc_beta_ddb&quot;                              
+#&gt; [180,] &quot;inc_beta_ddz&quot;                     &quot;include_summand&quot;                           
+#&gt; [181,] &quot;index_apply&quot;                      &quot;index_type&quot;                                
+#&gt; [182,] &quot;init_threadpool_tbb&quot;              &quot;initialize&quot;                                
+#&gt; [183,] &quot;initialize_fill&quot;                  &quot;int_step&quot;                                  
+#&gt; [184,] &quot;integrate_1d&quot;                     &quot;integrate_1d_adapter&quot;                      
+#&gt; [185,] &quot;integrate_ode_rk45&quot;               &quot;integrate_ode_std_vector_interface_adapter&quot;
+#&gt; [186,] &quot;inv&quot;                              &quot;inv_Phi&quot;                                   
+#&gt; [187,] &quot;inv_chi_square_ccdf_log&quot;          &quot;inv_chi_square_cdf&quot;                        
+#&gt; [188,] &quot;inv_chi_square_cdf_log&quot;           &quot;inv_chi_square_lccdf&quot;                      
+#&gt; [189,] &quot;inv_chi_square_lcdf&quot;              &quot;inv_chi_square_lpdf&quot;                       
+#&gt; [190,] &quot;inv_chi_square_rng&quot;               &quot;inv_cloglog&quot;                               
+#&gt; [191,] &quot;inv_erfc&quot;                         &quot;inv_gamma_ccdf_log&quot;                        
+#&gt; [192,] &quot;inv_gamma_cdf&quot;                    &quot;inv_gamma_cdf_log&quot;                         
+#&gt; [193,] &quot;inv_gamma_lccdf&quot;                  &quot;inv_gamma_lcdf&quot;                            
+#&gt; [194,] &quot;inv_gamma_lpdf&quot;                   &quot;inv_gamma_rng&quot;                             
+#&gt; [195,] &quot;inv_inc_beta&quot;                     &quot;inv_logit&quot;                                 
+#&gt; [196,] &quot;inv_sqrt&quot;                         &quot;inv_square&quot;                                
+#&gt; [197,] &quot;inv_wishart_cholesky_lpdf&quot;        &quot;inv_wishart_cholesky_rng&quot;                  
+#&gt; [198,] &quot;inv_wishart_lpdf&quot;                 &quot;inv_wishart_rng&quot;                           
+#&gt; [199,] &quot;invalid_argument&quot;                 &quot;invalid_argument_vec&quot;                      
+#&gt; [200,] &quot;inverse&quot;                          &quot;inverse_softmax&quot;                           
+#&gt; [201,] &quot;inverse_spd&quot;                      &quot;is_all_arithmetic&quot;                         
+#&gt; [202,] &quot;is_any_nan&quot;                       &quot;is_arena_matrix&quot;                           
+#&gt; [203,] &quot;is_autodiff&quot;                      &quot;is_base_pointer_convertible&quot;               
+#&gt; [204,] &quot;is_cholesky_factor&quot;               &quot;is_cholesky_factor_corr&quot;                   
+#&gt; [205,] &quot;is_column_index&quot;                  &quot;is_complex&quot;                                
+#&gt; [206,] &quot;is_constant&quot;                      &quot;is_container&quot;                              
+#&gt; [207,] &quot;is_container_or_var_matrix&quot;       &quot;is_corr_matrix&quot;                            
+#&gt; [208,] &quot;is_dense_dynamic&quot;                 &quot;is_detected&quot;                               
+#&gt; [209,] &quot;is_double_or_int&quot;                 &quot;is_eigen&quot;                                  
+#&gt; [210,] &quot;is_eigen_dense_base&quot;              &quot;is_eigen_dense_dynamic&quot;                    
+#&gt; [211,] &quot;is_eigen_matrix&quot;                  &quot;is_eigen_matrix_base&quot;                      
+#&gt; [212,] &quot;is_eigen_sparse_base&quot;             &quot;is_floating_point&quot;                         
+#&gt; [213,] &quot;is_fvar&quot;                          &quot;is_inf&quot;                                    
+#&gt; [214,] &quot;is_integer&quot;                       &quot;is_integral&quot;                               
+#&gt; [215,] &quot;is_kernel_expression&quot;             &quot;is_ldlt_factor&quot;                            
+#&gt; [216,] &quot;is_less_or_equal&quot;                 &quot;is_lower_triangular&quot;                       
+#&gt; [217,] &quot;is_mat_finite&quot;                    &quot;is_matching_dims&quot;                          
+#&gt; [218,] &quot;is_matching_size&quot;                 &quot;is_matrix&quot;                                 
+#&gt; [219,] &quot;is_matrix_cl&quot;                     &quot;is_nan&quot;                                    
+#&gt; [220,] &quot;is_nonpositive_integer&quot;           &quot;is_nonzero_size&quot;                           
+#&gt; [221,] &quot;is_not_nan&quot;                       &quot;is_ordered&quot;                                
+#&gt; [222,] &quot;is_plain_type&quot;                    &quot;is_pos_definite&quot;                           
+#&gt; [223,] &quot;is_positive&quot;                      &quot;is_real&quot;                                   
+#&gt; [224,] &quot;is_rev_matrix&quot;                    &quot;is_scal_finite&quot;                            
+#&gt; [225,] &quot;is_size_match&quot;                    &quot;is_square&quot;                                 
+#&gt; [226,] &quot;is_stan_scalar&quot;                   &quot;is_stan_scalar_or_eigen&quot;                   
+#&gt; [227,] &quot;is_string_convertible&quot;            &quot;is_symmetric&quot;                              
+#&gt; [228,] &quot;is_tuple&quot;                         &quot;is_uninitialized&quot;                          
+#&gt; [229,] &quot;is_unit_vector&quot;                   &quot;is_var&quot;                                    
+#&gt; [230,] &quot;is_var_and_matrix_types&quot;          &quot;is_var_dense_dynamic&quot;                      
+#&gt; [231,] &quot;is_var_eigen&quot;                     &quot;is_var_matrix&quot;                             
+#&gt; [232,] &quot;is_var_or_arithmetic&quot;             &quot;is_vari&quot;                                   
+#&gt; [233,] &quot;is_vector&quot;                        &quot;is_vector_like&quot;                            
+#&gt; [234,] &quot;isfinite&quot;                         &quot;isinf&quot;                                     
+#&gt; [235,] &quot;isnan&quot;                            &quot;isnormal&quot;                                  
+#&gt; [236,] &quot;iter_tuple_nested&quot;                &quot;lambert_w&quot;                                 
+#&gt; [237,] &quot;lb_constrain&quot;                     &quot;lb_free&quot;                                   
+#&gt; [238,] &quot;lbeta&quot;                            &quot;ldexp&quot;                                     
+#&gt; [239,] &quot;lgamma&quot;                           &quot;lgamma_stirling&quot;                           
+#&gt; [240,] &quot;lgamma_stirling_diff&quot;             &quot;linspaced_array&quot;                           
+#&gt; [241,] &quot;linspaced_int_array&quot;              &quot;linspaced_row_vector&quot;                      
+#&gt; [242,] &quot;linspaced_vector&quot;                 &quot;lkj_corr_cholesky_lpdf&quot;                    
+#&gt; [243,] &quot;lkj_corr_cholesky_rng&quot;            &quot;lkj_corr_lpdf&quot;                             
+#&gt; [244,] &quot;lkj_corr_rng&quot;                     &quot;lkj_cov_lpdf&quot;                              
+#&gt; [245,] &quot;lmgamma&quot;                          &quot;lmultiply&quot;                                 
+#&gt; [246,] &quot;log&quot;                              &quot;log10&quot;                                     
+#&gt; [247,] &quot;log1m&quot;                            &quot;log1m_exp&quot;                                 
+#&gt; [248,] &quot;log1m_inv_logit&quot;                  &quot;log1p&quot;                                     
+#&gt; [249,] &quot;log1p_exp&quot;                        &quot;log2&quot;                                      
+#&gt; [250,] &quot;log_determinant&quot;                  &quot;log_determinant_ldlt&quot;                      
+#&gt; [251,] &quot;log_determinant_spd&quot;              &quot;log_diff_exp&quot;                              
+#&gt; [252,] &quot;log_falling_factorial&quot;            &quot;log_gamma_q_dgamma&quot;                        
+#&gt; [253,] &quot;log_inv_logit&quot;                    &quot;log_inv_logit_diff&quot;                        
+#&gt; [254,] &quot;log_mix&quot;                          &quot;log_modified_bessel_first_kind&quot;            
+#&gt; [255,] &quot;log_rising_factorial&quot;             &quot;log_softmax&quot;                               
+#&gt; [256,] &quot;log_sum_exp&quot;                      &quot;log_sum_exp_signed&quot;                        
+#&gt; [257,] &quot;logb&quot;                             &quot;logical_and&quot;                               
+#&gt; [258,] &quot;logical_eq&quot;                       &quot;logical_gt&quot;                                
+#&gt; [259,] &quot;logical_gte&quot;                      &quot;logical_lt&quot;                                
+#&gt; [260,] &quot;logical_lte&quot;                      &quot;logical_negation&quot;                          
+#&gt; [261,] &quot;logical_neq&quot;                      &quot;logical_or&quot;                                
+#&gt; [262,] &quot;logistic_ccdf_log&quot;                &quot;logistic_cdf&quot;                              
+#&gt; [263,] &quot;logistic_cdf_log&quot;                 &quot;logistic_lccdf&quot;                            
+#&gt; [264,] &quot;logistic_lcdf&quot;                    &quot;logistic_lpdf&quot;                             
+#&gt; [265,] &quot;logistic_rng&quot;                     &quot;logit&quot;                                     
+#&gt; [266,] &quot;loglogistic_cdf&quot;                  &quot;loglogistic_lpdf&quot;                          
+#&gt; [267,] &quot;loglogistic_rng&quot;                  &quot;lognormal_ccdf_log&quot;                        
+#&gt; [268,] &quot;lognormal_cdf&quot;                    &quot;lognormal_cdf_log&quot;                         
+#&gt; [269,] &quot;lognormal_lccdf&quot;                  &quot;lognormal_lcdf&quot;                            
+#&gt; [270,] &quot;lognormal_lpdf&quot;                   &quot;lognormal_rng&quot;                             
+#&gt; [271,] &quot;lub_constrain&quot;                    &quot;lub_free&quot;                                  
+#&gt; [272,] &quot;make_holder_tuple&quot;                &quot;make_iter_name&quot;                            
+#&gt; [273,] &quot;make_nu&quot;                          &quot;map_if&quot;                                    
+#&gt; [274,] &quot;map_rect&quot;                         &quot;map_rect_combine&quot;                          
+#&gt; [275,] &quot;map_rect_concurrent&quot;              &quot;map_rect_mpi&quot;                              
+#&gt; [276,] &quot;map_rect_reduce&quot;                  &quot;matrix_exp&quot;                                
+#&gt; [277,] &quot;matrix_exp_2x2&quot;                   &quot;matrix_exp_action_handler&quot;                 
+#&gt; [278,] &quot;matrix_exp_multiply&quot;              &quot;matrix_exp_pade&quot;                           
+#&gt; [279,] &quot;matrix_normal_prec_lpdf&quot;          &quot;matrix_normal_prec_rng&quot;                    
+#&gt; [280,] &quot;matrix_power&quot;                     &quot;max&quot;                                       
+#&gt; [281,] &quot;max_size&quot;                         &quot;max_size_mvt&quot;                              
+#&gt; [282,] &quot;mdivide_left&quot;                     &quot;mdivide_left_ldlt&quot;                         
+#&gt; [283,] &quot;mdivide_left_spd&quot;                 &quot;mdivide_left_tri&quot;                          
+#&gt; [284,] &quot;mdivide_left_tri_low&quot;             &quot;mdivide_right&quot;                             
+#&gt; [285,] &quot;mdivide_right_ldlt&quot;               &quot;mdivide_right_spd&quot;                         
+#&gt; [286,] &quot;mdivide_right_tri&quot;                &quot;mdivide_right_tri_low&quot;                     
+#&gt; [287,] &quot;mean&quot;                             &quot;min&quot;                                       
+#&gt; [288,] &quot;minus&quot;                            &quot;modified_bessel_first_kind&quot;                
+#&gt; [289,] &quot;modified_bessel_second_kind&quot;      &quot;modify_eigen_options&quot;                      
+#&gt; [290,] &quot;modulus&quot;                          &quot;mpi_cluster&quot;                               
+#&gt; [291,] &quot;mpi_command&quot;                      &quot;mpi_distributed_apply&quot;                     
+#&gt; [292,] &quot;mpi_parallel_call&quot;                &quot;multi_gp_cholesky_lpdf&quot;                    
+#&gt; [293,] &quot;multi_gp_lpdf&quot;                    &quot;multi_normal_cholesky_lpdf&quot;                
+#&gt; [294,] &quot;multi_normal_cholesky_rng&quot;        &quot;multi_normal_lpdf&quot;                         
+#&gt; [295,] &quot;multi_normal_prec_lpdf&quot;           &quot;multi_normal_prec_rng&quot;                     
+#&gt; [296,] &quot;multi_normal_rng&quot;                 &quot;multi_student_t_cholesky_lpdf&quot;             
+#&gt; [297,] &quot;multi_student_t_cholesky_rng&quot;     &quot;multi_student_t_lpdf&quot;                      
+#&gt; [298,] &quot;multi_student_t_rng&quot;              &quot;multinomial_logit_lpmf&quot;                    
+#&gt; [299,] &quot;multinomial_logit_rng&quot;            &quot;multinomial_lpmf&quot;                          
+#&gt; [300,] &quot;multinomial_rng&quot;                  &quot;multiply&quot;                                  
+#&gt; [301,] &quot;multiply_log&quot;                     &quot;multiply_lower_tri_self_transpose&quot;         
+#&gt; [302,] &quot;neg_binomial_2_ccdf_log&quot;          &quot;neg_binomial_2_cdf&quot;                        
+#&gt; [303,] &quot;neg_binomial_2_cdf_log&quot;           &quot;neg_binomial_2_lccdf&quot;                      
+#&gt; [304,] &quot;neg_binomial_2_lcdf&quot;              &quot;neg_binomial_2_log_glm_lpmf&quot;               
+#&gt; [305,] &quot;neg_binomial_2_log_lpmf&quot;          &quot;neg_binomial_2_log_rng&quot;                    
+#&gt; [306,] &quot;neg_binomial_2_lpmf&quot;              &quot;neg_binomial_2_rng&quot;                        
+#&gt; [307,] &quot;neg_binomial_ccdf_log&quot;            &quot;neg_binomial_cdf&quot;                          
+#&gt; [308,] &quot;neg_binomial_cdf_log&quot;             &quot;neg_binomial_lccdf&quot;                        
+#&gt; [309,] &quot;neg_binomial_lcdf&quot;                &quot;neg_binomial_lpmf&quot;                         
+#&gt; [310,] &quot;neg_binomial_rng&quot;                 &quot;norm&quot;                                      
+#&gt; [311,] &quot;norm1&quot;                            &quot;norm2&quot;                                     
+#&gt; [312,] &quot;normal_ccdf_log&quot;                  &quot;normal_cdf&quot;                                
+#&gt; [313,] &quot;normal_cdf_log&quot;                   &quot;normal_id_glm_lpdf&quot;                        
+#&gt; [314,] &quot;normal_lccdf&quot;                     &quot;normal_lcdf&quot;                               
+#&gt; [315,] &quot;normal_lpdf&quot;                      &quot;normal_rng&quot;                                
+#&gt; [316,] &quot;normal_sufficient_lpdf&quot;           &quot;num_elements&quot;                              
+#&gt; [317,] &quot;ode_ckrk&quot;                         &quot;ode_rk45&quot;                                  
+#&gt; [318,] &quot;ode_store_sensitivities&quot;          &quot;offset_multiplier_constrain&quot;               
+#&gt; [319,] &quot;offset_multiplier_free&quot;           &quot;one_hot_array&quot;                             
+#&gt; [320,] &quot;one_hot_int_array&quot;                &quot;one_hot_row_vector&quot;                        
+#&gt; [321,] &quot;one_hot_vector&quot;                   &quot;ones_array&quot;                                
+#&gt; [322,] &quot;ones_int_array&quot;                   &quot;ones_row_vector&quot;                           
+#&gt; [323,] &quot;ones_vector&quot;                      &quot;operands_and_partials&quot;                     
+#&gt; [324,] &quot;operator_addition&quot;                &quot;operator_division&quot;                         
+#&gt; [325,] &quot;operator_equal_equal&quot;             &quot;operator_minus&quot;                            
+#&gt; [326,] &quot;operator_multiplication&quot;          &quot;operator_not_equal&quot;                        
+#&gt; [327,] &quot;operator_plus&quot;                    &quot;operator_subtraction&quot;                      
+#&gt; [328,] &quot;ordered_constrain&quot;                &quot;ordered_free&quot;                              
+#&gt; [329,] &quot;ordered_logistic_glm_lpmf&quot;        &quot;ordered_logistic_lpmf&quot;                     
+#&gt; [330,] &quot;ordered_logistic_rng&quot;             &quot;ordered_probit_lpmf&quot;                       
+#&gt; [331,] &quot;ordered_probit_rng&quot;               &quot;out_of_range&quot;                              
+#&gt; [332,] &quot;owens_t&quot;                          &quot;pareto_ccdf_log&quot;                           
+#&gt; [333,] &quot;pareto_cdf&quot;                       &quot;pareto_cdf_log&quot;                            
+#&gt; [334,] &quot;pareto_lccdf&quot;                     &quot;pareto_lcdf&quot;                               
+#&gt; [335,] &quot;pareto_lpdf&quot;                      &quot;pareto_rng&quot;                                
+#&gt; [336,] &quot;pareto_type_2_ccdf_log&quot;           &quot;pareto_type_2_cdf&quot;                         
+#&gt; [337,] &quot;pareto_type_2_cdf_log&quot;            &quot;pareto_type_2_lccdf&quot;                       
+#&gt; [338,] &quot;pareto_type_2_lcdf&quot;               &quot;pareto_type_2_lpdf&quot;                        
+#&gt; [339,] &quot;pareto_type_2_rng&quot;                &quot;partials_propagator&quot;                       
+#&gt; [340,] &quot;partials_return_type&quot;             &quot;partials_type&quot;                             
+#&gt; [341,] &quot;plain_type&quot;                       &quot;plus&quot;                                      
+#&gt; [342,] &quot;poisson_binomial_ccdf_log&quot;        &quot;poisson_binomial_cdf&quot;                      
+#&gt; [343,] &quot;poisson_binomial_cdf_log&quot;         &quot;poisson_binomial_lccdf&quot;                    
+#&gt; [344,] &quot;poisson_binomial_lcdf&quot;            &quot;poisson_binomial_log_probs&quot;                
+#&gt; [345,] &quot;poisson_binomial_lpmf&quot;            &quot;poisson_binomial_rng&quot;                      
+#&gt; [346,] &quot;poisson_ccdf_log&quot;                 &quot;poisson_cdf&quot;                               
+#&gt; [347,] &quot;poisson_cdf_log&quot;                  &quot;poisson_lccdf&quot;                             
+#&gt; [348,] &quot;poisson_lcdf&quot;                     &quot;poisson_log_glm_lpmf&quot;                      
+#&gt; [349,] &quot;poisson_log_lpmf&quot;                 &quot;poisson_log_rng&quot;                           
+#&gt; [350,] &quot;poisson_lpmf&quot;                     &quot;poisson_rng&quot;                               
+#&gt; [351,] &quot;polar&quot;                            &quot;positive_constrain&quot;                        
+#&gt; [352,] &quot;positive_free&quot;                    &quot;positive_ordered_constrain&quot;                
+#&gt; [353,] &quot;positive_ordered_free&quot;            &quot;possibly_sum&quot;                              
+#&gt; [354,] &quot;pow&quot;                              &quot;primitive_value&quot;                           
+#&gt; [355,] &quot;prob_constrain&quot;                   &quot;prob_free&quot;                                 
+#&gt; [356,] &quot;prod&quot;                             &quot;proj&quot;                                      
+#&gt; [357,] &quot;promote_args&quot;                     &quot;promote_elements&quot;                          
+#&gt; [358,] &quot;promote_scalar&quot;                   &quot;promote_scalar_type&quot;                       
+#&gt; [359,] &quot;pseudo_eigenvalues&quot;               &quot;pseudo_eigenvectors&quot;                       
+#&gt; [360,] &quot;qr&quot;                               &quot;qr_Q&quot;                                      
+#&gt; [361,] &quot;qr_R&quot;                             &quot;qr_thin&quot;                                   
+#&gt; [362,] &quot;qr_thin_Q&quot;                        &quot;qr_thin_R&quot;                                 
+#&gt; [363,] &quot;quad_form&quot;                        &quot;quad_form_diag&quot;                            
+#&gt; [364,] &quot;quad_form_sym&quot;                    &quot;quantile&quot;                                  
+#&gt; [365,] &quot;rank&quot;                             &quot;rayleigh_ccdf_log&quot;                         
+#&gt; [366,] &quot;rayleigh_cdf&quot;                     &quot;rayleigh_cdf_log&quot;                          
+#&gt; [367,] &quot;rayleigh_lccdf&quot;                   &quot;rayleigh_lcdf&quot;                             
+#&gt; [368,] &quot;rayleigh_lpdf&quot;                    &quot;rayleigh_rng&quot;                              
+#&gt; [369,] &quot;read_corr_L&quot;                      &quot;read_corr_matrix&quot;                          
+#&gt; [370,] &quot;read_cov_L&quot;                       &quot;read_cov_matrix&quot;                           
+#&gt; [371,] &quot;real&quot;                             &quot;reduce_sum&quot;                                
+#&gt; [372,] &quot;reduce_sum_static&quot;                &quot;ref_type&quot;                                  
+#&gt; [373,] &quot;rep_array&quot;                        &quot;rep_matrix&quot;                                
+#&gt; [374,] &quot;rep_row_vector&quot;                   &quot;rep_vector&quot;                                
+#&gt; [375,] &quot;require_generics&quot;                 &quot;require_helpers&quot;                           
+#&gt; [376,] &quot;resize&quot;                           &quot;return_type&quot;                               
+#&gt; [377,] &quot;reverse&quot;                          &quot;rising_factorial&quot;                          
+#&gt; [378,] &quot;round&quot;                            &quot;row&quot;                                       
+#&gt; [379,] &quot;rows&quot;                             &quot;rows_dot_product&quot;                          
+#&gt; [380,] &quot;rows_dot_self&quot;                    &quot;scalar_seq_view&quot;                           
+#&gt; [381,] &quot;scalar_type&quot;                      &quot;scalbn&quot;                                    
+#&gt; [382,] &quot;scale_matrix_exp_multiply&quot;        &quot;scaled_add&quot;                                
+#&gt; [383,] &quot;scaled_inv_chi_square_ccdf_log&quot;   &quot;scaled_inv_chi_square_cdf&quot;                 
+#&gt; [384,] &quot;scaled_inv_chi_square_cdf_log&quot;    &quot;scaled_inv_chi_square_lccdf&quot;               
+#&gt; [385,] &quot;scaled_inv_chi_square_lcdf&quot;       &quot;scaled_inv_chi_square_lpdf&quot;                
+#&gt; [386,] &quot;scaled_inv_chi_square_rng&quot;        &quot;sd&quot;                                        
+#&gt; [387,] &quot;segment&quot;                          &quot;select&quot;                                    
+#&gt; [388,] &quot;seq_view&quot;                         &quot;serializer&quot;                                
+#&gt; [389,] &quot;sign&quot;                             &quot;signbit&quot;                                   
+#&gt; [390,] &quot;simplex_constrain&quot;                &quot;simplex_free&quot;                              
+#&gt; [391,] &quot;sin&quot;                              &quot;singular_values&quot;                           
+#&gt; [392,] &quot;sinh&quot;                             &quot;size&quot;                                      
+#&gt; [393,] &quot;size_mvt&quot;                         &quot;size_zero&quot;                                 
+#&gt; [394,] &quot;skew_double_exponential_ccdf_log&quot; &quot;skew_double_exponential_cdf&quot;               
+#&gt; [395,] &quot;skew_double_exponential_cdf_log&quot;  &quot;skew_double_exponential_lccdf&quot;             
+#&gt; [396,] &quot;skew_double_exponential_lcdf&quot;     &quot;skew_double_exponential_lpdf&quot;              
+#&gt; [397,] &quot;skew_double_exponential_rng&quot;      &quot;skew_normal_ccdf_log&quot;                      
+#&gt; [398,] &quot;skew_normal_cdf&quot;                  &quot;skew_normal_cdf_log&quot;                       
+#&gt; [399,] &quot;skew_normal_lccdf&quot;                &quot;skew_normal_lcdf&quot;                          
+#&gt; [400,] &quot;skew_normal_lpdf&quot;                 &quot;skew_normal_rng&quot;                           
+#&gt; [401,] &quot;softmax&quot;                          &quot;sort_asc&quot;                                  
+#&gt; [402,] &quot;sort_desc&quot;                        &quot;sort_indices&quot;                              
+#&gt; [403,] &quot;sort_indices_asc&quot;                 &quot;sort_indices_desc&quot;                         
+#&gt; [404,] &quot;sqrt&quot;                             &quot;square&quot;                                    
+#&gt; [405,] &quot;squared_distance&quot;                 &quot;stan_print&quot;                                
+#&gt; [406,] &quot;static_select&quot;                    &quot;std_normal_ccdf_log&quot;                       
+#&gt; [407,] &quot;std_normal_cdf&quot;                   &quot;std_normal_cdf_log&quot;                        
+#&gt; [408,] &quot;std_normal_lccdf&quot;                 &quot;std_normal_lcdf&quot;                           
+#&gt; [409,] &quot;std_normal_log_qf&quot;                &quot;std_normal_lpdf&quot;                           
+#&gt; [410,] &quot;std_normal_rng&quot;                   &quot;step&quot;                                      
+#&gt; [411,] &quot;stochastic_column_constrain&quot;      &quot;stochastic_column_free&quot;                    
+#&gt; [412,] &quot;stochastic_row_constrain&quot;         &quot;stochastic_row_free&quot;                       
+#&gt; [413,] &quot;student_t_ccdf_log&quot;               &quot;student_t_cdf&quot;                             
+#&gt; [414,] &quot;student_t_cdf_log&quot;                &quot;student_t_lccdf&quot;                           
+#&gt; [415,] &quot;student_t_lcdf&quot;                   &quot;student_t_lpdf&quot;                            
+#&gt; [416,] &quot;student_t_qf&quot;                     &quot;student_t_rng&quot;                             
+#&gt; [417,] &quot;sub_col&quot;                          &quot;sub_row&quot;                                   
+#&gt; [418,] &quot;subtract&quot;                         &quot;sum&quot;                                       
+#&gt; [419,] &quot;sum_to_zero_constrain&quot;            &quot;sum_to_zero_free&quot;                          
+#&gt; [420,] &quot;svd&quot;                              &quot;svd_U&quot;                                     
+#&gt; [421,] &quot;svd_V&quot;                            &quot;symmetrize_from_lower_tri&quot;                 
+#&gt; [422,] &quot;symmetrize_from_upper_tri&quot;        &quot;system_error&quot;                              
+#&gt; [423,] &quot;tail&quot;                             &quot;tan&quot;                                       
+#&gt; [424,] &quot;tanh&quot;                             &quot;tcrossprod&quot;                                
+#&gt; [425,] &quot;tgamma&quot;                           &quot;throw_domain_error&quot;                        
+#&gt; [426,] &quot;throw_domain_error_mat&quot;           &quot;throw_domain_error_vec&quot;                    
+#&gt; [427,] &quot;to_array_1d&quot;                      &quot;to_array_2d&quot;                               
+#&gt; [428,] &quot;to_complex&quot;                       &quot;to_int&quot;                                    
+#&gt; [429,] &quot;to_matrix&quot;                        &quot;to_ref&quot;                                    
+#&gt; [430,] &quot;to_row_vector&quot;                    &quot;to_vector&quot;                                 
+#&gt; [431,] &quot;trace&quot;                            &quot;trace_dot&quot;                                 
+#&gt; [432,] &quot;trace_gen_inv_quad_form_ldlt&quot;     &quot;trace_gen_quad_form&quot;                       
+#&gt; [433,] &quot;trace_inv_quad_form_ldlt&quot;         &quot;trace_quad_form&quot;                           
+#&gt; [434,] &quot;transpose&quot;                        &quot;trigamma&quot;                                  
+#&gt; [435,] &quot;trunc&quot;                            &quot;tuple_concat&quot;                              
+#&gt; [436,] &quot;tuple_element&quot;                    &quot;tuple_size&quot;                                
+#&gt; [437,] &quot;typedefs&quot;                         &quot;ub_constrain&quot;                              
+#&gt; [438,] &quot;ub_free&quot;                          &quot;uniform_ccdf_log&quot;                          
+#&gt; [439,] &quot;uniform_cdf&quot;                      &quot;uniform_cdf_log&quot;                           
+#&gt; [440,] &quot;uniform_lccdf&quot;                    &quot;uniform_lcdf&quot;                              
+#&gt; [441,] &quot;uniform_lpdf&quot;                     &quot;uniform_rng&quot;                               
+#&gt; [442,] &quot;uniform_simplex&quot;                  &quot;unit_vector_constrain&quot;                     
+#&gt; [443,] &quot;unit_vector_free&quot;                 &quot;unitspaced_array&quot;                          
+#&gt; [444,] &quot;validate_non_negative_index&quot;      &quot;validate_positive_index&quot;                   
+#&gt; [445,] &quot;validate_unit_vector_index&quot;       &quot;value_of&quot;                                  
+#&gt; [446,] &quot;value_of_rec&quot;                     &quot;value_type&quot;                                
+#&gt; [447,] &quot;variance&quot;                         &quot;vec_concat&quot;                                
+#&gt; [448,] &quot;vector_seq_view&quot;                  &quot;void_t&quot;                                    
+#&gt; [449,] &quot;von_mises_ccdf_log&quot;               &quot;von_mises_cdf&quot;                             
+#&gt; [450,] &quot;von_mises_cdf_log&quot;                &quot;von_mises_lccdf&quot;                           
+#&gt; [451,] &quot;von_mises_lcdf&quot;                   &quot;von_mises_lpdf&quot;                            
+#&gt; [452,] &quot;von_mises_rng&quot;                    &quot;weibull_ccdf_log&quot;                          
+#&gt; [453,] &quot;weibull_cdf&quot;                      &quot;weibull_cdf_log&quot;                           
+#&gt; [454,] &quot;weibull_lccdf&quot;                    &quot;weibull_lcdf&quot;                              
+#&gt; [455,] &quot;weibull_lpdf&quot;                     &quot;weibull_rng&quot;                               
+#&gt; [456,] &quot;welford_covar_estimator&quot;          &quot;welford_var_estimator&quot;                     
+#&gt; [457,] &quot;wiener4_lccdf_unnorm&quot;             &quot;wiener4_lcdf_unnorm&quot;                       
+#&gt; [458,] &quot;wiener5_lpdf&quot;                     &quot;wiener_full_lccdf_unnorm&quot;                  
+#&gt; [459,] &quot;wiener_full_lcdf_unnorm&quot;          &quot;wiener_full_lpdf&quot;                          
+#&gt; [460,] &quot;wiener_lpdf&quot;                      &quot;wishart_cholesky_lpdf&quot;                     
+#&gt; [461,] &quot;wishart_cholesky_rng&quot;             &quot;wishart_lpdf&quot;                              
+#&gt; [462,] &quot;wishart_rng&quot;                      &quot;yule_simon_cdf&quot;                            
+#&gt; [463,] &quot;yule_simon_lccdf&quot;                 &quot;yule_simon_lcdf&quot;                           
+#&gt; [464,] &quot;yule_simon_lpmf&quot;                  &quot;yule_simon_rng&quot;                            
+#&gt; [465,] &quot;zeros_array&quot;                      &quot;zeros_int_array&quot;                           
+#&gt; [466,] &quot;zeros_row_vector&quot;                 &quot;zeros_vector&quot;</code></pre>
+</div>
+<div id="using-higher-order-functions-in-the-stanheaders-package" class="section level1">
+<h1>Using Higher-Order Functions in the <strong>StanHeaders</strong>
+Package</h1>
+<p>This section will demonstrate how to use some of the C++ functions in
+the <strong>StanHeaders</strong> package whose first argument is another
+C++ function, in which case the <code>stanFunction</code> in the
+previous section will not work and you have to write your own C++.</p>
+<div id="derivatives-and-minimization" class="section level2">
+<h2>Derivatives and Minimization</h2>
+<p>The following is a toy example of using the Stan Math library via
+<code>Rcpp::sourceCpp</code>: to minimize the function <span class="math display">\[\left(\mathbf{x} - \mathbf{a}\right)^\top
+\left(\mathbf{x} - \mathbf{a}\right)\]</span> which has a global minimum
+when <span class="math inline">\(\mathbf{x} = \mathbf{a}\)</span>. To
+find this minimum with autodifferentiation, we need to define the
+objective function. Then, its gradient with respect to <span class="math inline">\(\mathbf{x}\)</span>, which we know is <span class="math inline">\(2\left(\mathbf{x} - \mathbf{a}\right)\)</span> in
+this case, can be calculated by autodifferentiation. At the optimum (or
+on the way to the optimum), we might want to evaluate the Hessian
+matrix, which we know is <span class="math inline">\(2\mathbf{I}\)</span>, but would need an additional
+function to evaluate it via autodifferentiation. Finally, one could
+reconceptualize the problem as solving a homogeneous system of equations
+where the gradient is set equal to a vector of zeros. The
+<code>stan::math::algebra_solver</code> function can solve such a system
+using autodifferentiation to obtain the Jacobian, which we know to be
+the identity matrix in this case.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">PKG_CXXFLAGS =</span> StanHeaders<span class="sc">:::</span><span class="fu">CxxFlags</span>(<span class="at">as_character =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>SH <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="fu">ifelse</span>(.Platform<span class="sc">$</span>OS.type <span class="sc">==</span> <span class="st">&quot;windows&quot;</span>, <span class="st">&quot;libs&quot;</span>, <span class="st">&quot;lib&quot;</span>), .Platform<span class="sc">$</span>r_arch,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>                  <span class="at">package =</span> <span class="st">&quot;StanHeaders&quot;</span>, <span class="at">mustWork =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">PKG_LIBS =</span> <span class="fu">paste0</span>(StanHeaders<span class="sc">:::</span><span class="fu">LdFlags</span>(<span class="at">as_character =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>                             <span class="st">&quot; -L&quot;</span>, <span class="fu">shQuote</span>(SH), <span class="st">&quot; -lStanHeaders&quot;</span>))</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>                            </span></code></pre></div>
+<p>Here is C++ code that does all of the above, except for the part of
+finding the optimum, which is done using the R function
+<code>optim</code> below.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co">// [[Rcpp::depends(BH)]]</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">// [[Rcpp::depends(RcppEigen)]]</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">// [[Rcpp::depends(RcppParallel)]]</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">// [[Rcpp::depends(StanHeaders)]]</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stan/math/mix.hpp&gt;</span><span class="pp"> </span><span class="co">// stuff from mix/ must come first</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stan/math.hpp&gt;</span><span class="pp">     </span><span class="co">// finally pull in everything from rev/ and prim/</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;RcppEigen.h&gt;</span><span class="pp">       </span><span class="co">// do this AFTER including stuff from stan/math</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">// [[Rcpp::plugins(cpp17)]]</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">/* Objective function */</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="kw">auto</span> f<span class="op">(</span>Eigen<span class="op">::</span>VectorXd x<span class="op">,</span> Eigen<span class="op">::</span>VectorXd a<span class="op">)</span> <span class="op">{</span> <span class="co">// objective function in doubles</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>dot_self<span class="op">;</span>                  <span class="co">// dot_self() is a dot product with self</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="cf">return</span> dot_self<span class="op">(</span> <span class="op">(</span>x <span class="op">-</span> a<span class="op">)</span> <span class="op">);</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">/* Gradient */</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="kw">auto</span> g<span class="op">(</span>Eigen<span class="op">::</span>VectorXd x<span class="op">,</span> Eigen<span class="op">::</span>VectorXd a<span class="op">)</span> <span class="op">{</span>  <span class="co">// gradient by AD using Stan</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>  <span class="dt">double</span> fx<span class="op">;</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>  Eigen<span class="op">::</span>VectorXd grad_fx<span class="op">;</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>dot_self<span class="op">;</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>  stan<span class="op">::</span>math<span class="op">::</span>gradient<span class="op">([&amp;</span>a<span class="op">](</span><span class="kw">auto</span> x<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> dot_self<span class="op">(</span> <span class="op">(</span>x <span class="op">-</span> a<span class="op">)</span> <span class="op">);</span> <span class="op">},</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>                       x<span class="op">,</span> fx<span class="op">,</span> grad_fx<span class="op">);</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>  <span class="cf">return</span> grad_fx<span class="op">;</span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a><span class="co">/* Hessian */</span></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a><span class="kw">auto</span> H<span class="op">(</span>Eigen<span class="op">::</span>VectorXd x<span class="op">,</span> Eigen<span class="op">::</span>VectorXd a<span class="op">)</span> <span class="op">{</span> <span class="co">// Hessian by AD using Stan</span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a>  <span class="dt">double</span> fx<span class="op">;</span></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a>  Eigen<span class="op">::</span>VectorXd grad_fx<span class="op">;</span></span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a>  Eigen<span class="op">::</span>MatrixXd H<span class="op">;</span></span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>dot_self<span class="op">;</span></span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a>  stan<span class="op">::</span>math<span class="op">::</span>hessian<span class="op">([&amp;</span>a<span class="op">](</span><span class="kw">auto</span> x<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> dot_self<span class="op">(</span>x <span class="op">-</span> a<span class="op">);</span> <span class="op">},</span></span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a>                      x<span class="op">,</span> fx<span class="op">,</span> grad_fx<span class="op">,</span> H<span class="op">);</span></span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a>  <span class="cf">return</span> H<span class="op">;</span></span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a></span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a><span class="co">/* Jacobian */</span></span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a></span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a><span class="kw">auto</span> J<span class="op">(</span>Eigen<span class="op">::</span>VectorXd x<span class="op">,</span> Eigen<span class="op">::</span>VectorXd a<span class="op">)</span> <span class="op">{</span> <span class="co">// not actually used</span></span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a>  Eigen<span class="op">::</span>VectorXd fx<span class="op">;</span></span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a>  Eigen<span class="op">::</span>MatrixXd J<span class="op">;</span></span>
+<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>dot_self<span class="op">;</span></span>
+<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a>  stan<span class="op">::</span>math<span class="op">::</span>jacobian<span class="op">([&amp;</span>a<span class="op">](</span><span class="kw">auto</span> x<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">(</span><span class="dv">2</span> <span class="op">*</span> <span class="op">(</span>x <span class="op">-</span> a<span class="op">));</span></span>
+<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a>  <span class="op">},</span> x<span class="op">,</span> fx<span class="op">,</span> J<span class="op">);</span></span>
+<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a>  <span class="cf">return</span> J<span class="op">;</span></span>
+<span id="cb7-56"><a href="#cb7-56" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-57"><a href="#cb7-57" tabindex="-1"></a></span>
+<span id="cb7-58"><a href="#cb7-58" tabindex="-1"></a><span class="kw">struct</span> equations_functor <span class="op">{</span></span>
+<span id="cb7-59"><a href="#cb7-59" tabindex="-1"></a>  <span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T0<span class="op">,</span> <span class="kw">typename</span> T1<span class="op">&gt;</span></span>
+<span id="cb7-60"><a href="#cb7-60" tabindex="-1"></a>  <span class="kw">inline</span> Eigen<span class="op">::</span>Matrix<span class="op">&lt;</span>T0<span class="op">,</span> Eigen<span class="op">::</span>Dynamic<span class="op">,</span> <span class="dv">1</span><span class="op">&gt;</span></span>
+<span id="cb7-61"><a href="#cb7-61" tabindex="-1"></a>  <span class="kw">operator</span><span class="op">()(</span><span class="at">const</span> Eigen<span class="op">::</span>Matrix<span class="op">&lt;</span>T0<span class="op">,</span> Eigen<span class="op">::</span>Dynamic<span class="op">,</span> <span class="dv">1</span><span class="op">&gt;&amp;</span> x<span class="op">,</span></span>
+<span id="cb7-62"><a href="#cb7-62" tabindex="-1"></a>             <span class="at">const</span> Eigen<span class="op">::</span>Matrix<span class="op">&lt;</span>T1<span class="op">,</span> Eigen<span class="op">::</span>Dynamic<span class="op">,</span> <span class="dv">1</span><span class="op">&gt;&amp;</span> theta<span class="op">,</span></span>
+<span id="cb7-63"><a href="#cb7-63" tabindex="-1"></a>             <span class="at">const</span> <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;&amp;</span> x_r<span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;&amp;</span> x_i<span class="op">,</span></span>
+<span id="cb7-64"><a href="#cb7-64" tabindex="-1"></a>             <span class="bu">std::</span>ostream<span class="op">*</span> <span class="va">pstream__</span><span class="op">)</span> <span class="at">const</span> <span class="op">{</span></span>
+<span id="cb7-65"><a href="#cb7-65" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">2</span> <span class="op">*</span> <span class="op">(</span>x <span class="op">-</span> stan<span class="op">::</span>math<span class="op">::</span>to_vector<span class="op">(</span>x_r<span class="op">));</span></span>
+<span id="cb7-66"><a href="#cb7-66" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb7-67"><a href="#cb7-67" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb7-68"><a href="#cb7-68" tabindex="-1"></a></span>
+<span id="cb7-69"><a href="#cb7-69" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb7-70"><a href="#cb7-70" tabindex="-1"></a><span class="kw">auto</span> solution<span class="op">(</span>Eigen<span class="op">::</span>VectorXd a<span class="op">,</span> Eigen<span class="op">::</span>VectorXd guess<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-71"><a href="#cb7-71" tabindex="-1"></a>  Eigen<span class="op">::</span>VectorXd theta<span class="op">;</span></span>
+<span id="cb7-72"><a href="#cb7-72" tabindex="-1"></a>  <span class="kw">auto</span> x_r <span class="op">=</span> stan<span class="op">::</span>math<span class="op">::</span>to_array_1d<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb7-73"><a href="#cb7-73" tabindex="-1"></a>  equations_functor f<span class="op">;</span></span>
+<span id="cb7-74"><a href="#cb7-74" tabindex="-1"></a>  <span class="kw">auto</span> x <span class="op">=</span> stan<span class="op">::</span>math<span class="op">::</span>algebra_solver<span class="op">(</span>f<span class="op">,</span> guess<span class="op">,</span> theta<span class="op">,</span> x_r<span class="op">,</span> <span class="op">{});</span></span>
+<span id="cb7-75"><a href="#cb7-75" tabindex="-1"></a>  <span class="cf">return</span> x<span class="op">;</span></span>
+<span id="cb7-76"><a href="#cb7-76" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>In this compiled RMarkdown document, the <strong>knitr</strong>
+package has exported functions <code>f</code>, <code>g</code>,
+<code>H</code>, <code>J</code> and <code>solution</code> (but not
+<code>equations_functor</code>) to R’s global environment using the
+<code>sourceCpp</code> function in the <strong>Rcpp</strong> package, so
+that they can now be called from R. Here we find the optimum starting
+from a random point in three dimensions:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">rnorm</span>(<span class="dv">3</span>), <span class="at">fn =</span> f, <span class="at">gr =</span> g, <span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>, <span class="at">hessian =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>x<span class="sc">$</span>par</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>x<span class="sc">$</span>hessian</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; [1,]    2    0    0</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; [2,]    0    2    0</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; [3,]    0    0    2</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="fu">H</span>(x<span class="sc">$</span>par, <span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; [1,]    2    0    0</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; [2,]    0    2    0</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; [3,]    0    0    2</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="fu">J</span>(x<span class="sc">$</span>par, <span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; [1,]    2    0    0</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; [2,]    0    2    0</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; [3,]    0    0    2</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="fu">solution</span>(<span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">guess =</span> <span class="fu">rnorm</span>(<span class="dv">3</span>))</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span></code></pre></div>
+</div>
+</div>
+<div id="integrals-and-ordinary-differential-equations" class="section level1">
+<h1>Integrals and Ordinary Differential Equations</h1>
+<p>The Stan Math library can do one-dimensional numerical integration
+and can solve stiff and non-stiff systems of differential equations,
+such as the harmonic oscillator example below. Solving stiff systems
+utilizes the CVODES library, which is included in
+<strong>StanHeaders</strong>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co">// [[Rcpp::depends(BH)]]</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">// [[Rcpp::depends(RcppEigen)]]</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">// [[Rcpp::depends(RcppParallel)]]</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">// [[Rcpp::depends(StanHeaders)]]</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stan/math.hpp&gt;</span><span class="pp">                         </span><span class="co">// pulls in everything from rev/ and prim/</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;RcppEigen.h&gt;</span><span class="pp">                           </span><span class="co">// do this AFTER including stan/math</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">// [[Rcpp::plugins(cpp17)]]</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">/* Definite integrals */</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="dt">double</span> Cauchy<span class="op">(</span><span class="dt">double</span> scale<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> theta<span class="op">;</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="kw">auto</span> half <span class="op">=</span> stan<span class="op">::</span>math<span class="op">::</span>integrate_1d<span class="op">([](</span><span class="kw">auto</span> x<span class="op">,</span> <span class="kw">auto</span> xc<span class="op">,</span> <span class="kw">auto</span> theta<span class="op">,</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>                                          <span class="kw">auto</span> x_r<span class="op">,</span> <span class="kw">auto</span> x_i<span class="op">,</span> <span class="kw">auto</span> msgs<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>    <span class="cf">return</span> exp<span class="op">(</span>stan<span class="op">::</span>math<span class="op">::</span>cauchy_lpdf<span class="op">(</span>x<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> x_r<span class="op">[</span><span class="dv">0</span><span class="op">]));</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>  <span class="op">},</span> <span class="op">-</span>scale<span class="op">,</span> scale<span class="op">,</span> theta<span class="op">,</span> <span class="op">{</span>scale<span class="op">},</span> <span class="op">{},</span> <span class="kw">nullptr</span><span class="op">,</span> <span class="fl">1e-7</span><span class="op">);</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>  <span class="cf">return</span> half <span class="op">*</span> <span class="dv">2</span><span class="op">;</span> <span class="co">// should equal 1 for any positive scale</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">/* Ordinary Differential Equations */</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="kw">auto</span> nonstiff<span class="op">(</span>Eigen<span class="op">::</span>MatrixXd A<span class="op">,</span> Eigen<span class="op">::</span>VectorXd y0<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>integrate_ode_rk45<span class="op">;</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>to_vector<span class="op">;</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>to_array_1d<span class="op">;</span></span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> theta<span class="op">;</span></span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> times <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">};</span></span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>  <span class="kw">auto</span> y <span class="op">=</span> integrate_ode_rk45<span class="op">([&amp;</span>A<span class="op">](</span><span class="kw">auto</span> t<span class="op">,</span> <span class="kw">auto</span> y<span class="op">,</span> </span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a>                                   <span class="kw">auto</span> theta<span class="op">,</span> <span class="kw">auto</span> x_r<span class="op">,</span> <span class="kw">auto</span> x_i<span class="op">,</span> <span class="bu">std::</span>ostream <span class="op">*</span>msgs<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a>    <span class="cf">return</span> to_array_1d<span class="op">(</span> <span class="op">(</span>A <span class="op">*</span> to_vector<span class="op">(</span>y<span class="op">)).</span>eval<span class="op">()</span> <span class="op">);</span></span>
+<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a>  <span class="op">},</span> to_array_1d<span class="op">(</span>y0<span class="op">),</span> <span class="dv">0</span><span class="op">,</span> times<span class="op">,</span> theta<span class="op">,</span> <span class="op">{},</span> <span class="op">{});</span></span>
+<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a>  Eigen<span class="op">::</span>VectorXd truth <span class="op">=</span> stan<span class="op">::</span>math<span class="op">::</span>matrix_exp<span class="op">(</span>A<span class="op">)</span> <span class="op">*</span> y0<span class="op">;</span></span>
+<span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">(</span>to_vector<span class="op">(</span>y<span class="op">[</span><span class="dv">0</span><span class="op">])</span> <span class="op">-</span> truth<span class="op">).</span>eval<span class="op">();</span> <span class="co">// should be &quot;zero&quot;</span></span>
+<span id="cb9-38"><a href="#cb9-38" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a><span class="kw">auto</span> stiff<span class="op">(</span>Eigen<span class="op">::</span>MatrixXd A<span class="op">,</span> Eigen<span class="op">::</span>VectorXd y0<span class="op">)</span> <span class="op">{</span> <span class="co">// not actually stiff</span></span>
+<span id="cb9-42"><a href="#cb9-42" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>integrate_ode_bdf<span class="op">;</span>              <span class="co">// but use the stiff solver anyways</span></span>
+<span id="cb9-43"><a href="#cb9-43" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>to_vector<span class="op">;</span></span>
+<span id="cb9-44"><a href="#cb9-44" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>to_array_1d<span class="op">;</span></span>
+<span id="cb9-45"><a href="#cb9-45" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> theta<span class="op">;</span></span>
+<span id="cb9-46"><a href="#cb9-46" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> times <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">};</span></span>
+<span id="cb9-47"><a href="#cb9-47" tabindex="-1"></a>  <span class="kw">auto</span> y <span class="op">=</span> integrate_ode_bdf<span class="op">([&amp;</span>A<span class="op">](</span><span class="kw">auto</span> t<span class="op">,</span> <span class="kw">auto</span> y<span class="op">,</span> </span>
+<span id="cb9-48"><a href="#cb9-48" tabindex="-1"></a>                                  <span class="kw">auto</span> theta<span class="op">,</span> <span class="kw">auto</span> x_r<span class="op">,</span> <span class="kw">auto</span> x_i<span class="op">,</span> <span class="bu">std::</span>ostream <span class="op">*</span>msgs<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-49"><a href="#cb9-49" tabindex="-1"></a>    <span class="cf">return</span> to_array_1d<span class="op">(</span> <span class="op">(</span>A <span class="op">*</span> to_vector<span class="op">(</span>y<span class="op">)).</span>eval<span class="op">()</span> <span class="op">);</span></span>
+<span id="cb9-50"><a href="#cb9-50" tabindex="-1"></a>  <span class="op">},</span> to_array_1d<span class="op">(</span>y0<span class="op">),</span> <span class="dv">0</span><span class="op">,</span> times<span class="op">,</span> theta<span class="op">,</span> <span class="op">{},</span> <span class="op">{});</span></span>
+<span id="cb9-51"><a href="#cb9-51" tabindex="-1"></a>  Eigen<span class="op">::</span>VectorXd truth <span class="op">=</span> stan<span class="op">::</span>math<span class="op">::</span>matrix_exp<span class="op">(</span>A<span class="op">)</span> <span class="op">*</span> y0<span class="op">;</span></span>
+<span id="cb9-52"><a href="#cb9-52" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">(</span>to_vector<span class="op">(</span>y<span class="op">[</span><span class="dv">0</span><span class="op">])</span> <span class="op">-</span> truth<span class="op">).</span>eval<span class="op">();</span> <span class="co">// should be &quot;zero&quot;</span></span>
+<span id="cb9-53"><a href="#cb9-53" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Again, in this compiled RMarkdown document, the
+<strong>knitr</strong> package has exported the <code>Cauchy</code>,
+<code>nonstiff</code> and <code>stiff</code> functions to R’s global
+environment using the <code>sourceCpp</code> function in the
+<strong>Rcpp</strong> package so that they can be called from R.</p>
+<p>First, we numerically integrate the Cauchy PDF over its interquartile
+range — which has an area of <span class="math inline">\(\frac{1}{2}\)</span> — that we then double to
+verify that it is almost within machine precision of <span class="math inline">\(1\)</span>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="dv">1</span>, <span class="fu">Cauchy</span>(<span class="fu">rexp</span>(<span class="dv">1</span>)), <span class="at">tol =</span> <span class="fl">1e-15</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>Next, we consider the system of differential equations <span class="math display">\[\frac{d}{dt}\mathbf{y} =
+\mathbf{A}\mathbf{y}\]</span> where <span class="math inline">\(\mathbf{A}\)</span> is a square matrix such as
+that for a simple harmonic oscillator</p>
+<p><span class="math display">\[\mathbf{A} = \begin{bmatrix}0 &amp; 1 \\
+-1 &amp; -\theta\end{bmatrix}\]</span> for <span class="math inline">\(\theta \in \left(0,1\right)\)</span>. The solution
+for <span class="math inline">\(\mathbf{y}_t =
+e^{t\mathbf{A}}\mathbf{y}_0\)</span> can be obtained via the matrix
+exponential function, which is available in the Stan Math Library, but
+it can also be obtained numerically using a fourth-order Runge-Kutta
+solver, which is appropriate for non-stiff systems of ODEs, such as this
+one. However, it is possible, albeit less efficient in this case, to use
+the backward-differentiation formula solver for stiff systems of ODEs.
+In both cases, we calculate the difference between the analytical
+solution and the numerical one, and the stiff version does produce
+somewhat better accuracy in this case.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="fu">runif</span>(<span class="dv">1</span>)), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>y0 <span class="ot">&lt;-</span> <span class="fu">rexp</span>(<span class="dv">2</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="fu">nonstiff</span>(A, y0), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">tol =</span> <span class="fl">1e-5</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">all.equal</span>(   <span class="fu">stiff</span>(A, y0), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">tol =</span> <span class="fl">1e-8</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+</div>
+<div id="parellelization" class="section level1">
+<h1>Parellelization</h1>
+<div id="map_rect-function" class="section level2">
+<h2><code>map_rect</code> Function</h2>
+<p>The Stan Math Library includes the <code>map_rect</code> function,
+which applies a function to each element of rectangular arrays and
+returns a vector, making it a bit like a restricted version of R’s
+<code>sapply</code> function. However, <code>map_rect</code> can also be
+executed in parallel by defining the pre-processor directive
+<code>STAN_THREADS</code> and then setting the
+<code>STAN_NUM_THREADS</code> environmental variable to be the number of
+threads to use, as in</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">STAN_NUM_THREADS =</span> <span class="dv">2</span>) <span class="co"># specify -1 to use all available cores</span></span></code></pre></div>
+<p>Below is C++ code to test whether an integer is prime, using a rather
+brute-force algorithm and running it in parallel via
+<code>map_rect</code>.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co">// [[Rcpp::depends(BH)]]</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">// [[Rcpp::depends(RcppEigen)]]</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">// [[Rcpp::depends(RcppParallel)]]</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">// [[Rcpp::depends(StanHeaders)]]</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stan/math.hpp&gt;</span><span class="pp">                         </span><span class="co">// pulls in everything from rev/ and prim/</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;RcppEigen.h&gt;</span><span class="pp">                           </span><span class="co">// do this AFTER including stan/math</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">// [[Rcpp::plugins(cpp17)]]</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">// see https://en.wikipedia.org/wiki/Primality_test#Pseudocode</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="kw">struct</span> is_prime <span class="op">{</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  is_prime<span class="op">()</span> <span class="op">{}</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>  <span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T1<span class="op">,</span> <span class="kw">typename</span> T2<span class="op">&gt;</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>  <span class="kw">auto</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>  <span class="kw">operator</span><span class="op">()(</span><span class="at">const</span> Eigen<span class="op">::</span>Matrix<span class="op">&lt;</span>T1<span class="op">,</span> Eigen<span class="op">::</span>Dynamic<span class="op">,</span> <span class="dv">1</span><span class="op">&gt;&amp;</span> eta<span class="op">,</span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>             <span class="at">const</span> Eigen<span class="op">::</span>Matrix<span class="op">&lt;</span>T2<span class="op">,</span> Eigen<span class="op">::</span>Dynamic<span class="op">,</span> <span class="dv">1</span><span class="op">&gt;&amp;</span> theta<span class="op">,</span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a>             <span class="at">const</span> <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;&amp;</span> x_r<span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;&amp;</span> x_i<span class="op">,</span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>             <span class="bu">std::</span>ostream<span class="op">*</span> msgs <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="at">const</span> <span class="op">{</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>    Eigen<span class="op">::</span>VectorXd res<span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">// can only return double or var vectors</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a>    <span class="dt">int</span> n <span class="op">=</span> x_i<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>n <span class="op">&lt;=</span> <span class="dv">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a>      res<span class="op">.</span>coeffRef<span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">=</span> n <span class="op">&gt;</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a>      <span class="cf">return</span> res<span class="op">;</span></span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span> <span class="op">(</span>n <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">||</span> <span class="op">(</span>n <span class="op">%</span> <span class="dv">3</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a>      res<span class="op">.</span>coeffRef<span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a>      <span class="cf">return</span> res<span class="op">;</span></span>
+<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a>    <span class="dt">int</span> i <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>i <span class="op">*</span> i <span class="op">&lt;=</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a>      <span class="cf">if</span> <span class="op">(</span> <span class="op">(</span>n <span class="op">%</span> i <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">||</span> <span class="op">(</span>n <span class="op">%</span> <span class="op">(</span>i <span class="op">+</span> <span class="dv">2</span><span class="op">)</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a>        res<span class="op">.</span>coeffRef<span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a>        <span class="cf">return</span> res<span class="op">;</span></span>
+<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a>      i <span class="op">+=</span> <span class="dv">6</span><span class="op">;</span></span>
+<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a>    res<span class="op">.</span>coeffRef<span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a>    <span class="cf">return</span> res<span class="op">;</span></span>
+<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a></span>
+<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a><span class="co">/* parallelization */</span></span>
+<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a><span class="kw">auto</span> psapply<span class="op">(</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> <span class="op">&gt;</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span>Eigen<span class="op">::</span>VectorXd<span class="op">&gt;</span> eta<span class="op">(</span>n<span class="op">.</span>size<span class="op">());</span> <span class="co">// these all have to be the same size</span></span>
+<span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a>  Eigen<span class="op">::</span>VectorXd theta<span class="op">;</span></span>
+<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> <span class="op">&gt;</span> x_d<span class="op">(</span>n<span class="op">.</span>size<span class="op">());</span></span>
+<span id="cb13-48"><a href="#cb13-48" tabindex="-1"></a>  <span class="cf">return</span> stan<span class="op">::</span>math<span class="op">::</span>map_rect<span class="op">&lt;</span><span class="dv">0</span><span class="op">,</span> is_prime<span class="op">&gt;(</span>theta<span class="op">,</span> eta<span class="op">,</span> x_d<span class="op">,</span> n<span class="op">,</span> <span class="op">&amp;</span>Rcpp<span class="op">::</span>Rcout<span class="op">);</span></span>
+<span id="cb13-49"><a href="#cb13-49" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Since the signature for <code>n</code> is a
+<code>std::vector&lt;std::vector&lt;int&gt; &gt;</code>, we have to pass
+it from R as a list (which is converted to the outer
+<code>std::vector&lt;&gt;</code>) of integer vectors (which is converted
+to the inner <code>std::vector&lt;int&gt;</code>) that happen to be of
+size one in this case.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>odd <span class="ot">&lt;-</span> <span class="fu">seq.int</span>(<span class="at">from =</span> <span class="dv">2</span><span class="sc">^</span><span class="dv">25</span> <span class="sc">-</span> <span class="dv">1</span>, <span class="at">to =</span> <span class="dv">2</span><span class="sc">^</span><span class="dv">26</span> <span class="sc">-</span> <span class="dv">1</span>, <span class="at">by =</span> <span class="dv">2</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">tail</span>(<span class="fu">psapply</span>(<span class="at">n =</span> <span class="fu">as.list</span>(odd))) <span class="sc">==</span> <span class="dv">1</span> <span class="co"># check your process manager while this is running</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt; [1] FALSE FALSE FALSE  TRUE FALSE FALSE</span></span></code></pre></div>
+<p>Thus, <span class="math inline">\(2^{26} - 5 = 67,108,859\)</span> is
+a prime number.</p>
+</div>
+<div id="reduce_sum-function" class="section level2">
+<h2><code>reduce_sum</code> Function</h2>
+<p>The <code>reduce_sum</code> function can be used to sum a function of
+recursively-partitioned data in parallel. The Probability Mass Function
+(PMF) of the logarithmic distribution is</p>
+<p><span class="math display">\[\Pr\left(x = k \mid p\right) =
+\frac{p^k}{-k\ln\left(1 - p\right)} \]</span> for a positive integer
+<span class="math inline">\(k\)</span> and <span class="math inline">\(0
+&lt; p &lt; 1\)</span>. To verify that this PMF sums to <span class="math inline">\(1\)</span> over the natural numbers, we could
+accumulate it for a large finite number of terms, but would like to do
+so in parallel. To do so, we need to define a <code>partial_sum</code>
+function that adds the PMF for some subset of natural numbers and pass
+it to the <code>reduce_sum</code> function like</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co">// [[Rcpp::depends(BH)]]</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">// [[Rcpp::depends(RcppEigen)]]</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">// [[Rcpp::depends(RcppParallel)]]</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">// [[Rcpp::depends(StanHeaders)]]</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stan/math.hpp&gt;</span><span class="pp">                         </span><span class="co">// pulls in everything from rev/ and prim/</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;RcppEigen.h&gt;</span><span class="pp">                           </span><span class="co">// do this AFTER including stan/math</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">// [[Rcpp::plugins(cpp17)]]</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="kw">struct</span> partial_sum <span class="op">{</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>  partial_sum<span class="op">()</span> <span class="op">{}</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>  T <span class="kw">operator</span><span class="op">()(</span><span class="at">const</span> <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;&amp;</span> k_slice<span class="op">,</span> </span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>               <span class="dt">int</span> start<span class="op">,</span> <span class="dt">int</span> end<span class="op">,</span> <span class="co">// these are ignored in this example</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>               <span class="bu">std::</span>ostream<span class="op">*</span> msgs<span class="op">,</span> <span class="dt">double</span> p<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>    <span class="dt">double</span> S <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> n <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> n <span class="op">&lt;</span> k_slice<span class="op">.</span>size<span class="op">();</span> n<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>      <span class="dt">int</span> k <span class="op">=</span> k_slice<span class="op">[</span>n<span class="op">];</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a>      S <span class="op">+=</span> stan<span class="op">::</span>math<span class="op">::</span>pow<span class="op">(</span>p<span class="op">,</span> k<span class="op">)</span> <span class="op">/</span> k<span class="op">;</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a>    <span class="cf">return</span> S<span class="op">;</span></span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a></span>
+<span id="cb15-26"><a href="#cb15-26" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb15-27"><a href="#cb15-27" tabindex="-1"></a><span class="dt">double</span> check_logarithmic_PMF<span class="op">(</span><span class="at">const</span> <span class="dt">double</span> p<span class="op">,</span> <span class="at">const</span> <span class="dt">int</span> N <span class="op">=</span> <span class="dv">1000</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-28"><a href="#cb15-28" tabindex="-1"></a>  <span class="kw">using</span> stan<span class="op">::</span>math<span class="op">::</span>reduce_sum<span class="op">;</span></span>
+<span id="cb15-29"><a href="#cb15-29" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> k<span class="op">(</span>N<span class="op">);</span></span>
+<span id="cb15-30"><a href="#cb15-30" tabindex="-1"></a>  <span class="bu">std::</span>iota<span class="op">(</span>k<span class="op">.</span>begin<span class="op">(),</span> k<span class="op">.</span>end<span class="op">(),</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb15-31"><a href="#cb15-31" tabindex="-1"></a>  <span class="cf">return</span> reduce_sum<span class="op">&lt;</span>partial_sum<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> <span class="op">&gt;(</span>k<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="kw">nullptr</span><span class="op">,</span> p<span class="op">)</span> <span class="op">/</span> <span class="op">-</span><span class="bu">std::</span>log1p<span class="op">(-</span>p<span class="op">);</span></span>
+<span id="cb15-32"><a href="#cb15-32" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>The second argument passed to <code>reduce_sum</code> is the
+<code>grainsize</code>, which governs the size (and number) of the
+recursive subsets of <code>k</code> that are passed to the
+<code>partial_sum</code> function. A <code>grainsize</code> of <span class="math inline">\(1\)</span> indicates that the software will try to
+automatically tune the subset size for good performance, but that may be
+worse than choosing a <code>grainsize</code> by hand in a
+problem-specific fashion.</p>
+<p>In any event, we can call the wrapper function
+<code>check_logarithmic_PMF</code> in R to verify that it returns <span class="math inline">\(1\)</span> to numerical tolerance:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all.equal</span>(<span class="dv">1</span>, <span class="fu">check_logarithmic_PMF</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">2</span>))))</span></code></pre></div>
+</div>
+</div>
+<div id="defining-a-stan-model-in-c" class="section level1">
+<h1>Defining a Stan Model in C++</h1>
+<p>The Stan <em>language</em> does not have much support for sparse
+matrices for a variety of reasons. Essentially the only applicable
+function is <code>csr_matrix_times_vector</code>, which pre-multiplies a
+vector by a sparse matrix in compressed row storage by taking as
+arguments its number of rows, columns, non-zero values, column indices
+of non-zero values, and locations where the non-zero values start in
+each row. While the <code>csr_matrix_times_vector</code> function could
+be used to implement the example below, we illustrate how to use the
+sparse data structures in the <strong>Matrix</strong> and
+<strong>RcppEigen</strong> packages in a Stan model written in C++,
+which could easily be extended to more complicated models with sparse
+data structures.</p>
+<p>Our C++ file for the log-likelihood of a linear model with a sparse
+design matrix reads as</p>
+<pre><code>#include &lt;stan/model/model_header.hpp&gt;
+#include &lt;Rcpp.h&gt;
+#include &lt;RcppEigen.h&gt;
+
+class sparselm_stan {
+
+public: // these would ordinarily be private in the C++ code generated by Stan
+  Eigen::Map&lt;Eigen::SparseMatrix&lt;double&gt; &gt; X;
+  Eigen::VectorXd y;
+
+  sparselm_stan(Eigen::Map&lt;Eigen::SparseMatrix&lt;double&gt; &gt; X, Eigen::VectorXd y) :
+    X(X), y(y) {}
+
+  template &lt;bool propto__ = false, bool jacobian__ = false, typename T__ = double&gt;
+  // propto__ is usually true but causes log_prob() to return 0 when called from R
+  // jacobian__ is usually true for MCMC but typically is false for optimization
+  T__ log_prob(std::vector&lt;T__&gt;&amp; params_r__) const {
+    using namespace stan::math;
+    T__ lp__(0.0);
+    accumulator&lt;T__&gt; lp_accum__;
+
+    // set up model parameters
+    std::vector&lt;int&gt; params_i__;
+    stan::io::deserializer&lt;T__&gt; in__(params_r__, params_i__);
+    auto beta = in__.template read&lt;Eigen::Matrix&lt;T__,-1,1&gt; &gt;(X.cols());
+    auto sigma = in__.template read_constrain_lb&lt;T__, jacobian__&gt;(0, lp__);
+
+    // log-likelihood (should add priors)
+    lp_accum__.add(lp__);
+    lp_accum__.add(normal_lpdf&lt;propto__&gt;(y, (X * beta).eval(), sigma));
+    return lp_accum__.sum();
+  }
+
+  template &lt;bool propto__ = false, bool jacobian__ = false&gt;
+  std::vector&lt;double&gt; gradient(std::vector&lt;double&gt;&amp; params_r__) const {
+    // Calculate gradients using reverse-mode autodiff
+    // although you could do them analytically in this case
+
+    using std::vector;
+    using stan::math::var;
+    double lp;
+    std::vector&lt;double&gt; gradient;
+    try {
+      vector&lt;var&gt; ad_params_r(params_r__.size());
+      for (size_t i = 0; i &lt; params_r__.size(); ++i) {
+        var var_i(params_r__[i]);
+        ad_params_r[i] = var_i;
+      }
+      var adLogProb
+        = this-&gt;log_prob&lt;propto__, jacobian__&gt;(ad_params_r);
+      lp = adLogProb.val();
+      adLogProb.grad(ad_params_r, gradient);
+    } catch (const std::exception &amp;ex) {
+      stan::math::recover_memory();
+      throw;
+    }
+    stan::math::recover_memory();
+    return gradient;
+  }
+};</code></pre>
+<p>To use it from R, we call the <code>exposeClass</code> function in
+the <strong>Rcpp</strong> package with the necessary arguments and then
+call <code>sourceCpp</code> on the file it wrote in the temporary
+directory:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">library</span>(Rcpp)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>tf <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">&quot;Module.cpp&quot;</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="fu">exposeClass</span>(<span class="st">&quot;sparselm_stan&quot;</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>      <span class="at">constructors =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;Eigen::Map&lt;Eigen::SparseMatrix&lt;double&gt; &gt;&quot;</span>, </span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>                            <span class="st">&quot;Eigen::VectorXd&quot;</span>)),</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>      <span class="at">fields =</span> <span class="fu">c</span>(<span class="st">&quot;X&quot;</span>, <span class="st">&quot;y&quot;</span>),</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>      <span class="at">methods =</span> <span class="fu">c</span>(<span class="st">&quot;log_prob&lt;&gt;&quot;</span>, <span class="st">&quot;gradient&lt;&gt;&quot;</span>),</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>      <span class="at">rename =</span> <span class="fu">c</span>(<span class="at">log_prob =</span> <span class="st">&quot;log_prob&lt;&gt;&quot;</span>, <span class="at">gradient =</span> <span class="st">&quot;gradient&lt;&gt;&quot;</span>),</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>      <span class="at">header =</span> <span class="fu">c</span>(<span class="st">&quot;// [[Rcpp::depends(BH)]]&quot;</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>                 <span class="st">&quot;// [[Rcpp::depends(RcppEigen)]]&quot;</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>                 <span class="st">&quot;// [[Rcpp::depends(RcppParallel)]&quot;</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>                 <span class="st">&quot;// [[Rcpp::depends(StanHeaders)]]&quot;</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>                 <span class="st">&quot;// [[Rcpp::plugins(cpp17)]]&quot;</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a>                 <span class="fu">paste0</span>(<span class="st">&quot;#include &lt;&quot;</span>, <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">&quot;sparselm_stan.hpp&quot;</span>), <span class="st">&quot;&gt;&quot;</span>)),</span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a>      <span class="at">file =</span> tf,</span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a>      <span class="at">Rfile =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">PKG_CXXFLAGS =</span> <span class="fu">paste0</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;PKG_CXXFLAGS&quot;</span>), <span class="st">&quot; -I&quot;</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a>                                 <span class="fu">system.file</span>(<span class="st">&quot;include&quot;</span>, <span class="st">&quot;src&quot;</span>, </span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a>                                             <span class="at">package =</span> <span class="st">&quot;StanHeaders&quot;</span>, <span class="at">mustWork =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a><span class="fu">sourceCpp</span>(tf)</span>
+<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a>sparselm_stan</span>
+<span id="cb18-22"><a href="#cb18-22" tabindex="-1"></a><span class="co">#&gt; C++ class &#39;sparselm_stan&#39; &lt;0x615621b653c0&gt;</span></span>
+<span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a><span class="co">#&gt; Constructors:</span></span>
+<span id="cb18-24"><a href="#cb18-24" tabindex="-1"></a><span class="co">#&gt;     sparselm_stan(Eigen::Map&lt;Eigen::SparseMatrix&lt;double, 0, int&gt;, 0, Eigen::Stride&lt;0, 0&gt; &gt;, Eigen::Matrix&lt;double, -1, 1, 0, -1, 1&gt;)</span></span>
+<span id="cb18-25"><a href="#cb18-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb18-26"><a href="#cb18-26" tabindex="-1"></a><span class="co">#&gt; Fields: </span></span>
+<span id="cb18-27"><a href="#cb18-27" tabindex="-1"></a><span class="co">#&gt;     Eigen::Map&lt;Eigen::SparseMatrix&lt;double, 0, int&gt;, 0, Eigen::Stride&lt;0, 0&gt; &gt; X</span></span>
+<span id="cb18-28"><a href="#cb18-28" tabindex="-1"></a><span class="co">#&gt;     Eigen::Matrix&lt;double, -1, 1, 0, -1, 1&gt; y</span></span>
+<span id="cb18-29"><a href="#cb18-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb18-30"><a href="#cb18-30" tabindex="-1"></a><span class="co">#&gt; Methods: </span></span>
+<span id="cb18-31"><a href="#cb18-31" tabindex="-1"></a><span class="co">#&gt;      std::vector&lt;double, std::allocator&lt;double&gt; &gt; gradient(std::vector&lt;double, std::allocator&lt;double&gt; &gt;)  const </span></span>
+<span id="cb18-32"><a href="#cb18-32" tabindex="-1"></a><span class="co">#&gt;            </span></span>
+<span id="cb18-33"><a href="#cb18-33" tabindex="-1"></a><span class="co">#&gt;      double log_prob(std::vector&lt;double, std::allocator&lt;double&gt; &gt;)  const </span></span>
+<span id="cb18-34"><a href="#cb18-34" tabindex="-1"></a><span class="co">#&gt; </span></span></code></pre></div>
+<p>At this point, we need a sparse design matrix and (dense) outcome
+vector to pass to the constructor. The former can be created with a
+variety of functions in the <strong>Matrix</strong> package, such as</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>dd <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">a =</span> <span class="fu">gl</span>(<span class="dv">3</span>, <span class="dv">4</span>), <span class="at">b =</span> <span class="fu">gl</span>(<span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">12</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">sparse.model.matrix</span>(<span class="sc">~</span> a <span class="sc">+</span> b, <span class="at">data =</span> dd)</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>X</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt; 12 x 6 sparse Matrix of class &quot;dgCMatrix&quot;</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt;    (Intercept) a2 a3 b2 b3 b4</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; 1            1  .  .  .  .  .</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; 2            1  .  .  1  .  .</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt; 3            1  .  .  .  1  .</span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co">#&gt; 4            1  .  .  .  .  1</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt; 5            1  1  .  .  .  .</span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; 6            1  1  .  1  .  .</span></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co">#&gt; 7            1  1  .  .  1  .</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="co">#&gt; 8            1  1  .  .  .  1</span></span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co">#&gt; 9            1  .  1  .  .  .</span></span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="co">#&gt; 10           1  .  1  1  .  .</span></span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a><span class="co">#&gt; 11           1  .  1  .  1  .</span></span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a><span class="co">#&gt; 12           1  .  1  .  .  1</span></span></code></pre></div>
+<p>Finally, we call the <code>new</code> function in the
+<strong>methods</strong> package, which essentially calls our C++
+constructor and provides an R interface to the instantiated object,
+which contains the <code>log_prob</code> and <code>gradient</code>
+methods we defined and can be called with arbitrary inputs.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>sm <span class="ot">&lt;-</span> <span class="fu">new</span>(sparselm_stan, <span class="at">X =</span> X, <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(X)))</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>sm<span class="sc">$</span><span class="fu">log_prob</span>(<span class="fu">c</span>(<span class="at">beta =</span> <span class="fu">rnorm</span>(<span class="fu">ncol</span>(X)), <span class="at">log_sigma =</span> <span class="fu">log</span>(pi)))</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co">#&gt; [1] -26.01577</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="fu">round</span>(sm<span class="sc">$</span><span class="fu">gradient</span>(<span class="fu">c</span>(<span class="at">beta =</span> <span class="fu">rnorm</span>(<span class="fu">ncol</span>(X)), <span class="at">log_sigma =</span> <span class="fu">log</span>(pi))), <span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="co">#&gt; [1] -2.1984 -1.0424 -0.5089 -0.4552 -0.6047 -0.8303 -6.6551</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+import(methods)
+
+importFrom(utils, bibentry, browseURL, capture.output, cite, file.edit,
+           getAnywhere, getS3method, head, help,
+           packageDescription, packageVersion, person, prompt, vignette)
+
+importFrom(tools, parse_Rd, toRd, checkRd, Rd2txt,
+           bibstyle, latexToUtf8, parseLatex, deparseLatex)
+#importFrom(grDevices, dev.off, png)
+
+#importFrom(gbRd, Rd_help2txt) # commented out 2020-11-25
+
+#importFrom(bibtex, read.bib)
+importFrom(rbibutils, readBib, bibstyle_JSSextra)
+
+S3method(as.character, f_usage)
+S3method(print, f_usage)
+S3method(print, bibentryRd)
+
+export(
+  append_to_Rd_list
+, as.character.f_usage
+# , bibentry_key
+, c_Rd
+, char2Rdpiece
+, compare_usage1
+, deparse_usage
+, deparse_usage1
+, format_funusage
+, get_bibentries
+, get_sig_text
+, get_usage
+, get_usage_text
+, insert_ref
+, inspect_args
+, inspect_clmethods
+, inspect_Rd
+, inspect_Rdbib
+, inspect_Rdclass
+, inspect_Rdfun
+, inspect_Rdmethods
+, inspect_signatures
+, inspect_slots
+, inspect_usage
+, is_Rdsecname
+, list_Rd
+, pairlist2f_usage1
+, parse_1usage_text
+, parse_pairlist
+, parse_Rdname
+, parse_Rdpiece
+, parse_Rdtext
+# , parse_text
+, parse_usage_text
+, promptPackageSexpr
+, promptUsage
+, rattr
+, Rd_combo
+, Rdapply
+, Rdo_append_argument
+, Rdo_collect_aliases
+, Rdo_comment
+, Rdo_drop_empty
+, Rdo_empty_sections
+, Rdo_flatinsert
+, Rdo_flatremove
+, Rdo_get_argument_names
+, Rdo_get_insert_pos
+, Rdo_get_item_labels
+, Rdo_insert
+, Rdo_insert_element
+, Rdo_is_newline
+, Rdo_item
+, Rdo_locate
+, Rdo_locate_core_section
+, Rdo_locate_leaves
+# , Rdo_locate_leaves2
+# , Rdo_locate_predefined_section
+, Rdo_macro
+, Rdo_macro1
+, Rdo_macro2
+, Rdo_modify
+, Rdo_modify_simple
+, Rdo_newline
+, Rdo_piece_types
+, Rdo_piecetag
+, Rdo_predefined_sections
+, Rdo_Rcode
+, Rdo_remove_srcref
+, Rdo_reparse
+, Rdo_replace_section
+, Rdo_sections
+, Rdo_sectype
+, Rdo_set_section
+, Rdo_show
+, Rdo_sigitem
+, Rdo_tag
+, Rdo_tags
+, Rdo_text
+, rdo_text_restore
+, rdo_top_tags
+, Rdo_verb
+, Rdo_which
+, Rdo_which_tag_eq
+, Rdo_which_tag_in
+, Rdo2Rdf
+, Rdreplace_section
+, Rdtagapply
+, rebib
+, reprompt
+, RStudio_reprompt
+, S4formals
+# , toolsdotdotdot.Rd_drop_nodes_with_tags
+# , toolsdotdotdot.Rd_get_metadata
+# , toolsdotdotdotfetchRdDB
+# , toolsdotdotdotRdTags
+, update_aliases_tmp
+# , utilsdotdotdot.getHelpFile
+, viewRd
+, makeVignetteReference
+, vigbib
+, ereprompt
+, insert_citeOnly
+, insert_all_ref
+, Rdpack_bibstyles
+##, set_Rdpack_bibstyle  # 2025-11=09 rremoved
+# , run_examples - commenting out until completed
+# , insert_fig - commenting out until completed
+, Rdo_fetch
+##, deparseLatexToRd
+)

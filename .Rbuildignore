@@ -14,3 +14,5 @@
 ^Makefile$
 ^webexercises\.Rproj$
 ^CRAN-SUBMISSION$
+^Untitled$
+revdep/

@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Herbert Hoijtink, Caspar van Lissa, Joris Mulder, Xin Gu" />
+
+<meta name="date" content="2026-08-20" />
+
+<title>Introduction to bain</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to bain</h1>
+<h4 class="author">Herbert Hoijtink, Caspar van Lissa, Joris Mulder, Xin
+Gu</h4>
+<h4 class="date">2026-08-20</h4>
+
+
+
+<div id="acknowledgment" class="section level2">
+<h2>Acknowledgment</h2>
+<p>Besides the authors Marlyne Bosman, Camiel van Zundert, and Fayette
+Klaassen have contributed examples to this vignette.</p>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><code>bain</code> is an acronym for “Bayesian informative hypotheses
+evaluation”. It uses the Bayes factor to evaluate hypotheses specified
+using equality and inequality constraints among (linear combinations of)
+parameters in a wide range of statistical models.</p>
+<p>Two tutorials are retrievable from the bain website (look under
+tutorials) at <a href="https://informative-hypotheses.sites.uu.nl/software/bain/" class="uri">https://informative-hypotheses.sites.uu.nl/software/bain/</a>.</p>
+<p>The first introducing Bayesian evaluation of informative hypotheses
+is provided by Hoijtink, H., Mulder, J., van Lissa, C., and Gu, X.
+(2019). A tutorial on testing hypotheses using the Bayes factor.
+Psychological Methods, 24, 539-556. By reading the tutorial in
+combination with executing the analyses contained in
+<code>easyBFtutorial.R</code> and <code>BFtutorial.R</code> you quickly
+learn the basics of Bayesian hypothesis evaluation.</p>
+<p>The second containing introduction to Bayesian evaluation of
+informative hypotheses in the context of structural equation models is
+provided by Van Lissa, C., Gu, X., Mulder, J., Rosseel, Y., van Zundert,
+C. and Hoijtink, H. (2020), Structural Equation Modeling, 28,
+292-301.</p>
+<p><strong>Users are advised to read these tutorials and this vignette
+before using <code>bain</code></strong>.</p>
+<p>The full <code>bain</code> reference list with applications and
+statistical underpinnings can be found on the <code>bain</code>
+website.</p>
+</div>
+<div id="usage" class="section level2">
+<h2>Usage</h2>
+<p><code>bain(x, hypothesis, fraction = 1, ...)</code></p>
+</div>
+<div id="arguments" class="section level2">
+<h2>Arguments</h2>
+<p><code>x</code> An R object containing the outcome of a statistical
+analysis. Currently, the following objects can be processed:</p>
+<ol style="list-style-type: decimal">
+<li><code>t_test()</code> objects (Student’s t-test, Welch’s t-test,
+paired samples t-test, one-group t-test, equivalence test). Note that,
+<code>t_test</code> can be used in the same way as
+<code>t.test</code>.</li>
+<li><code>lm()</code> objects (ANOVA, ANCOVA, multiple regression).</li>
+<li><code>lavaan</code> objects generated with the <code>sem()</code>,
+<code>cfa()</code>, and <code>growth</code> functions.</li>
+<li>A named vector containing the estimates resulting from a statistical
+analysis. Using this option triggers the <code>bain.default()</code>
+method. Note that, named means that each estimate has to be named such
+that it can be referred to in hypotheses.</li>
+</ol>
+<p><code>hypothesis</code> A character string containing the informative
+hypotheses to evaluate (see below the section on “The Specification of
+Hypotheses”).</p>
+<p><code>fraction = 1</code> A number representing the fraction of
+information in the data used to construct the prior distribution. The
+default value 1 denotes the minimal fraction, 2 denotes twice the
+minimal fraction, etc. Example 2d. below shows how <code>fraction</code>
+can be employed to execute a sensitivity analysis. See also Hoijtink,
+Mulder, van Lissa, and Gu, 2019).</p>
+<p><code>...</code> Additional arguments (see below).</p>
+</div>
+<div id="using-bain-with-a-lm-or-t_test-object" class="section level2">
+<h2>Using <code>bain</code> with a <code>lm</code> or
+<code>t_test</code> object</h2>
+<p>The following steps need to be executed:</p>
+<ol style="list-style-type: decimal">
+<li><code>x &lt;- lm()</code> or <code>x &lt;- t_test()</code>. Execute
+an analysis with <code>lm</code> or <code>t_test</code>. See the
+Examples section below for a complete elaboration of the calls to
+<code>lm</code> and <code>t_test</code> that can be processed by
+<code>bain</code>. Note that, <code>lm</code> and <code>t_test</code>
+will apply list-wise deletion if there are cases with missing values in
+the variables used. An imputation based method for dealing with missing
+values tailored to Bayesian hypothesis evaluation is illustrated in
+Section 2 “Examples Using a <code>lm</code> object” in Example e. (based
+on Hoijtink, Gu, Mulder, and Rosseel, 2019).</li>
+<li>If <code>lm()</code> is used, display the estimates and their names
+using the command <code>coef(x)</code>. (Unique abbreviations of) the
+names will be used to specify <code>hypotheses</code>. If
+<code>t_test()</code> is used, hypotheses have to be specified using the
+names <code>x</code>, <code>y</code>, and <code>difference</code> (see
+Examples 1a through 1e which can be found below).</li>
+<li><code>set.seed(seed)</code>. Set <code>seed</code> equal to an
+integer number to create a repeatable random number sequence.
+<code>bain</code> uses sampling to compute Bayes factors and posterior
+model probabilities. It is therefore recommended to run analyses with
+two different seeds to ensure stability of the results.</li>
+<li><code>results &lt;- bain(x,hypotheses,fraction = 1)</code> or
+<code>results &lt;- bain(x,hypotheses,fraction = 1,standardize = FALSE)</code>.
+The first call to <code>bain</code> is used in case of <code>lm</code>
+implementations of ANOVA, ANCOVA, and <code>t_test</code>. The second
+call to <code>bain</code> is used in case of <code>lm</code>
+implementations of multiple regression. With
+<code>standardize = TRUE</code> hypotheses with respect to standardized
+regression coefficients are evaluated. With
+<code>standardize = FALSE</code> hypotheses with respect to
+unstandardized regression coefficients are evaluated.
+<code>fraction = 1</code> represents the fraction of information in the
+data used to construct the prior distribution. The default value 1
+denotes the minimal fraction, 2 denotes twice the minimal fraction, etc.
+Example 2d. below shows how <code>fraction</code> can be employed to
+execute a sensitivity analysis. See also Hoijtink, Mulder, van Lissa,
+and Gu, 2019).</li>
+<li><code>print(results)</code> Print the results of an analysis with
+<code>bain</code>.</li>
+<li><code>summary(results, ci=0.95)</code> Present estimates and
+credibility intervals for the parameters used to specify the
+<code>hypotheses</code>. <code>ci</code> can be used to specify the
+confidence level of the credibility intervals.</li>
+</ol>
+</div>
+<div id="using-bain-with-a-lavaan-object" class="section level2">
+<h2>Using <code>bain</code> with a <code>lavaan</code> object</h2>
+<p>The following steps need to be executed:</p>
+<ol style="list-style-type: decimal">
+<li><code>x &lt;- sem()</code> or <code>x &lt;- cfa()</code> or
+<code>x &lt;- growth()</code>. Execute an analysis with the sem, cfa, or
+growth functions implemented in <a href="https://lavaan.ugent.be"><code>lavaan</code></a>. Note that, by
+default, <code>lavaan</code> will apply list-wise deletion if there are
+cases with missing values in the variables used. An imputation based
+method for dealing with missing values tailored to Bayesian hypothesis
+evaluation is illustrated in Section 2 “Examples Using a <code>lm</code>
+object” in Example e. (based on Hoijtink, Gu, Mulder, and Rosseel,
+2019). If an analysis with <code>lavaan</code> is executed using
+<code>missing = &quot;fiml&quot;</code> the sample size is not corrected for the
+presence of missing values. This will affect (bias) the evaluation of
+hypotheses specified using (about) equality constraints.<br />
+</li>
+<li>Specify a <code>lavaan</code> model using the
+<code>model &lt;- ...</code> command. In case of multiple group models,
+only models <strong>without</strong> between group restrictions can be
+processed by <code>bain</code> with a <code>lavaan</code> object as
+input.</li>
+<li>Display the estimates and their names using the command
+<code>coef(x)</code>. Only parameters who’s names contain <code>~</code>
+(regression coefficients), <code>~1</code> (intercepts), or
+<code>=~</code> (factor loadings) can be used in the specification of
+hypotheses. (Unique abbreviations of) the names can be used to specify
+<code>hypotheses</code>. For multiple group analyses the names have to
+end with a group label <code>.grp</code>. Group labels can be assigned
+using commands like
+<code>sesamesim$sex &lt;- factor(sesamesim$sex, labels = c(&quot;boy&quot;, &quot;girl&quot;))</code>.
+If in a <code>lavaan</code> model parameters are labeled, e.g., as in
+<code>model &lt;- &#39;age ~ c(a1, a2)*peabody + c(b1, b2)*1</code> then the
+labels have to be used in the specification of hypotheses.</li>
+<li><code>set.seed(seed)</code>. Set <code>seed</code> equal to an
+integer number to create a repeatable random number sequence.
+<code>bain</code> uses sampling to compute Bayes factors and posterior
+model probabilities. It is therefore recommended to run analyses with
+two different seeds to ensure stability of the results.</li>
+<li><code>results &lt;- bain(x,hypotheses,fraction = 1,standardize = FALSE)</code>.
+With <code>standardize = TRUE</code> hypotheses with respect to
+standardized coefficients are evaluated. With
+<code>standardize = FALSE</code> hypotheses with respect to
+unstandardized coefficients are evaluated. <code>fraction = 1</code>
+represents the fraction of information in the data used to construct the
+prior distribution. The default value 1 denotes the minimal fraction, 2
+denotes twice the minimal fraction, etc. Example 2d. below shows how
+<code>fraction</code> can be employed to execute a sensitivity analysis.
+See also Hoijtink, Mulder, van Lissa, and Gu, 2019).</li>
+<li><code>print(results)</code> Print the results of an analysis with
+<code>bain</code>.</li>
+<li><code>summary(results, ci=0.95)</code> Present estimates and
+credibility intervals for the parameters used to specify the
+<code>hypotheses</code>. <code>ci</code> can be used to specify the
+confidence level of the credibility intervals.</li>
+</ol>
+</div>
+<div id="using-bain-with-a-named-vector" class="section level2">
+<h2>Using <code>bain</code> with a named vector</h2>
+<p>The following steps need to be executed:</p>
+<ol style="list-style-type: decimal">
+<li>Execute a statistical analysis.</li>
+</ol>
+<p>In case of a single group analysis, the following information has to
+be extracted from the statistical analysis and supplied to
+<code>bain</code>:</p>
+<ol style="list-style-type: lower-alpha">
+<li>A vector containing estimates of the parameters used to specify
+<code>hypotheses</code>;</li>
+<li>A list containing the covariance matrix of these parameters;
+and,</li>
+<li>The sample size used for estimation of the parameters. Note that,
+due to missing values this sample size may be smaller than the total
+sample size. An imputation based method for dealing with missing values
+tailored to Bayesian hypothesis evaluation is illustrated in Section 2
+“Examples Using a <code>lm</code> object” in Example e. (based on
+Hoijtink, Gu, Mulder, and Rosseel, 2019).</li>
+</ol>
+<p>In case of a multiple group analysis, the following information has
+to be extracted from the statistical analysis and supplied to
+<code>bain</code>:</p>
+<ol style="list-style-type: lower-alpha">
+<li>A vector containing estimates of the group specific parameters
+possibly augmented with the estimates of parameters that are shared by
+the groups. The structure of this vector is [parameters of group 1,
+parameters of group 2, …, the parameters that are shared by the
+groups];</li>
+<li>A list containing, per group, the covariance matrix of the
+parameters corresponding to the group at hand and, possibly, the
+augmented parameters. In the rows and columns of each covariance matrix
+the parameters of the group at hand come first, possibly followed by the
+augmented parameters.</li>
+<li>Per group the sample size used for estimation of the parameters.
+Note that, due to missing values this sample size may be smaller than
+the total sample size per group. An imputation based method for dealing
+with missing values tailored to Bayesian hypothesis evaluation is
+illustrated in Section 2 “Examples Using a <code>lm</code> object” in
+Example e. (based on Hoijtink, Gu, Mulder, and Rosseel, 2019).</li>
+</ol>
+<ol start="2" style="list-style-type: decimal">
+<li>Assign names to the estimates using
+<code>names(estimates)&lt;-c()</code>. Note that, <code>names</code> is
+a character vector containing new names for the estimates in
+<code>estimates</code>. Each name has to start with a letter, and may
+consist of “letters”, “numbers”, “<code>.</code>”, “<code>_</code>”,
+“<code>:</code>”, “<code>~</code>”, “<code>=~</code>”, and
+“<code>~1</code>”. These names are used to specify
+<code>hypotheses</code> (see below). An example is
+<code>names &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)</code>.</li>
+<li><code>set.seed(seed)</code>. Set <code>seed</code> equal to an
+integer number to create a repeatable random number sequence.
+<code>bain</code> uses sampling to compute Bayes factors and posterior
+model probabilities. It is therefore recommended to run analyses with
+two different seeds to ensure stability of the results.</li>
+<li><code>results &lt;- bain(estimates, hypotheses, n=., Sigma=., group_parameters = 2, joint_parameters = 0, fraction = 1)</code>
+executes <code>bain</code> with the following arguments:</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li><code>estimates</code> A named vector with parameter estimates.</li>
+<li><code>hypotheses</code> A character string containing the
+informative hypotheses to evaluate (the specification is elaborated
+below).</li>
+<li><code>n</code> A vector containing the sample size of each group in
+the analysis. See, Hoijtink, Gu, and Mulder (2019), for an elaboration
+of the difference between one and multiple group analyses. A multiple
+group analysis is required when group specific parameters are used to
+formulate <code>hypotheses</code>. Examples are the Student’s and
+Welch’s t-test, ANOVA, and ANCOVA. See the Examples section for
+elaborations of the specification of multiple group analyses when a
+named vector is input for <code>bain</code>.</li>
+<li><code>Sigma</code> A list of covariance matrices. In case of one
+group analyses the list contains one covariance matrix. In case of
+multiple group analyses the list contains one covariance matrix for each
+group. See the Examples section and Hoijtink, Gu, and Mulder (2019) for
+further instructions.</li>
+<li><code>group_parameters</code> The number of group specific
+parameters. In, for example, an ANOVA with three groups,
+<code>estimates</code> will contain three sample means,
+<code>group_parameters = 1</code> because each group is characterized by
+one mean, and <code>joint_parameters = 0</code> because there are no
+parameters that apply to each of the groups. In, for example, an ANCOVA
+with three groups and two covariates, <code>estimates</code> will
+contain five parameters (first the three adjusted means, followed by the
+regression coefficients of the two covariates),
+<code>group_parameters = 1</code> because each group is characterized by
+one adjusted mean, and <code>joint_parameters = 2</code> because there
+are two regression coefficients that apply to each group. In, for
+example, a repeated measures design with four repeated measures and two
+groups (a between factor with two levels and a within factor with four
+levels) <code>estimates</code> will contain eight means (first the four
+for group 1, followed by the four for group 2),
+<code>group_parameters = 4</code> because each group is characterized by
+four means and <code>joint_parameters = 0</code> because there are no
+parameters that apply to each of the groups.</li>
+<li><code>joint_parameters</code> In case of one group
+<code>joint_parameters = 0</code>. In case of two or more groups, the
+number of parameters in <code>estimates</code> shared by the groups. In,
+for example, an ANCOVA, the number of <code>joint_parameters</code>
+equals the number of covariates.</li>
+<li><code>fraction = 1</code> A number representing the fraction of
+information in the data used to construct the prior distribution. The
+default value 1 denotes the minimal fraction, 2 denotes twice the
+minimal fraction, etc. Example 2d. below shows how <code>fraction</code>
+can be employed to execute a sensitivity analysis. See also Hoijtink,
+Mulder, van Lissa, and Gu, 2019).</li>
+</ol>
+<ol start="5" style="list-style-type: decimal">
+<li><code>print(results)</code> Print the results of an analysis with
+<code>bain</code>.</li>
+<li><code>summary(results, ci=0.95)</code> Present estimates and
+credibility intervals for the parameters used to specify the
+<code>hypotheses</code>. <code>ci</code> can be used to specify the
+confidence level of the credibility intervals.</li>
+</ol>
+</div>
+<div id="the-specification-of-hypotheses" class="section level2">
+<h2>The specification of <code>hypotheses</code></h2>
+<p><code>hypotheses</code> is a character string that specifies which
+informative hypotheses have to be evaluated. A simple example is
+<code>hypotheses &lt;- &quot;a &gt; b &gt; c; a = b = c;&quot;</code> which
+specifies two hypotheses using three estimates with names “a”, “b”, and
+“c”, respectively.</p>
+<p>The hypotheses specified have to adhere to the following rules:</p>
+<ul>
+<li>When using <code>bain</code> with a <code>lm</code> or
+<code>t_test</code> or <code>lavaan</code> object, (unique abbreviations
+of) the names displayed by <code>coef(x)</code> have to be used (but see
+the section “Using bain with a lavaan object” for additional
+instructions if multiple group analyses are executed and/or parameters
+are labeled). If, for example, the names are <code>cat</code> and
+<code>dog</code>, <code>c</code> and <code>d</code> would be unique
+abbreviations. If, for example, the names are <code>cato</code> and
+<code>cata</code> the whole names have to be used.</li>
+<li>When using <code>bain</code> with a named vector, parameters are
+referred to using the names specified in <code>names()</code>.</li>
+<li>Linear combinations of parameters must be specified adhering to the
+following rules:</li>
+</ul>
+<ol style="list-style-type: lower-alpha">
+<li><p>Each parameter name is used at most once.</p></li>
+<li><p>Each parameter name may or may not be pre-multiplied with a
+number.</p></li>
+<li><p>A constant may be added or subtracted from each parameter
+name.</p></li>
+<li><p>A linear combination can also be a single number.</p>
+<p>Examples are: <code>3 * a + 5</code>;
+<code>a + 2 * b + 3 * c - 2</code>; <code>a - b</code>; and
+<code>5</code>.</p></li>
+</ol>
+<ul>
+<li>(Linear combinations of) parameters can be constrained using &lt;,
+&gt;, and =. For example, <code>a &gt; 0</code> or
+<code>a &gt; b = 0</code> or <code>2 * a &lt; b + c &gt; 5</code>.</li>
+<li>The ampersand <code>&amp;</code> can be used to combine different
+parts of a hypothesis. For example, <code>a &gt; b &amp; b &gt; c</code>
+which is equivalent to <code>a &gt; b &gt; c</code> or
+<code>a &gt; 0 &amp; b &gt; 0 &amp; c &gt; 0</code>.</li>
+<li>Sets of (linear combinations of) parameters subjected to the same
+constraints can be specified using (). For example,
+<code>a &gt; (b,c)</code> which is equivalent to
+<code>a &gt; b &amp; a &gt; c</code>.</li>
+<li>The specification of a hypothesis is completed by typing ; For
+example, <code>hypotheses &lt;- &quot;a &gt; b &gt; c; a = b = c;&quot;</code>,
+specifies two hypotheses.</li>
+<li>Hypotheses have to be compatible, non-redundant and possible. What
+these terms mean will be elaborated below.</li>
+</ul>
+<p><strong>The set of hypotheses has to be compatible.</strong> For the
+statistical background of this requirement see Gu, Mulder, Hoijtink
+(2019). Usually the sets of hypotheses specified by researchers are
+compatible, and if not, <code>bain</code> will return an error message.
+The following steps can be used to determine if a set of hypotheses is
+compatible:</p>
+<ol style="list-style-type: decimal">
+<li>Replace a range constraint, e.g., <code>1 &lt; a1 &lt; 3</code>, by
+an equality constraint in which the parameter involved is equated to the
+midpoint of the range, that is, <code>a1 = 2</code>.</li>
+<li>Replace in each hypothesis the &lt; and &gt; by =. For example,
+<code>a1 = a2 &gt; a3 &gt; a4</code> becomes
+<code>a1 = a2 = a3 = a4</code>.</li>
+<li>The hypotheses are compatible if there is at least one solution to
+the resulting set of equations. For the two hypotheses considered under
+1. and 2., the solution is <code>a1 = a2 = a3 = a4 = 2</code>. An
+example of two non-compatible hypotheses is
+<code>hypotheses &lt;- &quot;a = 0; a &gt; 2;&quot;</code> because there is no
+solution to the equations <code>a=0</code> and <code>a=2</code>.</li>
+</ol>
+<p><strong>Each hypothesis in a set of hypotheses has to be
+non-redundant.</strong> A hypothesis is redundant if it can also be
+specified with fewer constraints. For example,
+<code>a = b &amp; a &gt; 0 &amp; b &gt; 0</code> is redundant because it
+can also be specified as <code>a = b &amp; a &gt; 0</code>.
+<code>bain</code> will work correctly if hypotheses specified using only
+&lt; and &gt; are redundant. <code>bain</code> will return an error
+message if hypotheses specified using at least one = are redundant.</p>
+<p><strong>Each hypothesis in a set of hypotheses has to be
+possible.</strong> An hypothesis is impossible if estimates in agreement
+with the hypothesis do not exist. For example: values for
+<code>a, b, c</code> in agreement with
+<code>a &gt; b &gt; c &amp; a &lt; c</code> do not exist. It is the
+responsibility of the user to ensure that the hypotheses specified are
+possible. If not, <code>bain</code> will either return an error message
+or render an output table containing <code>Inf</code>’s.</p>
+</div>
+<div id="output-from-an-analysis-with-bain" class="section level2">
+<h2>Output from an analysis with <code>bain</code></h2>
+<p>The commands <code>bain()</code> or <code>results&lt;-bain()</code>
+followed by <code>results</code> or <code>print(results)</code> will
+render the default (most important) output from <code>bain</code>. These
+concern for each hypothesis specified in <code>hypotheses</code> the
+fit, complexity, Bayes factor versus the unconstrained hypothesis, Bayes
+factor versus its complement, posterior model probability (based on
+equal prior model probabilities) excluding the unconstrained hypothesis,
+posterior model probability including the unconstrained hypothesis, and
+posterior model probability of each hypothesis specified and their joint
+complement. Note that, all the posterior model probabilities are
+computed from the Bayes factors of each hypothesis versus the
+unconstrained hypothesis. In Hoijtink, Mulder, van Lissa, and Gu (2019)
+it is elaborated how these quantities (and the other output presented
+below) should be interpreted. Additionally, using
+<code>summary(results, ci=0.95)</code>, a descriptives matrix can be
+obtained in which for each estimate, the name, the value, and a 95%
+central credibility interval is presented.</p>
+<p>The following commands can be used to retrieve the default and
+additional information from the <code>bain</code> output object:</p>
+<ul>
+<li><code>results$fit</code> renders the default output,
+<code>results$fit$Fit</code> contains only the column containing the fit
+of each hypothesis. In the last command <code>Fit</code> can be replaced
+by <code>Com</code>, <code>BF</code>, <code>BF.u</code>,
+<code>BF.c</code>, <code>PMPa</code>, <code>PMPb</code>,
+<code>PMPc</code> to obtain the information in the corresponding columns
+of the default output. Note that, in the columns <code>BF</code> and
+<code>BF.c</code> the Bayes factor of the hypothesis at hand versus its
+complement is displayed. In the column <code>BF.u</code> the Bayes
+factor of the hypothesis at hand versus the unconstrained hypothesis is
+displayed. <code>PMPa</code> renders the posterior model probabilities
+(based on equal prior model probabilities) of the hypotheses specified.
+<code>PMPb</code> renders the posterior model probabilities (based on
+equal prior model probabilities) of the hypotheses specified plus the
+unconstrained hypothesis. <code>PMPc</code> renders the posterior model
+probabilities (based on equal prior model probabilities) of the
+hypotheses specified plus the complement of the union of these
+hypotheses. If, in the latter case, the complexity of the complement of
+the union of all hypotheses specified is smaller than .05, the
+hypotheses specified (almost) completely cover the parameter space. In
+this case <code>PMPc</code> is not provided and instead
+<code>PMPa</code> should be used.</li>
+<li><code>results$BFmatrix</code> contains the matrix containing the
+mutual Bayes factors of the hypotheses specified in
+<code>hypotheses</code>.</li>
+<li><code>results$b</code> contains for each of the groups in the
+analysis the fraction of information of the data in the group at hand
+used to specify the covariance matrix of the prior distribution.</li>
+<li><code>results$prior</code> contains the covariance matrix of the
+prior distribution.</li>
+<li><code>results$posterior</code> contains the covariance matrix of the
+posterior distribution.</li>
+<li><code>results$call</code> displays the call to
+<code>bain</code>.</li>
+<li><code>results$model</code> displays the named vector or the R object
+that is input to <code>bain</code>.</li>
+<li><code>results$n</code> displays the sample sizes per group.</li>
+<li><code>results$independent_restrictions</code> displays the number of
+independent constraints in the set of hypotheses under consideration.
+Note that, in Gu, Mulder, and Hoijtink (2018) en Hoijtink, Gu, and
+Mulder (2019) the definition given was misprinted (besides R and S also
+r and s should have been added to the definition).</li>
+<li><code>results$fit$Fit_eq</code> displays the fit of the equality
+constrained part of each hypothesis. Replacing <code>Fit_eq</code> by
+<code>Fit_in</code>, renders the fit of the inequality constrained part
+of an hypothesis conditional on the fit of the equality constrained
+part. <code>Com_eq</code>, and <code>Com_in</code>, respectively, are
+the complexity counterparts of <code>Fit_eq</code>, and
+<code>Fit_in</code>.</li>
+</ul>
+<p>Note that, if you have specified two hypotheses that both have a
+small <code>BF.u</code> (close to zero), then there is no support in the
+data for these hypotheses. In these cases the corresponding entry in
+<code>results$BFmatrix</code> (the Bayes factor comparing both
+hypotheses) is very unstable and should only be interpreted if repeated
+analyses using different seeds (see <code>set.seed()</code>) render
+about the same results.</p>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<p>Note that, each of the examples given below can be run by 1) copy
+pasting them into the Source screen of <code>RStudio</code>. 2) by
+highlighting them followed by <code>ctrl-enter</code> or
+<code>cmd-enter</code>.</p>
+<p>Unless indicated otherwise, the examples that follow below use a
+simulated data set inspired by the Sesame Street data set from: Stevens,
+J. P. (1996). Applied Multivariate Statistics for the Social Sciences.
+Mahwah NJ: Lawrence Erlbaum. This data set is included in the bain
+package. The variables contained in sesamesim are subsequently:</p>
+<ul>
+<li>sex (1 = boy, 2 = girl) of the child</li>
+<li>site (1 = disadvantaged inner city, 2 = advantaged suburban , 3 =
+advantaged rural, 4 = disadvantaged rural, 5 = disadvantaged Spanish
+speaking) from which the child originates</li>
+<li>setting (1 = at home, 2 = at school) in which the child watches
+sesame street</li>
+<li>age (in months) of the child</li>
+<li>viewenc (0 = no, 1 = yes), whether or not the child is encouraged to
+watch Sesame Street</li>
+<li>peabody (mental age) score of the child (higher score is higher
+mental age)</li>
+<li>prenumb (score on a numbers test before watching Sesame Street for a
+year)</li>
+<li>postnumb (score on a numbers test after watching Sesame Street for a
+year)</li>
+<li>funumb (follow up numbers test score measured one year after
+postnumb)</li>
+<li>Bb Knowledge of body parts before</li>
+<li>Bl Knowledge of letters before</li>
+<li>Bf Knowledge of forms before</li>
+<li>Bn Knowledge of numbers before</li>
+<li>Br Knowledge of relations before</li>
+<li>Bc Knowledge of classifications before</li>
+<li>Ab Knowledge of body parts after</li>
+<li>Al Knowledge of letters after</li>
+<li>Af Knowledge of forms after</li>
+<li>An Knowledge of numbers after</li>
+<li>Ar Knowledge of relations after</li>
+<li>Ac Knowledge of classifications after</li>
+</ul>
+<p>The examples that follow below are organized in four categories:</p>
+<ol style="list-style-type: decimal">
+<li>running <code>bain</code> with a <code>t_test</code> object</li>
+<li>running <code>bain</code> with a <code>lm</code> object</li>
+<li>running <code>bain</code> with a <code>lavaan</code> object</li>
+<li>running bain with a named vector</li>
+</ol>
+<p>The ANOVA and ANCOVA examples are provided using both a
+<code>lm</code> object and a named vector as input for
+<code>bain</code>. Below you will find the following examples:</p>
+<p><strong>1. Examples Using a <code>t_test</code> Object</strong></p>
+<p>If a <code>t_test</code> object is used, the main output table is
+labeled: “Bayesian informative hypothesis testing for an object of class
+t_test” (which denotes that a <code>t-test</code> was executed).</p>
+<ol style="list-style-type: lower-alpha">
+<li>Bayesian Student’s t-test (equal within group variances)</li>
+<li>Bayesian Welch’s t-test (unequal within group variances</li>
+<li>Bayesian paired samples t-test</li>
+<li>Bayesian one group t-test</li>
+<li>Bayesian Equivalence test</li>
+</ol>
+<p><strong>2. Examples Using a <code>lm</code> Object</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>Bayesian ANOVA. The example concerns a one-way ANOVA. Two-way or
+higher order ANOVAs can only be handled by recoding all factors into one
+factor. If, for example, there is a factor <code>sex</code> with levels
+<code>man</code> and <code>woman</code>, and a factor <code>age</code>
+with levels <code>young</code> and <code>old</code>, these have to be
+recoded in a new factor <code>sexage</code> with levels
+<code>manyoung</code>, <code>manold</code>, <code>womanyoung</code>,
+<code>womanold</code>. If a <code>lm</code> “ANOVA” object is used, the
+main output table is labeled: “Bayesian informative hypothesis testing
+for an object of class lm (ANOVA)”</li>
+<li>Bayesian ANCOVA. The example concerns a one-way ANCOVA. Two-way or
+higher order ANCOVAs can only be handled by recoding all factors into
+one factor. <strong>Note that calls to <code>lm</code> using functions
+of the predictors (for example, adding squared predictors to the model
+using commands like <code>y ~ x + I(x^2)</code>) can not be processed by
+<code>bain</code>.</strong> However, one can compute a new variable (for
+example, a squared predictor) and add this variable to the model
+specification of <code>lm</code>. If a <code>lm</code> “ANCOVA” object
+is used, the main output table is labeled: “Bayesian informative
+hypothesis testing for an object of class lm (ANCOVA)”. <strong>Note
+that, in the ANCOVA the covariates are centered!</strong></li>
+<li>Bayesian multiple regression. <strong>Note that calls to
+<code>lm</code> using functions of the predictors (for example, adding
+squared predictors to the model using commands like
+<code>y ~ x + I(x^2)</code>) can not be processed by
+<code>bain</code>.</strong> However, one can compute a new variable (for
+example, a squared predictor) and add this variable to the model
+specification of <code>lm</code>. Note furthermore, that only if
+<code>standardize = FALSE</code> interactions between predictors should
+be processed, because a standardized interaction is not the same as the
+interaction between two standardized variables. If a <code>lm</code>
+“regression with only continuous predictors” object is used, the main
+output table is labeled: “Bayesian informative hypothesis testing for an
+object of class lm (continuous predictors)”. If a <code>lm</code> object
+contains <strong>two or more</strong> factors and, optionally,
+continuous predictors, the main output table is labeled: “Bayesian
+informative hypothesis testing for an object of class lm (mixed
+predictors)”. In case of mixed predictors, the one group approach to
+computing Bayes factors is used (see, Hoijtink, Gu, and Mulder, 2019).
+This may render inferior results if group sizes are unequal.</li>
+<li>Bayesian ANOVA. Sensitivity analysis. See Hoijtink, Mulder, van
+Lissa, and Gu (2019) for elaborations.</li>
+<li>Bayesian multiple regression with missing data</li>
+</ol>
+<p><strong>3. Examples Using a <code>lavaan</code> Object</strong></p>
+<p>If a <code>lavaan</code> object is used, the main output table is
+labeled: “Bayesian informative hypothesis testing for an object of class
+lavaan”. See the tutorial by Van Lissa, Gu, Mulder, Rosseel, van
+Zundert, and Hoijtink (2020) for further elaborations.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Bayesian confirmatory factor analysis</li>
+<li>Bayesian latent regression</li>
+<li>Bayesian multiple group latent regression. Note that, multiple group
+models with between group restrictions cannot be processed.</li>
+</ol>
+<p><strong>4. Examples Using a Named Vector</strong></p>
+<p>If a <code>named vector</code> object is used, the main output table
+is labeled: “Bayesian informative hypothesis testing for an object of
+class numeric” (which denotes that <code>named vector</code> input was
+used).</p>
+<ol style="list-style-type: lower-alpha">
+<li>Bayesian ANOVA</li>
+<li>Bayesian Welch’s ANOVA (unequal within group variances)</li>
+<li>Bayesian robust (against non-normality) ANOVA (unequal within group
+variances)</li>
+<li>Bayesian ANCOVA</li>
+<li>Bayesian repeated measures analysis (one within factor)</li>
+<li>Bayesian repeated measures analysis (within between design)</li>
+<li>Bayesian one group logistic regression (counterpart of multiple
+regression)</li>
+<li>Bayesian multiple group logistic regression (counterpart of
+ANCOVA)</li>
+<li>Bayesian confirmatory factor analysis</li>
+</ol>
+<p><strong>1. Examples Using a <code>t_test</code> Object</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>An example of the Bayesian Student’s t-test (equal within group
+variances):</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># collect the data for the boys in the vector x and for the girls in the</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># vector y</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>x<span class="ot">&lt;-</span>sesamesim<span class="sc">$</span>postnumb[<span class="fu">which</span>(sesamesim<span class="sc">$</span>sex<span class="sc">==</span><span class="dv">1</span>)]</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>y<span class="ot">&lt;-</span>sesamesim<span class="sc">$</span>postnumb[<span class="fu">which</span>(sesamesim<span class="sc">$</span>sex<span class="sc">==</span><span class="dv">2</span>)]</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co"># execute student&#39;s t-test</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>ttest <span class="ot">&lt;-</span> <span class="fu">t_test</span>(x,y, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># test hypotheses with bain. The names of the means are x and y.</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(ttest, <span class="st">&quot;x = y; x &gt; y; x &lt; y&quot;</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>results</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian Welch’s t-test (unequal within group
+variances):</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># collect the data for the boys in the vector x and for the girs in the</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># vector y</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>x<span class="ot">&lt;-</span>sesamesim<span class="sc">$</span>postnumb[<span class="fu">which</span>(sesamesim<span class="sc">$</span>sex<span class="sc">==</span><span class="dv">1</span>)]</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>y<span class="ot">&lt;-</span>sesamesim<span class="sc">$</span>postnumb[<span class="fu">which</span>(sesamesim<span class="sc">$</span>sex<span class="sc">==</span><span class="dv">2</span>)]</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># execute student&#39;s t-test</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>ttest <span class="ot">&lt;-</span> <span class="fu">t_test</span>(x,y, <span class="at">var.equal =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co"># test hypotheses with bain. The names of the means are x and y.</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(ttest, <span class="st">&quot;x = y; x &gt; y; x &lt; y&quot;</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian paired samples t-test:</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># compare the pre with the post measurements</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>ttest <span class="ot">&lt;-</span> <span class="fu">t_test</span>(sesamesim<span class="sc">$</span>prenumb,sesamesim<span class="sc">$</span>postnumb,<span class="at">paired =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># test hypotheses with bain. Use difference to refer to the difference between means</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(ttest, <span class="st">&quot;difference=0; difference&gt;0; difference&lt;0&quot;</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="4" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian one group t-test:</li>
+</ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data se</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># compare post measurements with the reference value 30</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>ttest <span class="ot">&lt;-</span> <span class="fu">t_test</span>(sesamesim<span class="sc">$</span>postnumb)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># Check name of estimate</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co"># test hypotheses with bain versus the reference value 30. Use x to refer to the mean</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(ttest, <span class="st">&quot;x=30; x&gt;30; x&lt;30&quot;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="5" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian equivalence test</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># collect the data for the boys in the vector x and for the girs in the</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># vector y</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>x<span class="ot">&lt;-</span>sesamesim<span class="sc">$</span>postnumb[<span class="fu">which</span>(sesamesim<span class="sc">$</span>sex<span class="sc">==</span><span class="dv">1</span>)]</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>y<span class="ot">&lt;-</span>sesamesim<span class="sc">$</span>postnumb[<span class="fu">which</span>(sesamesim<span class="sc">$</span>sex<span class="sc">==</span><span class="dv">2</span>)]</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># execute student&#39;s t-test</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>ttest <span class="ot">&lt;-</span> <span class="fu">t_test</span>(x,y, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># compute the pooled within standard deviation using the variance of x</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co"># (ttest$v[1]) and y (ttest$v[2])</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>pwsd <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(((<span class="fu">length</span>(x) <span class="sc">-</span><span class="dv">1</span>) <span class="sc">*</span> ttest<span class="sc">$</span>v[<span class="dv">1</span>] <span class="sc">+</span> (<span class="fu">length</span>(y)<span class="sc">-</span><span class="dv">1</span>) <span class="sc">*</span> ttest<span class="sc">$</span>v[<span class="dv">2</span>])<span class="sc">/</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>((<span class="fu">length</span>(x) <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span> (<span class="fu">length</span>(y) <span class="sc">-</span><span class="dv">1</span>)))</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co"># print pwsd in order to be able to include it in the hypothesis. Its value</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co"># is 12.60</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="fu">print</span>(pwsd)</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co"># test hypotheses (the means of boy and girl differ less than .2 * pwsd =</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co"># 2.52 VERSUS the means differ more than .2 * pwsd = 2.52) with bain</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co"># note that, .2 is a value for Cohen&#39;s d reflecting a &quot;small&quot; effect, that</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co"># is, the means differ less or more than .2 pwsd.</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co"># use x and y to refer to the means.</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(ttest, <span class="st">&quot;x - y &gt; -2.52 &amp; x - y &lt; 2.52&quot;</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<p><strong>2. Examples Using a <code>lm</code> Object</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>An example of the Bayesian ANOVA</li>
+</ol>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co"># make a factor of variable site</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>sesamesim<span class="sc">$</span>site <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co"># execute an analysis of variance using lm() which, due to the -1, returns</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co"># estimates of the means per group</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>anov <span class="ot">&lt;-</span> <span class="fu">lm</span>(postnumb<span class="sc">~</span>site<span class="dv">-1</span>,sesamesim)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co"># take a look at the estimated means and their names</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="fu">coef</span>(anov)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co"># test hypotheses with bain</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(anov, <span class="st">&quot;site1=site2=site3=site4=site5; site2&gt;site5&gt;site1&gt;</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="st">site3&gt;site4&quot;</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian ANCOVA</li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data se</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># make a factor of variable site</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>sesamesim<span class="sc">$</span>site <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># Center the covariate. If centered the coef() command below displays the</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co"># adjusted means. If not centered the intercepts are displayed.</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>sesamesim<span class="sc">$</span>prenumb <span class="ot">&lt;-</span> sesamesim<span class="sc">$</span>prenumb <span class="sc">-</span> <span class="fu">mean</span>(sesamesim<span class="sc">$</span>prenumb)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co"># execute an analysis of covariance using lm() which, due to the -1, returns</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co"># estimates of the adjusted means per group</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>ancov <span class="ot">&lt;-</span> <span class="fu">lm</span>(postnumb<span class="sc">~</span>site<span class="sc">+</span>prenumb<span class="dv">-1</span>,sesamesim)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co"># take a look at the estimated adjusted means, the regression coefficient</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co"># of the covariate and their names</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="fu">coef</span>(ancov)</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co"># test hypotheses with bain</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(ancov, <span class="st">&quot;site1=site2=site3=site4=site5;</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="st">                        site2&gt;site5&gt;site1&gt;site3&gt;site4&quot;</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian multiple regression</li>
+</ol>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co"># execute a multiple regression using lm()</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>regr <span class="ot">&lt;-</span> <span class="fu">lm</span>(postnumb <span class="sc">~</span> age <span class="sc">+</span> peabody <span class="sc">+</span> prenumb,sesamesim)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co"># take a look at the estimated regression coefficients and their names</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="fu">coef</span>(regr)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co"># test hypotheses with bain. Note that standardize = FALSE denotes that the</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co"># hypotheses are in terms of unstandardized regression coefficients</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>results<span class="ot">&lt;-</span><span class="fu">bain</span>(regr, <span class="st">&quot;age = 0 &amp; peab=0 &amp; pre=0 ; age &gt; 0 &amp; peab &gt; 0 &amp; pre &gt; 0&quot;</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>, <span class="at">standardize =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co"># Since it is only meaningful to compare regression coefficients if they are</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co"># measured on the same scale, bain can also evaluate standardized regression</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co"># coefficients (based on the seBeta function by Jeff Jones and Niels Waller):</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co"># test hypotheses with bain. Note that standardize = TRUE denotes that the</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a><span class="co"># hypotheses are in terms of standardized regression coefficients</span></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>results<span class="ot">&lt;-</span><span class="fu">bain</span>(regr, <span class="st">&quot;age = peab = pre ; pre &gt; age &gt; peab&quot;</span>,<span class="at">standardize =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="4" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian ANOVA: Sensitivity Analysis</li>
+</ol>
+<p>Note that, most the code below can be replaced by a call to the
+function <code>bain_sensitivity</code>. See the help file for this
+function for further instructions (call
+<code>?bain_sensitivity</code>).</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co"># make a factor of variable site</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>sesamesim<span class="sc">$</span>site <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co"># execute an analysis of variance using lm() which, due to the -1, returns</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co"># estimates of the means per group</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>anov <span class="ot">&lt;-</span> <span class="fu">lm</span>(postnumb<span class="sc">~</span>site<span class="dv">-1</span>,sesamesim)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co"># take a look at the estimated means and their names</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="fu">coef</span>(anov)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co"># test hypotheses with bain</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>results1 <span class="ot">&lt;-</span> <span class="fu">bain</span>(anov, <span class="st">&quot;site1=site2=site3=site4=site5; site2&gt;site5&gt;site1&gt;</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="st">site3&gt;site4&quot;</span>, <span class="at">fraction =</span> <span class="dv">1</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="fu">print</span>(results1)</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="fu">summary</span>(results1, <span class="at">ci =</span> <span class="fl">0.95</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co"># execute a sensitivity analysis. See Hoijtink, Mulder, </span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co"># van Lissa, and Gu (2019) for elaborations.</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>results2 <span class="ot">&lt;-</span> <span class="fu">bain</span>(anov, <span class="st">&quot;site1=site2=site3=site4=site5; site2&gt;site5&gt;site1&gt;</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="st">site3&gt;site4&quot;</span>,<span class="at">fraction =</span> <span class="dv">2</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="fu">print</span>(results2)</span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>results3 <span class="ot">&lt;-</span> <span class="fu">bain</span>(anov, <span class="st">&quot;site1=site2=site3=site4=site5; site2&gt;site5&gt;site1&gt;</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="st">site3&gt;site4&quot;</span>,<span class="at">fraction =</span> <span class="dv">3</span>)</span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a><span class="fu">print</span>(results3)</span></code></pre></div>
+<ol start="5" style="list-style-type: lower-alpha">
+<li>An example of Bayesian Regression with missing data.</li>
+</ol>
+<p>RUNNING THIS EXAMPLE WILL TAKE ABOUT 60 SECONDS</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># load mice (multiple imputation of missing data) </span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co"># inspect the mice help file to obtain further information </span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co"># create missing values in four variables from the sesamesim data set</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>misdat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(sesamesim<span class="sc">$</span>prenumb,sesamesim<span class="sc">$</span>postnumb,sesamesim<span class="sc">$</span>funumb,sesamesim<span class="sc">$</span>peabody)</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="fu">colnames</span>(misdat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;prenumb&quot;</span>,<span class="st">&quot;postnumb&quot;</span>,<span class="st">&quot;funumb&quot;</span>,<span class="st">&quot;peabody&quot;</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>misdat <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(misdat)</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>pmis <span class="ot">&lt;-</span> .<span class="dv">80</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">240</span>){</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>  uni<span class="ot">&lt;-</span><span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>  <span class="cf">if</span> (pmis <span class="sc">&lt;</span> uni) {</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>    misdat<span class="sc">$</span>funumb[i]<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>  }</span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>  uni<span class="ot">&lt;-</span><span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>  <span class="cf">if</span> (pmis <span class="sc">&lt;</span> uni) {</span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>    misdat<span class="sc">$</span>prenumb[i]<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>    misdat<span class="sc">$</span>postnumb[i]<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>  }</span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a>  uni<span class="ot">&lt;-</span><span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>  <span class="cf">if</span> (pmis <span class="sc">&lt;</span> uni) {</span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>    misdat<span class="sc">$</span>peabody[i]<span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a>  }</span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a>}</span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="co"># print data summaries - note the missing values (NAs)</span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a><span class="fu">summary</span>(misdat)</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="co"># use mice to create 1000 imputed data matrices. Note that, the approach used </span></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="co"># below # is only one manner in which mice can be instructed. Many other </span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a><span class="co"># options are available.</span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="dv">1000</span> </span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">mice</span>(<span class="at">data =</span> misdat, <span class="at">m =</span> M, <span class="at">seed=</span><span class="dv">999</span>, <span class="at">meth=</span><span class="fu">c</span>(<span class="st">&quot;norm&quot;</span>,<span class="st">&quot;norm&quot;</span>,<span class="st">&quot;norm&quot;</span>,<span class="st">&quot;norm&quot;</span>), <span class="at">diagnostics =</span> <span class="cn">FALSE</span>, <span class="at">printFlag =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a><span class="co"># create vectors in which 1000 fits and complexities can be stored for each</span></span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a><span class="co"># of two hypotheses and their complement</span></span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a>fits1 <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;numeric&quot;</span>,<span class="dv">1000</span>)</span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a>compls1 <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;numeric&quot;</span>,<span class="dv">1000</span>)</span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a>fits2 <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;numeric&quot;</span>,<span class="dv">1000</span>)</span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a>compls2 <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;numeric&quot;</span>,<span class="dv">1000</span>)</span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a>fitscomplement <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;numeric&quot;</span>,<span class="dv">1000</span>)</span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a>complscomplement <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;numeric&quot;</span>,<span class="dv">1000</span>)</span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a></span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a><span class="co"># analyse each imputed data set with lm and bain, store the resulting</span></span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a><span class="co"># fits and complexities</span></span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>M) {</span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a>regr <span class="ot">&lt;-</span> <span class="fu">lm</span>(funumb<span class="sc">~</span>prenumb<span class="sc">+</span>postnumb,<span class="fu">complete</span>(out,i))</span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">bain</span>(regr,<span class="st">&quot;prenumb=0 &amp; postnumb=0;prenumb&gt;0 &amp; postnumb&gt;0&quot;</span>)  </span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a>fits1[i]<span class="ot">&lt;-</span>result<span class="sc">$</span>fit<span class="sc">$</span>Fit[<span class="dv">1</span>] </span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a>compls1[i]<span class="ot">&lt;-</span>result<span class="sc">$</span>fit<span class="sc">$</span>Com[<span class="dv">1</span>]</span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a>fits2[i]<span class="ot">&lt;-</span>result<span class="sc">$</span>fit<span class="sc">$</span>Fit[<span class="dv">2</span>] </span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a>compls2[i]<span class="ot">&lt;-</span>result<span class="sc">$</span>fit<span class="sc">$</span>Com[<span class="dv">2</span>]</span>
+<span id="cb10-59"><a href="#cb10-59" tabindex="-1"></a>fitscomplement[i]<span class="ot">&lt;-</span>result<span class="sc">$</span>fit<span class="sc">$</span>Fit[<span class="dv">4</span>] </span>
+<span id="cb10-60"><a href="#cb10-60" tabindex="-1"></a>complscomplement[i]<span class="ot">&lt;-</span>result<span class="sc">$</span>fit<span class="sc">$</span>Com[<span class="dv">4</span>]</span>
+<span id="cb10-61"><a href="#cb10-61" tabindex="-1"></a>}</span>
+<span id="cb10-62"><a href="#cb10-62" tabindex="-1"></a></span>
+<span id="cb10-63"><a href="#cb10-63" tabindex="-1"></a><span class="co"># compute the Bayes factor from the imputed fits and complexities</span></span>
+<span id="cb10-64"><a href="#cb10-64" tabindex="-1"></a><span class="co"># see Equation 23 in Hoijtink, H., Gu, X., Mulder, J., and Rosseel, Y. (2019). </span></span>
+<span id="cb10-65"><a href="#cb10-65" tabindex="-1"></a><span class="co"># Computing Bayes Factors from Data with Missing Values. </span></span>
+<span id="cb10-66"><a href="#cb10-66" tabindex="-1"></a><span class="co"># Psychological Methods, 24, 253-268. </span></span>
+<span id="cb10-67"><a href="#cb10-67" tabindex="-1"></a></span>
+<span id="cb10-68"><a href="#cb10-68" tabindex="-1"></a>BF1u <span class="ot">&lt;-</span> <span class="fu">sum</span>(fits1)<span class="sc">/</span><span class="fu">sum</span>(compls1)</span>
+<span id="cb10-69"><a href="#cb10-69" tabindex="-1"></a>BF2u <span class="ot">&lt;-</span> <span class="fu">sum</span>(fits2)<span class="sc">/</span><span class="fu">sum</span>(compls2)</span>
+<span id="cb10-70"><a href="#cb10-70" tabindex="-1"></a>BFcomplementu <span class="ot">&lt;-</span> <span class="fu">sum</span>(fitscomplement)<span class="sc">/</span><span class="fu">sum</span>(complscomplement)</span>
+<span id="cb10-71"><a href="#cb10-71" tabindex="-1"></a></span>
+<span id="cb10-72"><a href="#cb10-72" tabindex="-1"></a><span class="co"># compute PMPc</span></span>
+<span id="cb10-73"><a href="#cb10-73" tabindex="-1"></a>PMPcH1 <span class="ot">&lt;-</span> BF1u<span class="sc">/</span>(BF1u <span class="sc">+</span> BF2u <span class="sc">+</span> BFcomplementu)</span>
+<span id="cb10-74"><a href="#cb10-74" tabindex="-1"></a>PMPcH2 <span class="ot">&lt;-</span> BF2u<span class="sc">/</span>(BF1u <span class="sc">+</span> BF2u <span class="sc">+</span> BFcomplementu)</span>
+<span id="cb10-75"><a href="#cb10-75" tabindex="-1"></a>PMPcHcomplement <span class="ot">&lt;-</span> BFcomplementu<span class="sc">/</span>(BF1u <span class="sc">+</span> BF2u <span class="sc">+</span> BFcomplementu)</span></code></pre></div>
+<p><strong>3. Examples Using a <code>lavaan</code> object</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>An example of Bayesian confirmatory factor analysis. See the
+tutorial by Van Lissa, Gu, Mulder, Rosseel, van Zundert, and Hoijtink
+(2020) for further elaborations.</li>
+</ol>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Load the bain and lavaan libraries. Visit www.lavaan.org for </span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co"># lavaan mini-tutorials, examples, and elaborations</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#  Specify and fit the confirmatory factor model</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="st">    A =~ Ab + Al + Af + An + Ar + Ac </span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="st">    B =~ Bb + Bl + Bf + Bn + Br + Bc </span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co"># Use the lavaan sem function to execute the confirmatory factor analysis</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">sem</span>(model1, <span class="at">data =</span> sesamesim, <span class="at">std.lv =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co"># Inspect the parameter names</span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="fu">coef</span>(fit1)</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co"># Formulate hypotheses, call bain, obtain summary stats</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>hypotheses1 <span class="ot">&lt;-</span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="st">&quot; A=~Ab &gt; .6 &amp; A=~Al &gt; .6 &amp; A=~Af &gt; .6 &amp; A=~An &gt; .6 &amp; A=~Ar &gt; .6 &amp; A=~Ac &gt;.6 &amp; </span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="st">B=~Bb &gt; .6 &amp; B=~Bl &gt; .6 &amp; B=~Bf &gt; .6 &amp; B=~Bn &gt; .6 &amp; B=~Br &gt; .6 &amp; B=~Bc &gt;.6&quot;</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">bain</span>(fit1,hypotheses1,<span class="at">fraction=</span><span class="dv">1</span>,<span class="at">standardize=</span><span class="cn">TRUE</span>)</span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>sy <span class="ot">&lt;-</span> <span class="fu">summary</span>(y, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>An example of Bayesian latent regression. See the tutorial by Van
+Lissa, Gu, Mulder, Rosseel, van Zundert, and Hoijtink (2020) for further
+elaborations.</li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Load the bain and lavaan libraries. Visit www.lavaan.org for </span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co"># lavaan mini-tutorials, examples, and elaborations</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co"># Specify and fit the latent regression model</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="st">    A  =~ Ab + Al + Af + An + Ar + Ac </span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="st">    B =~ Bb + Bl + Bf + Bn + Br + Bc</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="st">    A ~ B + age + peabody</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">sem</span>(model2, <span class="at">data =</span> sesamesim, <span class="at">std.lv =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co"># Inspect the parameter names</span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="fu">coef</span>(fit2)</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co"># Formulate hypotheses, call bain, obtain summary stats</span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a>hypotheses2 <span class="ot">&lt;-</span> <span class="st">&quot;A~B &gt; A~peabody = A~age = 0; </span></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="st">               A~B &gt; A~peabody &gt; A~age = 0; </span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a><span class="st">A~B &gt; A~peabody &gt; A~age &gt; 0&quot;</span></span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> <span class="fu">bain</span>(fit2, hypotheses2, <span class="at">fraction =</span> <span class="dv">1</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a>sy1 <span class="ot">&lt;-</span> <span class="fu">summary</span>(y1, <span class="at">ci =</span> <span class="fl">0.99</span>)</span></code></pre></div>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>An example of Bayesian multiple group regression. See the tutorial
+by Van Lissa, Gu, Mulder, Rosseel, van Zundert, and Hoijtink (2020) for
+further elaborations.</li>
+</ol>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Load the bain and lavaan libraries. Visit www.lavaan.org for </span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co"># lavaan mini-tutorials, examples, and elaborations</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co"># Specify A multiple group regression model</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>model3 <span class="ot">&lt;-</span> <span class="st">&#39;</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="st">    postnumb ~ prenumb + peabody </span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="st">&#39;</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co"># Assign labels to the groups to be used when formulating</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co"># hypotheses</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>sesamesim<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(sesamesim<span class="sc">$</span>sex, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;boy&quot;</span>, <span class="st">&quot;girl&quot;</span>))</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co"># Fit the multiple group regression model</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">sem</span>(model3, <span class="at">data =</span> sesamesim, <span class="at">std.lv =</span> <span class="cn">TRUE</span>, <span class="at">group =</span> <span class="st">&quot;sex&quot;</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co"># Inspect the parameter names</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="fu">coef</span>(fit3)</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co"># Formulate and evaluate the hypotheses</span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>hypotheses3 <span class="ot">&lt;-</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="st">&quot;postnumb~prenumb.boy = postnumb~prenumb.girl &amp; postnumb~peabody.boy = postnumb~peabody.girl;</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="st"> postnumb~prenumb.boy &lt; postnumb~prenumb.girl &amp; postnumb~peabody.boy &lt; postnumb~peabody.girl</span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a><span class="st">&quot;</span></span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> <span class="fu">bain</span>(fit3, hypotheses3, <span class="at">standardize =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a>sy1 <span class="ot">&lt;-</span> <span class="fu">summary</span>(y1, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<p><strong>4. Examples Using a named vector</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>An example of the Bayesian ANOVA using a named vector as input for
+bain</li>
+</ol>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data se</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co"># make a factor of variable site</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>sesamesim<span class="sc">$</span>site <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co"># execute an analysis of variance using lm() which, due to the -1, returns</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co"># estimates of the means per group</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>anov <span class="ot">&lt;-</span> <span class="fu">lm</span>(postnumb<span class="sc">~</span>site<span class="dv">-1</span>,sesamesim)</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co"># take a look at the estimated means and their names</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="fu">coef</span>(anov)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co"># collect the estimates means in a vector</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>estimate <span class="ot">&lt;-</span> <span class="fu">coef</span>(anov)</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co"># give names to the estimates in anov</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="fu">names</span>(estimate) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;site1&quot;</span>, <span class="st">&quot;site2&quot;</span>, <span class="st">&quot;site3&quot;</span>,<span class="st">&quot;site4&quot;</span>,<span class="st">&quot;site5&quot;</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co"># create a vector containing the sample size of each group</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co"># (in case of missing values in the variables used, the command</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co"># below has to be modified such that only the cases without</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co"># missing values are counted)</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>ngroup <span class="ot">&lt;-</span> <span class="fu">table</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co"># compute for each group the covariance matrix of the parameters</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co"># of that group and collect these in a list</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co"># for the ANOVA this is simply a list containing for each group the variance</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co"># of the mean note that, the within group variance as estimated using lm is</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co"># used to compute the variance of each of the means! See, Hoijtink, Gu, and</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co"># Mulder (2019) for further elaborations.</span></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>var <span class="ot">&lt;-</span> <span class="fu">summary</span>(anov)<span class="sc">$</span>sigma<span class="sc">**</span><span class="dv">2</span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>cov1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(var<span class="sc">/</span>ngroup[<span class="dv">1</span>], <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>cov2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(var<span class="sc">/</span>ngroup[<span class="dv">2</span>], <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a>cov3 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(var<span class="sc">/</span>ngroup[<span class="dv">3</span>], <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a>cov4 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(var<span class="sc">/</span>ngroup[<span class="dv">4</span>], <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>cov5 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(var<span class="sc">/</span>ngroup[<span class="dv">5</span>], <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>covlist <span class="ot">&lt;-</span> <span class="fu">list</span>(cov1, cov2, cov3, cov4,cov5)</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a><span class="co"># test hypotheses with bain. Note that there are multiple groups</span></span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a><span class="co"># characterized by one mean, therefore group_parameters=0. Note that are no</span></span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a><span class="co"># joint parameters, therefore, joint_parameters=0.</span></span>
+<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(estimate,</span>
+<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a><span class="st">&quot;site1=site2=site3=site4=site5; site2&gt;site5&gt;site1&gt;site3&gt;site4&quot;</span>,</span>
+<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a><span class="at">n=</span>ngroup,<span class="at">Sigma=</span>covlist,<span class="at">group_parameters=</span><span class="dv">1</span>,<span class="at">joint_parameters =</span> <span class="dv">0</span>)</span>
+<span id="cb14-40"><a href="#cb14-40" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb14-41"><a href="#cb14-41" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb14-42"><a href="#cb14-42" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb14-43"><a href="#cb14-43" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian Welch’s ANOVA (that is an ANOVA that does
+not assume equal within group variances) using a named vector as input
+for bain</li>
+</ol>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Load the bain library</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co"># make a factor of variable site</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>sesamesim<span class="sc">$</span>site <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co"># collect the estimated means in a vector</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(sesamesim<span class="sc">$</span>postnumb,<span class="fu">list</span>(sesamesim<span class="sc">$</span>site),mean)[,<span class="dv">2</span>]</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co"># give names to the estimates</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="fu">names</span>(estimates) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;site1&quot;</span>, <span class="st">&quot;site2&quot;</span>, <span class="st">&quot;site3&quot;</span>,<span class="st">&quot;site4&quot;</span>,<span class="st">&quot;site5&quot;</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co"># create a vector containing the sample sizes of each group</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>ngroup <span class="ot">&lt;-</span> <span class="fu">table</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co"># compute the variances in each group and subquently the squared standard errors</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(sesamesim<span class="sc">$</span>postnumb,<span class="fu">list</span>(sesamesim<span class="sc">$</span>site),var)</span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>vargroup <span class="ot">&lt;-</span> vars[,<span class="dv">2</span>]<span class="sc">/</span>ngroup</span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co"># collect the variances of the means in a covariance listcov1 &lt;- matrix(vargroup[1], nrow=1, ncol=1)</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a>cov2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(vargroup[<span class="dv">2</span>], <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a>cov3 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(vargroup[<span class="dv">3</span>], <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a>cov4 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(vargroup[<span class="dv">4</span>], <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a>cov5 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(vargroup[<span class="dv">5</span>], <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">1</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a>covlist <span class="ot">&lt;-</span> <span class="fu">list</span>(cov1, cov2, cov3, cov4,cov5)</span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a></span>
+<span id="cb15-26"><a href="#cb15-26" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb15-27"><a href="#cb15-27" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb15-28"><a href="#cb15-28" tabindex="-1"></a><span class="co"># test hypotheses using bain. Note that there are multiple groups</span></span>
+<span id="cb15-29"><a href="#cb15-29" tabindex="-1"></a><span class="co"># characterized by one mean, therefore group_parameters=1. Note that</span></span>
+<span id="cb15-30"><a href="#cb15-30" tabindex="-1"></a><span class="co"># there are no joint parameters, therefore, joint_parameters=0.</span></span>
+<span id="cb15-31"><a href="#cb15-31" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(estimates,</span>
+<span id="cb15-32"><a href="#cb15-32" tabindex="-1"></a>                <span class="st">&quot;site1=site2=site3=site4=site5;site2&gt;site5&gt;site1&gt;site4&gt;site3&quot;</span>,</span>
+<span id="cb15-33"><a href="#cb15-33" tabindex="-1"></a>                <span class="at">n=</span>ngroup,<span class="at">Sigma=</span>covlist,<span class="at">group_parameters=</span><span class="dv">1</span>,<span class="at">joint_parameters =</span> <span class="dv">0</span>)</span>
+<span id="cb15-34"><a href="#cb15-34" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb15-35"><a href="#cb15-35" tabindex="-1"></a></span>
+<span id="cb15-36"><a href="#cb15-36" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb15-37"><a href="#cb15-37" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Bayesian robust (against non-normality) ANOVA (unequal within group
+variances). Robust ANOVA is elaborated in Bosman and Hoijtink
+(unpublished) which can be downloaded from the <code>bain</code>
+website.</li>
+</ol>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co"># load the WRS2 package which renders the trimmed sample mean and</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co"># corresponding standard error</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="fu">library</span>(WRS2)</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co"># make a factor of variable site</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>sesamesim<span class="sc">$</span>site <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co"># create a vector containing the sample sizes of each group</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co"># (in case of missing values in the variables used, the command</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co"># below has to be modified such that only the cases without</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co"># missing values are counted)</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>ngroup <span class="ot">&lt;-</span> <span class="fu">table</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co"># Compute the 20\% sample trimmed mean for each site</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">mean</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">1</span>], <span class="at">tr =</span> <span class="fl">0.2</span>),</span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>               <span class="fu">mean</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">2</span>], <span class="at">tr =</span> <span class="fl">0.2</span>),</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>               <span class="fu">mean</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">3</span>], <span class="at">tr =</span> <span class="fl">0.2</span>),</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>               <span class="fu">mean</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">4</span>], <span class="at">tr =</span> <span class="fl">0.2</span>),</span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>               <span class="fu">mean</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">5</span>], <span class="at">tr =</span> <span class="fl">0.2</span>))</span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a><span class="co"># give names to the estimates</span></span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a><span class="fu">names</span>(estimates) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;s1&quot;</span>, <span class="st">&quot;s2&quot;</span>, <span class="st">&quot;s3&quot;</span>,<span class="st">&quot;s4&quot;</span>,<span class="st">&quot;s5&quot;</span>)</span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="co"># display the estimates and their names</span></span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="fu">print</span>(estimates)</span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="co"># Compute the sample trimmed mean standard error for each site</span></span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">trimse</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">1</span>]),</span>
+<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a>        <span class="fu">trimse</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">2</span>]),</span>
+<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a>        <span class="fu">trimse</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">3</span>]),</span>
+<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a>        <span class="fu">trimse</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">4</span>]),</span>
+<span id="cb16-28"><a href="#cb16-28" tabindex="-1"></a>        <span class="fu">trimse</span>(sesamesim<span class="sc">$</span>postnumb[sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">5</span>]))</span>
+<span id="cb16-29"><a href="#cb16-29" tabindex="-1"></a><span class="co"># Square the standard errors to obtain the variances of the sample</span></span>
+<span id="cb16-30"><a href="#cb16-30" tabindex="-1"></a><span class="co"># trimmed means</span></span>
+<span id="cb16-31"><a href="#cb16-31" tabindex="-1"></a>var <span class="ot">&lt;-</span> se<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb16-32"><a href="#cb16-32" tabindex="-1"></a><span class="co"># Store the variances in a list of matrices</span></span>
+<span id="cb16-33"><a href="#cb16-33" tabindex="-1"></a>covlist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">matrix</span>(var[<span class="dv">1</span>]),<span class="fu">matrix</span>(var[<span class="dv">2</span>]),</span>
+<span id="cb16-34"><a href="#cb16-34" tabindex="-1"></a><span class="fu">matrix</span>(var[<span class="dv">3</span>]),<span class="fu">matrix</span>(var[<span class="dv">4</span>]), <span class="fu">matrix</span>(var[<span class="dv">5</span>]))</span>
+<span id="cb16-35"><a href="#cb16-35" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb16-37"><a href="#cb16-37" tabindex="-1"></a><span class="co"># test hypotheses with bain</span></span>
+<span id="cb16-38"><a href="#cb16-38" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(estimates,<span class="st">&quot;s1=s2=s3=s4=s5;s2&gt;s5&gt;s1&gt;s3&gt;s4&quot;</span>,</span>
+<span id="cb16-39"><a href="#cb16-39" tabindex="-1"></a><span class="at">n=</span>ngroup,<span class="at">Sigma=</span>covlist,<span class="at">group_parameters=</span><span class="dv">1</span>,<span class="at">joint_parameters=</span> <span class="dv">0</span>)</span>
+<span id="cb16-40"><a href="#cb16-40" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb16-41"><a href="#cb16-41" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb16-42"><a href="#cb16-42" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb16-43"><a href="#cb16-43" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="4" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian ANCOVA using a named vector as input for
+bain</li>
+</ol>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data se</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co"># make a factor of variable site</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>sesamesim<span class="sc">$</span>site <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co"># center the covariate. If centered the coef() command below displays the</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co"># adjusted means. If not centered the intercepts are displayed.</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>sesamesim<span class="sc">$</span>prenumb <span class="ot">&lt;-</span> sesamesim<span class="sc">$</span>prenumb <span class="sc">-</span> <span class="fu">mean</span>(sesamesim<span class="sc">$</span>prenumb)</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co"># execute an analysis of covariance using lm() which, due to the -1, returns</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co"># estimates of the adjusted means per group</span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>ancov2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(postnumb<span class="sc">~</span>site<span class="sc">+</span>prenumb<span class="dv">-1</span>,sesamesim)</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co"># take a look at the estimated adjusted means and their names</span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="fu">coef</span>(ancov2)</span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co"># collect the estimates of the adjusted means and regression coefficient of</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a><span class="co"># the covariate in a vector (the vector has to contain first the</span></span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="co"># adjusted means and next the regression coefficients of the covariates)</span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">coef</span>(ancov2)</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a><span class="co"># assign names to the estimates</span></span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a><span class="fu">names</span>(estimates)<span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;v.1&quot;</span>, <span class="st">&quot;v.2&quot;</span>, <span class="st">&quot;v.3&quot;</span>, <span class="st">&quot;v.4&quot;</span>,<span class="st">&quot;v.5&quot;</span>, <span class="st">&quot;pre&quot;</span>)</span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a><span class="co"># compute the sample size per group</span></span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a><span class="co"># (in case of missing values in the variables used, the command</span></span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a><span class="co"># below has to be modified such that only the cases without</span></span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a><span class="co"># missing values are counted)</span></span>
+<span id="cb17-23"><a href="#cb17-23" tabindex="-1"></a>ngroup <span class="ot">&lt;-</span> <span class="fu">table</span>(sesamesim<span class="sc">$</span>site)</span>
+<span id="cb17-24"><a href="#cb17-24" tabindex="-1"></a><span class="co"># compute for each group the covariance matrix of the parameters of that</span></span>
+<span id="cb17-25"><a href="#cb17-25" tabindex="-1"></a><span class="co"># group and collect these in a list note that, the residual variance as</span></span>
+<span id="cb17-26"><a href="#cb17-26" tabindex="-1"></a><span class="co"># estimated using lm is used to compute these covariance matrices</span></span>
+<span id="cb17-27"><a href="#cb17-27" tabindex="-1"></a>var <span class="ot">&lt;-</span> (<span class="fu">summary</span>(ancov2)<span class="sc">$</span>sigma)<span class="sc">**</span><span class="dv">2</span></span>
+<span id="cb17-28"><a href="#cb17-28" tabindex="-1"></a><span class="co"># below, for each group, the covariance matrix of the adjusted mean and</span></span>
+<span id="cb17-29"><a href="#cb17-29" tabindex="-1"></a><span class="co"># covariate is computed</span></span>
+<span id="cb17-30"><a href="#cb17-30" tabindex="-1"></a><span class="co"># see Hoijtink, Gu, and Mulder (2019) for further explanation and elaboration</span></span>
+<span id="cb17-31"><a href="#cb17-31" tabindex="-1"></a>cat1 <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">cbind</span>(sesamesim<span class="sc">$</span>site,sesamesim<span class="sc">$</span>prenumb), sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb17-32"><a href="#cb17-32" tabindex="-1"></a>cat1[,<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb17-33"><a href="#cb17-33" tabindex="-1"></a>cat1 <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(cat1)</span>
+<span id="cb17-34"><a href="#cb17-34" tabindex="-1"></a>cov1 <span class="ot">&lt;-</span> var <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(cat1) <span class="sc">%*%</span> cat1)</span>
+<span id="cb17-35"><a href="#cb17-35" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb17-36"><a href="#cb17-36" tabindex="-1"></a>cat2 <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">cbind</span>(sesamesim<span class="sc">$</span>site,sesamesim<span class="sc">$</span>prenumb), sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">2</span>)</span>
+<span id="cb17-37"><a href="#cb17-37" tabindex="-1"></a>cat2[,<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb17-38"><a href="#cb17-38" tabindex="-1"></a>cat2 <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(cat2)</span>
+<span id="cb17-39"><a href="#cb17-39" tabindex="-1"></a>cov2 <span class="ot">&lt;-</span> var <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(cat2) <span class="sc">%*%</span> cat2)</span>
+<span id="cb17-40"><a href="#cb17-40" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb17-41"><a href="#cb17-41" tabindex="-1"></a>cat3 <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">cbind</span>(sesamesim<span class="sc">$</span>site,sesamesim<span class="sc">$</span>prenumb), sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb17-42"><a href="#cb17-42" tabindex="-1"></a>cat3[,<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb17-43"><a href="#cb17-43" tabindex="-1"></a>cat3 <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(cat3)</span>
+<span id="cb17-44"><a href="#cb17-44" tabindex="-1"></a>cov3 <span class="ot">&lt;-</span> var <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(cat3) <span class="sc">%*%</span> cat3)</span>
+<span id="cb17-45"><a href="#cb17-45" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb17-46"><a href="#cb17-46" tabindex="-1"></a>cat4 <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">cbind</span>(sesamesim<span class="sc">$</span>site,sesamesim<span class="sc">$</span>prenumb), sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">4</span>)</span>
+<span id="cb17-47"><a href="#cb17-47" tabindex="-1"></a>cat4[,<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb17-48"><a href="#cb17-48" tabindex="-1"></a>cat4 <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(cat4)</span>
+<span id="cb17-49"><a href="#cb17-49" tabindex="-1"></a>cov4 <span class="ot">&lt;-</span> var <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(cat4) <span class="sc">%*%</span> cat4)</span>
+<span id="cb17-50"><a href="#cb17-50" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb17-51"><a href="#cb17-51" tabindex="-1"></a>cat5 <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">cbind</span>(sesamesim<span class="sc">$</span>site,sesamesim<span class="sc">$</span>prenumb), sesamesim<span class="sc">$</span>site <span class="sc">==</span> <span class="dv">5</span>)</span>
+<span id="cb17-52"><a href="#cb17-52" tabindex="-1"></a>cat5[,<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb17-53"><a href="#cb17-53" tabindex="-1"></a>cat5 <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(cat5)</span>
+<span id="cb17-54"><a href="#cb17-54" tabindex="-1"></a>cov5 <span class="ot">&lt;-</span> var <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(cat5) <span class="sc">%*%</span> cat5)</span>
+<span id="cb17-55"><a href="#cb17-55" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb17-56"><a href="#cb17-56" tabindex="-1"></a>covariances <span class="ot">&lt;-</span> <span class="fu">list</span>(cov1, cov2, cov3, cov4,cov5)</span>
+<span id="cb17-57"><a href="#cb17-57" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb17-58"><a href="#cb17-58" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb17-59"><a href="#cb17-59" tabindex="-1"></a><span class="co"># test hypotheses with bain. Note that there are multiple groups</span></span>
+<span id="cb17-60"><a href="#cb17-60" tabindex="-1"></a><span class="co"># characterized by one adjusted mean, therefore group_parameters=1 Note that</span></span>
+<span id="cb17-61"><a href="#cb17-61" tabindex="-1"></a><span class="co"># there is one covariate, therefore, joint_parameters=1.</span></span>
+<span id="cb17-62"><a href="#cb17-62" tabindex="-1"></a>results2<span class="ot">&lt;-</span><span class="fu">bain</span>(estimates,<span class="st">&quot;v.1=v.2=v.3=v.4=v.5;v.2 &gt; v.5 &gt; v.1 &gt; v.3 &gt;v.4;&quot;</span>,</span>
+<span id="cb17-63"><a href="#cb17-63" tabindex="-1"></a><span class="at">n=</span>ngroup,<span class="at">Sigma=</span>covariances,<span class="at">group_parameters=</span><span class="dv">1</span>,<span class="at">joint_parameters =</span> <span class="dv">1</span>)</span>
+<span id="cb17-64"><a href="#cb17-64" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb17-65"><a href="#cb17-65" tabindex="-1"></a><span class="fu">print</span>(results2)</span>
+<span id="cb17-66"><a href="#cb17-66" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb17-67"><a href="#cb17-67" tabindex="-1"></a><span class="fu">summary</span>(results2, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="5" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian one within factor repeated measures
+analysis</li>
+</ol>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co"># estimate the means of three repeated measures of number knowledge</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co"># the 1 denotes that these means have to be estimated</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>within <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">cbind</span>(prenumb,postnumb,funumb)<span class="sc">~</span><span class="dv">1</span>, <span class="at">data=</span>sesamesim)</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co"># take a look at the estimated means and their names</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="fu">coef</span>(within)</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co"># note that the model specified in lm has three dependent variables.</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co"># Consequently, the estimates rendered by lm are collected in a &quot;matrix&quot;.</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co"># Since bain needs a named vector containing the estimated means, the [1:3]</span></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co"># code is used to select the three means from a matrix and store them in a</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co"># vector.</span></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>estimate <span class="ot">&lt;-</span> <span class="fu">coef</span>(within)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="co"># give names to the estimates in anov</span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="fu">names</span>(estimate) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pre&quot;</span>, <span class="st">&quot;post&quot;</span>, <span class="st">&quot;fu&quot;</span>)</span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="co"># compute the sample size</span></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="co"># (in case of missing values in the variables used, the command</span></span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a><span class="co"># below has to be modified such that only the cases without</span></span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a><span class="co"># missing values are counted)</span></span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a>ngroup <span class="ot">&lt;-</span> <span class="fu">nrow</span>(sesamesim)</span>
+<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a><span class="co"># compute the covariance matrix of the three means</span></span>
+<span id="cb18-22"><a href="#cb18-22" tabindex="-1"></a>covmatr <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">vcov</span>(within))</span>
+<span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb18-24"><a href="#cb18-24" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb18-25"><a href="#cb18-25" tabindex="-1"></a><span class="co"># test hypotheses with bain. Note that there is one group, with three</span></span>
+<span id="cb18-26"><a href="#cb18-26" tabindex="-1"></a><span class="co"># means therefore group_parameters=3.</span></span>
+<span id="cb18-27"><a href="#cb18-27" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(estimate,<span class="st">&quot;pre = post = fu; pre &lt; post &lt; fu&quot;</span>, <span class="at">n=</span>ngroup,</span>
+<span id="cb18-28"><a href="#cb18-28" tabindex="-1"></a><span class="at">Sigma=</span>covmatr, <span class="at">group_parameters=</span><span class="dv">3</span>, <span class="at">joint_parameters =</span> <span class="dv">0</span>)</span>
+<span id="cb18-29"><a href="#cb18-29" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb18-30"><a href="#cb18-30" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb18-31"><a href="#cb18-31" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb18-32"><a href="#cb18-32" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="6" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian one between factor and one within factor
+repeated measures analysis</li>
+</ol>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co"># make a factor of the variable sex</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>sesamesim<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(sesamesim<span class="sc">$</span>sex)</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co"># estimate the means of prenumb, postnumb, and funumb for boys and girls</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co"># the -1 denotes that the means have to estimated</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>bw <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">cbind</span>(prenumb, postnumb, funumb)<span class="sc">~</span>sex<span class="dv">-1</span>, <span class="at">data=</span>sesamesim)</span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co"># take a look at the estimated means and their names</span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="fu">coef</span>(bw)</span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co"># collect the estimated means in a vector</span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a>est1 <span class="ot">&lt;-</span><span class="fu">coef</span>(bw)[<span class="dv">1</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="co"># the three means for sex = 1</span></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a>est2 <span class="ot">&lt;-</span><span class="fu">coef</span>(bw)[<span class="dv">2</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="co"># the three means for sex = 2</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a>estimate <span class="ot">&lt;-</span> <span class="fu">c</span>(est1,est2)</span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co"># give names to the estimates in anov</span></span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="fu">names</span>(estimate) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pre1&quot;</span>, <span class="st">&quot;post1&quot;</span>, <span class="st">&quot;fu1&quot;</span>,<span class="st">&quot;pre2&quot;</span>, <span class="st">&quot;post2&quot;</span>, <span class="st">&quot;fu2&quot;</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a><span class="co"># determine the sample size per group</span></span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a><span class="co"># (in case of missing values in the variables used, the command</span></span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a><span class="co"># below has to be modified such that only the cases without</span></span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a><span class="co"># missing values are counted)</span></span>
+<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a>ngroup<span class="ot">&lt;-</span><span class="fu">table</span>(sesamesim<span class="sc">$</span>sex)</span>
+<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a><span class="co"># cov1 has to contain the covariance matrix of the three means in group 1.</span></span>
+<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a><span class="co"># cov2 has to contain the covariance matrix in group 2</span></span>
+<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a><span class="co"># typing vcov(bw) in the console pane highlights the structure of</span></span>
+<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a><span class="co"># the covariance matrix of all 3+3=6 means</span></span>
+<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a><span class="co"># it has to be dissected in to cov1 and cov2</span></span>
+<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a>cov1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">vcov</span>(bw)[<span class="dv">1</span>,<span class="dv">1</span>],<span class="fu">vcov</span>(bw)[<span class="dv">1</span>,<span class="dv">3</span>],<span class="fu">vcov</span>(bw)[<span class="dv">1</span>,<span class="dv">5</span>],<span class="fu">vcov</span>(bw)[<span class="dv">3</span>,<span class="dv">1</span>],</span>
+<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a><span class="fu">vcov</span>(bw)[<span class="dv">3</span>,<span class="dv">3</span>],<span class="fu">vcov</span>(bw)[<span class="dv">3</span>,<span class="dv">5</span>],<span class="fu">vcov</span>(bw)[<span class="dv">5</span>,<span class="dv">1</span>],<span class="fu">vcov</span>(bw)[<span class="dv">5</span>,<span class="dv">3</span>],<span class="fu">vcov</span>(bw)[<span class="dv">5</span>,<span class="dv">5</span>])</span>
+<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a>cov1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(cov1,<span class="dv">3</span>,<span class="dv">3</span>)</span>
+<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a>cov2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">vcov</span>(bw)[<span class="dv">2</span>,<span class="dv">2</span>],<span class="fu">vcov</span>(bw)[<span class="dv">2</span>,<span class="dv">4</span>],<span class="fu">vcov</span>(bw)[<span class="dv">2</span>,<span class="dv">6</span>],<span class="fu">vcov</span>(bw)[<span class="dv">4</span>,<span class="dv">2</span>],</span>
+<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a><span class="fu">vcov</span>(bw)[<span class="dv">4</span>,<span class="dv">4</span>],<span class="fu">vcov</span>(bw)[<span class="dv">4</span>,<span class="dv">6</span>],<span class="fu">vcov</span>(bw)[<span class="dv">6</span>,<span class="dv">2</span>],<span class="fu">vcov</span>(bw)[<span class="dv">6</span>,<span class="dv">4</span>],<span class="fu">vcov</span>(bw)[<span class="dv">6</span>,<span class="dv">6</span>])</span>
+<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a>cov2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(cov2,<span class="dv">3</span>,<span class="dv">3</span>)</span>
+<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a>covariance<span class="ot">&lt;-</span><span class="fu">list</span>(cov1,cov2)</span>
+<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb19-35"><a href="#cb19-35" tabindex="-1"></a><span class="co"># test hypotheses with bain. Note that there are multiple groups</span></span>
+<span id="cb19-36"><a href="#cb19-36" tabindex="-1"></a><span class="co"># characterized by three means, therefore group_parameters=3. Note that there</span></span>
+<span id="cb19-37"><a href="#cb19-37" tabindex="-1"></a><span class="co"># are no additional parameters, therefore, joint_parameters=0.</span></span>
+<span id="cb19-38"><a href="#cb19-38" tabindex="-1"></a>results <span class="ot">&lt;-</span><span class="fu">bain</span>(estimate, <span class="st">&quot;pre1 - pre2 = post1 - post2 = fu1 -fu2;</span></span>
+<span id="cb19-39"><a href="#cb19-39" tabindex="-1"></a><span class="st">pre1 - pre2 &gt; post1 - post2 &gt; fu1 -fu2&quot;</span>  , <span class="at">n=</span>ngroup, <span class="at">Sigma=</span>covariance,</span>
+<span id="cb19-40"><a href="#cb19-40" tabindex="-1"></a><span class="at">group_parameters=</span><span class="dv">3</span>, <span class="at">joint_parameters =</span> <span class="dv">0</span>)</span>
+<span id="cb19-41"><a href="#cb19-41" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb19-42"><a href="#cb19-42" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb19-43"><a href="#cb19-43" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb19-44"><a href="#cb19-44" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="7" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian logistic regression as the counterpart of
+Bayesian multiple regression</li>
+</ol>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co"># regression coefficients can only be mutually compared if the</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="co"># corresponding predictors are measured on the same scale, therefore the</span></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="co"># predictors are standardized</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>sesamesim<span class="sc">$</span>age <span class="ot">&lt;-</span> (sesamesim<span class="sc">$</span>age <span class="sc">-</span> <span class="fu">mean</span>(sesamesim<span class="sc">$</span>age))<span class="sc">/</span><span class="fu">sd</span>(sesamesim<span class="sc">$</span>age)</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>sesamesim<span class="sc">$</span>peabody <span class="ot">&lt;-</span> (sesamesim<span class="sc">$</span>peabody <span class="sc">-</span> <span class="fu">mean</span>(sesamesim<span class="sc">$</span>peabody))<span class="sc">/</span></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="fu">sd</span>(sesamesim<span class="sc">$</span>peabody)</span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>sesamesim<span class="sc">$</span>prenumb <span class="ot">&lt;-</span> (sesamesim<span class="sc">$</span>prenumb <span class="sc">-</span> <span class="fu">mean</span>(sesamesim<span class="sc">$</span>prenumb))<span class="sc">/</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a><span class="fu">sd</span>(sesamesim<span class="sc">$</span>prenumb)</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a><span class="co"># estimate the logistic regression coefficients</span></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>logreg <span class="ot">&lt;-</span> <span class="fu">glm</span>(viewenc <span class="sc">~</span> age <span class="sc">+</span> peabody <span class="sc">+</span> prenumb, <span class="at">family=</span>binomial,</span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="at">data=</span>sesamesim)</span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="co"># take a look at the estimates and their names</span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a><span class="fu">coef</span>(logreg)</span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a><span class="co"># collect the estimated intercept and regression coefficients in a vector</span></span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a>estimate <span class="ot">&lt;-</span> <span class="fu">coef</span>(logreg)</span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="co"># give names to the estimates</span></span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a><span class="fu">names</span>(estimate) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;int&quot;</span>, <span class="st">&quot;age&quot;</span>, <span class="st">&quot;peab&quot;</span> ,<span class="st">&quot;pre&quot;</span> )</span>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a><span class="co"># compute the sample size. Note that, this is an analysis with ONE group</span></span>
+<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a><span class="co"># (in case of missing values in the variables used, the command</span></span>
+<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a><span class="co"># below has to be modified such that only the cases without</span></span>
+<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a><span class="co"># missing values are counted)</span></span>
+<span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a>ngroup <span class="ot">&lt;-</span> <span class="fu">nrow</span>(sesamesim)</span>
+<span id="cb20-25"><a href="#cb20-25" tabindex="-1"></a><span class="co"># compute the covariance matrix of the intercept and regression coefficients</span></span>
+<span id="cb20-26"><a href="#cb20-26" tabindex="-1"></a>covmatr <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">vcov</span>(logreg))</span>
+<span id="cb20-27"><a href="#cb20-27" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb20-28"><a href="#cb20-28" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb20-29"><a href="#cb20-29" tabindex="-1"></a><span class="co"># test hypotheses with bain. Note that there is one group, with four</span></span>
+<span id="cb20-30"><a href="#cb20-30" tabindex="-1"></a><span class="co"># parameters (intercept plus three regression coefficients) therefore</span></span>
+<span id="cb20-31"><a href="#cb20-31" tabindex="-1"></a><span class="co"># group_parameters=4.</span></span>
+<span id="cb20-32"><a href="#cb20-32" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(estimate, <span class="st">&quot;age = peab = pre; age &gt; pre &gt; peab&quot;</span>, <span class="at">n=</span>ngroup,</span>
+<span id="cb20-33"><a href="#cb20-33" tabindex="-1"></a><span class="at">Sigma=</span>covmatr, <span class="at">group_parameters=</span><span class="dv">4</span>, <span class="at">joint_parameters =</span> <span class="dv">0</span>)</span>
+<span id="cb20-34"><a href="#cb20-34" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb20-35"><a href="#cb20-35" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb20-36"><a href="#cb20-36" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb20-37"><a href="#cb20-37" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol start="8" style="list-style-type: lower-alpha">
+<li>An example of the Bayesian logistic regression as the counterpart of
+an ANCOVA. This is Example 3 from Hoijtink, Gu, and Mulder (2019). The
+research question concerns the probability of encouragement to view
+sesame street (a dichotomous 0/1 meaning no/yes dependent variable) for
+boys (sex=1) and girls (sex=2) adjusted for their age. This is a kind of
+ANCOVA with a dichotomous instead of a continuous dependent
+variable.</li>
+</ol>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># load the bain package which includes the simulated sesamesim data set</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co"># load the numDeriv package which will be used to compute the covariance</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co"># matrix of the adjusted group coefficients and regression coefficient of age</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co"># for the boys and the girls # using the estimates obtained using the data for </span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co"># the boys AND the girls.</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="fu">library</span>(numDeriv)</span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a><span class="co"># make a factor of the variable sex</span></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>sesamesim<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(sesamesim<span class="sc">$</span>sex)</span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="co"># center the covariate age</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a>sesamesim<span class="sc">$</span>age <span class="ot">&lt;-</span> sesamesim<span class="sc">$</span>age <span class="sc">-</span> <span class="fu">mean</span>(sesamesim<span class="sc">$</span>age)</span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="co"># determine sample size per sex group</span></span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a><span class="co"># (in case of missing values in the variables used, the command</span></span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a><span class="co"># below has to be modified such that only the cases without</span></span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a><span class="co"># missing values are counted)</span></span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>ngroup <span class="ot">&lt;-</span> <span class="fu">table</span>(sesamesim<span class="sc">$</span>sex)</span>
+<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a><span class="co"># execute the logistic regression, -1 ensures that the coefficients</span></span>
+<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a><span class="co"># for boys and girl are estimated adjusted for the covariate age</span></span>
+<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a>anal <span class="ot">&lt;-</span> <span class="fu">glm</span>(viewenc <span class="sc">~</span> sex <span class="sc">+</span> age <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family=</span>binomial, <span class="at">data=</span>sesamesim)</span>
+<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a><span class="co"># take a look at the estimates and their names</span></span>
+<span id="cb21-21"><a href="#cb21-21" tabindex="-1"></a><span class="fu">coef</span>(anal)</span>
+<span id="cb21-22"><a href="#cb21-22" tabindex="-1"></a><span class="co"># collect the estimates obtained using the data of the boys AND the</span></span>
+<span id="cb21-23"><a href="#cb21-23" tabindex="-1"></a><span class="co"># girls in a vector. This vector contains first the group specific</span></span>
+<span id="cb21-24"><a href="#cb21-24" tabindex="-1"></a><span class="co"># parameters followed by the regression coefficient of the covariate.</span></span>
+<span id="cb21-25"><a href="#cb21-25" tabindex="-1"></a>estimates <span class="ot">&lt;-</span><span class="fu">coef</span>(anal)</span>
+<span id="cb21-26"><a href="#cb21-26" tabindex="-1"></a><span class="co"># give names to the estimates</span></span>
+<span id="cb21-27"><a href="#cb21-27" tabindex="-1"></a><span class="fu">names</span>(estimates) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;boys&quot;</span>, <span class="st">&quot;girls&quot;</span>, <span class="st">&quot;age&quot;</span>)</span>
+<span id="cb21-28"><a href="#cb21-28" tabindex="-1"></a><span class="co"># use numDeriv to compute the Hessian matrix and subsequently the</span></span>
+<span id="cb21-29"><a href="#cb21-29" tabindex="-1"></a><span class="co"># covariance matrix for each of the two (boys and girls) groups.</span></span>
+<span id="cb21-30"><a href="#cb21-30" tabindex="-1"></a><span class="co"># The vector f should contain the regression coefficient of the group</span></span>
+<span id="cb21-31"><a href="#cb21-31" tabindex="-1"></a><span class="co"># at hand and the regression coefficient of the covariate.</span></span>
+<span id="cb21-32"><a href="#cb21-32" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb21-33"><a href="#cb21-33" tabindex="-1"></a><span class="co"># the first group</span></span>
+<span id="cb21-34"><a href="#cb21-34" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">cbind</span>(sesamesim<span class="sc">$</span>sex,sesamesim<span class="sc">$</span>age,sesamesim<span class="sc">$</span>viewenc),</span>
+<span id="cb21-35"><a href="#cb21-35" tabindex="-1"></a>sesamesim<span class="sc">$</span>sex<span class="sc">==</span><span class="dv">1</span>)</span>
+<span id="cb21-36"><a href="#cb21-36" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb21-37"><a href="#cb21-37" tabindex="-1"></a>f[<span class="dv">1</span>] <span class="ot">&lt;-</span> estimates[<span class="dv">1</span>] <span class="co"># the regression coefficient of boys</span></span>
+<span id="cb21-38"><a href="#cb21-38" tabindex="-1"></a>f[<span class="dv">2</span>] <span class="ot">&lt;-</span> estimates[<span class="dv">3</span>] <span class="co"># the regression coefficient of age</span></span>
+<span id="cb21-39"><a href="#cb21-39" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb21-40"><a href="#cb21-40" tabindex="-1"></a><span class="co"># within the for loop below the log likelihood of the logistic</span></span>
+<span id="cb21-41"><a href="#cb21-41" tabindex="-1"></a><span class="co"># regression model is computed using the data for the boys</span></span>
+<span id="cb21-42"><a href="#cb21-42" tabindex="-1"></a>logist1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb21-43"><a href="#cb21-43" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb21-44"><a href="#cb21-44" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>ngroup[<span class="dv">1</span>]){</span>
+<span id="cb21-45"><a href="#cb21-45" tabindex="-1"></a>    out <span class="ot">&lt;-</span> out <span class="sc">+</span> data[i,<span class="dv">3</span>]<span class="sc">*</span>(x[<span class="dv">1</span>] <span class="sc">+</span> x[<span class="dv">2</span>]<span class="sc">*</span>data[i,<span class="dv">2</span>]) <span class="sc">-</span> <span class="fu">log</span> (<span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb21-46"><a href="#cb21-46" tabindex="-1"></a>    <span class="fu">exp</span>(x[<span class="dv">1</span>] <span class="sc">+</span> x[<span class="dv">2</span>]<span class="sc">*</span>data[i,<span class="dv">2</span>]))</span>
+<span id="cb21-47"><a href="#cb21-47" tabindex="-1"></a>  }</span>
+<span id="cb21-48"><a href="#cb21-48" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
+<span id="cb21-49"><a href="#cb21-49" tabindex="-1"></a>}</span>
+<span id="cb21-50"><a href="#cb21-50" tabindex="-1"></a>hes1 <span class="ot">&lt;-</span> <span class="fu">hessian</span>(<span class="at">func=</span>logist1, <span class="at">x=</span>f)</span>
+<span id="cb21-51"><a href="#cb21-51" tabindex="-1"></a><span class="co"># multiply with -1 and invert to obtain the covariance matrix for the</span></span>
+<span id="cb21-52"><a href="#cb21-52" tabindex="-1"></a><span class="co"># first group</span></span>
+<span id="cb21-53"><a href="#cb21-53" tabindex="-1"></a>cov1 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> <span class="fu">solve</span>(hes1)</span>
+<span id="cb21-54"><a href="#cb21-54" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb21-55"><a href="#cb21-55" tabindex="-1"></a><span class="co"># the second group</span></span>
+<span id="cb21-56"><a href="#cb21-56" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">cbind</span>(sesamesim<span class="sc">$</span>sex,sesamesim<span class="sc">$</span>age,sesamesim<span class="sc">$</span>viewenc),</span>
+<span id="cb21-57"><a href="#cb21-57" tabindex="-1"></a>sesamesim<span class="sc">$</span>sex<span class="sc">==</span><span class="dv">2</span>)</span>
+<span id="cb21-58"><a href="#cb21-58" tabindex="-1"></a>f[<span class="dv">1</span>] <span class="ot">&lt;-</span> estimates[<span class="dv">2</span>] <span class="co"># the regression coefficient of girls</span></span>
+<span id="cb21-59"><a href="#cb21-59" tabindex="-1"></a>f[<span class="dv">2</span>] <span class="ot">&lt;-</span> estimates[<span class="dv">3</span>] <span class="co"># the regression coefficient of age</span></span>
+<span id="cb21-60"><a href="#cb21-60" tabindex="-1"></a></span>
+<span id="cb21-61"><a href="#cb21-61" tabindex="-1"></a><span class="co"># within the for loop below the log likelihood of the logistic</span></span>
+<span id="cb21-62"><a href="#cb21-62" tabindex="-1"></a><span class="co"># regression model is computed using the data for the girls</span></span>
+<span id="cb21-63"><a href="#cb21-63" tabindex="-1"></a>logist2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb21-64"><a href="#cb21-64" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb21-65"><a href="#cb21-65" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>ngroup[<span class="dv">2</span>]){ </span>
+<span id="cb21-66"><a href="#cb21-66" tabindex="-1"></a>    out <span class="ot">&lt;-</span> out <span class="sc">+</span> data[i,<span class="dv">3</span>]<span class="sc">*</span>(x[<span class="dv">1</span>] <span class="sc">+</span> x[<span class="dv">2</span>]<span class="sc">*</span>data[i,<span class="dv">2</span>]) <span class="sc">-</span> <span class="fu">log</span> (<span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb21-67"><a href="#cb21-67" tabindex="-1"></a>    <span class="fu">exp</span>(x[<span class="dv">1</span>] <span class="sc">+</span> x[<span class="dv">2</span>]<span class="sc">*</span>data[i,<span class="dv">2</span>]))</span>
+<span id="cb21-68"><a href="#cb21-68" tabindex="-1"></a>  }</span>
+<span id="cb21-69"><a href="#cb21-69" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
+<span id="cb21-70"><a href="#cb21-70" tabindex="-1"></a>}</span>
+<span id="cb21-71"><a href="#cb21-71" tabindex="-1"></a>hes2 <span class="ot">&lt;-</span> <span class="fu">hessian</span>(<span class="at">func=</span>logist2, <span class="at">x=</span>f)</span>
+<span id="cb21-72"><a href="#cb21-72" tabindex="-1"></a><span class="co"># multiply with -1 and invert to obtain the covariance matrix</span></span>
+<span id="cb21-73"><a href="#cb21-73" tabindex="-1"></a>cov2 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> <span class="fu">solve</span>(hes2)</span>
+<span id="cb21-74"><a href="#cb21-74" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb21-75"><a href="#cb21-75" tabindex="-1"></a><span class="co">#make a list of covariance matrices</span></span>
+<span id="cb21-76"><a href="#cb21-76" tabindex="-1"></a>covariance<span class="ot">&lt;-</span><span class="fu">list</span>(cov1,cov2)</span>
+<span id="cb21-77"><a href="#cb21-77" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb21-78"><a href="#cb21-78" tabindex="-1"></a><span class="co"># set a seed value</span></span>
+<span id="cb21-79"><a href="#cb21-79" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb21-80"><a href="#cb21-80" tabindex="-1"></a><span class="co"># test hypotheses with bain. Note that there are multiple groups</span></span>
+<span id="cb21-81"><a href="#cb21-81" tabindex="-1"></a><span class="co"># characterized by one adjusted group coefficient,</span></span>
+<span id="cb21-82"><a href="#cb21-82" tabindex="-1"></a><span class="co"># therefore group_parameters=1. Note that there is one covariate,</span></span>
+<span id="cb21-83"><a href="#cb21-83" tabindex="-1"></a><span class="co"># therefore, joint_parameters=1.</span></span>
+<span id="cb21-84"><a href="#cb21-84" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bain</span>(estimates, <span class="st">&quot;boys &lt; girls &amp; age &gt; 0&quot;</span>, <span class="at">n=</span>ngroup,</span>
+<span id="cb21-85"><a href="#cb21-85" tabindex="-1"></a><span class="at">Sigma=</span>covariance, <span class="at">group_parameters=</span><span class="dv">1</span>, <span class="at">joint_parameters =</span> <span class="dv">1</span>)</span>
+<span id="cb21-86"><a href="#cb21-86" tabindex="-1"></a><span class="co"># display the results</span></span>
+<span id="cb21-87"><a href="#cb21-87" tabindex="-1"></a><span class="fu">print</span>(results)</span>
+<span id="cb21-88"><a href="#cb21-88" tabindex="-1"></a><span class="co"># obtain the descriptives table</span></span>
+<span id="cb21-89"><a href="#cb21-89" tabindex="-1"></a><span class="fu">summary</span>(results, <span class="at">ci =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<ol style="list-style-type: lower-roman">
+<li>An example of Bayesian confirmatory factor analysis with a named
+vector object. This option uses <code>bain.default()</code>, so the user
+must manually extract the required information. See the tutorial by Van
+Lissa, Gu, Mulder, Rosseel, van Zundert, and Hoijtink (2020) for further
+elaborations. First, we fit a structural equation model using
+<code>lavaan</code>:</li>
+</ol>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">library</span>(bain)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="st">&#39;A =~ Ab + Al + Af + An + Ar + Ac </span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="st">           B =~ Bb + Bl + Bf + Bn + Br + Bc&#39;</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">sem</span>(model1, <span class="at">data =</span> sesamesim, <span class="at">std.lv =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>We want to specify the following hypotheses:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>hypotheses <span class="ot">&lt;-</span> <span class="st">&quot;(Ab, Al, Af, An, Ar, Ac) &gt;.6 &amp;</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="st">               (Bb, Bl, Bf, Bn, Br, Bc) &gt;.6&quot;</span></span></code></pre></div>
+<p>Next, we extract the required information from the
+<code>lavaan</code> model object, in the order of the parameter table
+above:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># Extract standardized parameter estimates (argument x)</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>PE1 <span class="ot">&lt;-</span> <span class="fu">parameterEstimates</span>(fit1, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co"># Identify which parameter estimates are factor loadings</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>loadings <span class="ot">&lt;-</span> <span class="fu">which</span>(PE1<span class="sc">$</span>op <span class="sc">==</span> <span class="st">&quot;=~&quot;</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co"># Collect the standardized &quot;std.all&quot; factor loadings &quot;=~&quot;</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> PE1<span class="sc">$</span>std.all[loadings]</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co"># Assign names to the standardized factor loadings</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="fu">names</span>(estimates) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Ab&quot;</span>, <span class="st">&quot;Al&quot;</span>, <span class="st">&quot;Af&quot;</span>, <span class="st">&quot;An&quot;</span>, <span class="st">&quot;Ar&quot;</span>, <span class="st">&quot;Ac&quot;</span>, </span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>                      <span class="st">&quot;Bb&quot;</span>, <span class="st">&quot;Bl&quot;</span>, <span class="st">&quot;Bf&quot;</span>, <span class="st">&quot;Bn&quot;</span>, <span class="st">&quot;Br&quot;</span>, <span class="st">&quot;Bc&quot;</span>)</span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="co"># Extract sample size (argument n)</span></span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nobs</span>(fit1)</span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a><span class="co"># Extract the standardized model parameter covariance matrix,</span></span>
+<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a><span class="co"># selecting only the rows and columns for the loadings</span></span>
+<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a>covariance <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit1, <span class="st">&quot;vcov.std.all&quot;</span>)[loadings, loadings]</span>
+<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a><span class="co"># Give the covariance matrix the same names as the estimate</span></span>
+<span id="cb24-19"><a href="#cb24-19" tabindex="-1"></a><span class="fu">dimnames</span>(covariance) <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">names</span>(estimates), <span class="fu">names</span>(estimates))</span>
+<span id="cb24-20"><a href="#cb24-20" tabindex="-1"></a></span>
+<span id="cb24-21"><a href="#cb24-21" tabindex="-1"></a><span class="co"># Put the covariance matrix in a list</span></span>
+<span id="cb24-22"><a href="#cb24-22" tabindex="-1"></a>covariance <span class="ot">&lt;-</span> <span class="fu">list</span>(covariance)</span>
+<span id="cb24-23"><a href="#cb24-23" tabindex="-1"></a></span>
+<span id="cb24-24"><a href="#cb24-24" tabindex="-1"></a><span class="co"># Specify number of group parameters; this simply means that there </span></span>
+<span id="cb24-25"><a href="#cb24-25" tabindex="-1"></a><span class="co"># are 12 parameters in the estimate.</span></span>
+<span id="cb24-26"><a href="#cb24-26" tabindex="-1"></a>group_parameters <span class="ot">&lt;-</span> <span class="dv">12</span></span>
+<span id="cb24-27"><a href="#cb24-27" tabindex="-1"></a></span>
+<span id="cb24-28"><a href="#cb24-28" tabindex="-1"></a><span class="co"># Then, the number of joint parameters. This is always 0 for evaluations of</span></span>
+<span id="cb24-29"><a href="#cb24-29" tabindex="-1"></a><span class="co"># SEM hypotheses:</span></span>
+<span id="cb24-30"><a href="#cb24-30" tabindex="-1"></a>joint_parameters <span class="ot">&lt;-</span> <span class="dv">0</span></span></code></pre></div>
+<p>Now, we can evaluate the hypotheses using
+<code>bain.default()</code>:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">bain</span>(<span class="at">x =</span> estimates,</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>            <span class="at">hypothesis =</span> hypotheses,</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>            <span class="at">n =</span> n,</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>            <span class="at">Sigma =</span> covariance,</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>            <span class="at">group_parameters =</span> group_parameters,</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>            <span class="at">joint_parameters =</span> joint_parameters)</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>res</span></code></pre></div>
+<p>Finally, we print the results of the bain analysis and obtain the
+estimates and 95% central credibility intervals</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>sres <span class="ot">&lt;-</span> <span class="fu">summary</span>(res, <span class="at">ci =</span> <span class="fl">0.95</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>sres</span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

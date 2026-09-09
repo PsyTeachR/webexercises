@@ -1,0 +1,39 @@
+Package: Rdpack
+Type: Package
+Title: Update and Manipulate Rd Documentation Objects
+Version: 2.6.6
+Authors@R: c( person(given = c("Georgi", "N."),
+                     family = "Boshnakov", 
+                     role = c("aut", "cre"), 
+                     email = "georgi.boshnakov@manchester.ac.uk",
+                     comment = c(ORCID = "0000-0003-2839-346X")),
+              person(given = "Duncan", 
+                     family = "Murdoch", 
+                     role = "ctb", email = "murdoch.duncan@gmail.com") )
+Description: Functions for manipulation of R documentation objects,
+    including functions reprompt() and ereprompt() for updating 'Rd'
+    documentation for functions, methods and classes; 'Rd' macros for
+    citations and import of references from 'bibtex' files for use in
+    'Rd' files and 'roxygen2' comments; 'Rd' macros for evaluating and
+    inserting snippets of 'R' code and the results of its evaluation or
+    creating graphics on the fly; and many functions for manipulation of
+    references and Rd files.
+URL: https://geobosh.github.io/Rdpack/ (doc),
+        https://CRAN.R-project.org/package=Rdpack
+BugReports: https://github.com/GeoBosh/Rdpack/issues
+Depends: R (>= 2.15.0), methods
+Imports: tools, utils, rbibutils (> 2.4)
+Suggests: grDevices, testthat, rstudioapi, rprojroot, gbRd
+License: GPL (>= 2)
+LazyLoad: yes
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+NeedsCompilation: no
+Packaged: 2026-02-07 16:29:31 UTC; georgi
+Author: Georgi N. Boshnakov [aut, cre] (ORCID:
+    <https://orcid.org/0000-0003-2839-346X>),
+  Duncan Murdoch [ctb]
+Maintainer: Georgi N. Boshnakov <georgi.boshnakov@manchester.ac.uk>
+Repository: CRAN
+Date/Publication: 2026-02-08 06:10:17 UTC
+Built: R 4.6.1; ; 2026-09-02 02:33:29 UTC; windows
