@@ -1,0 +1,216 @@
+% preamble taken from the vignette in package strucchange
+%
+\documentclass[nojss,article]{jss}
+\usepackage[T1]{fontenc}
+%\usepackage{a4wide}
+\usepackage[left=2cm,right=2cm,bottom=15mm]{geometry}
+\usepackage{graphicx,color,alltt}
+\usepackage[authoryear,round,longnamesfirst]{natbib}
+\usepackage{hyperref}
+
+\usepackage{amsmath, amsfonts}
+% \usepackage{Sweave}
+%\definecolor{Red}{rgb}{0.7,0,0}
+%\definecolor{Blue}{rgb}{0,0,0.8}
+%\definecolor{hellgrau}{rgb}{0.55,0.55,0.55}
+
+%\newcommand{\E}{\mbox{$\mathsf{E}$}}
+%\newcommand{\VAR}{\mbox{$\mathsf{VAR}$}}
+%\newcommand{\COV}{\mbox{$\mathsf{COV}$}}
+%\newcommand{\p}{\mbox{$\mathsf{P}$}}
+%\newcommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
+%\newenvironment{smallexample}{\begin{alltt}\small}{\end{alltt}}
+
+%\setlength{\parskip}{0.5ex plus0.1ex minus0.1ex}
+%\setlength{\parindent}{0em}
+%
+%\bibpunct{(}{)}{;}{a}{}{,}
+%
+%\newcommand{\ui}{\underline{i}}
+%\newcommand{\oi}{\overline{\imath}}
+
+%\RequirePackage{color}
+%\definecolor{Red}{rgb}{0.5,0,0}
+%\definecolor{Blue}{rgb}{0,0,0.5}
+%\definecolor{hellgrau}{rgb}{0.55,0.55,0.55}
+%
+%\hypersetup{%
+%hyperindex,%
+%colorlinks,%
+%linktocpage,%
+%plainpages=false,%
+%linkcolor=Blue,%
+%citecolor=Blue,%
+%urlcolor=Red,%
+%pdfstartview=Fit,%
+%pdfview={XYZ null null null}%
+%}
+
+
+% SweaveOpts{engine=R,eps=FALSE}
+%\VignetteIndexEntry{Manipulate, import and export 'bibentryExtra' objects}
+%\VignetteDepends{rbibutils}
+%\VignetteKeyword{bibtex, bib, bibliographic references, R} % was: \VignetteKeywords
+%\VignettePackage{rbibutils}
+
+
+<<echo=FALSE>>=
+library(rbibutils)
+pd <- packageDescription("rbibutils")
+@
+
+% don't use latex commands in the title, may cause difficult to trace trouble.
+\title{Manipulate, import and export "bibentryExtra" objects \\ (draft)}
+\author{Georgi N. Boshnakov \\ University of Manchester }
+\Plainauthor{Georgi N. Boshnakov}
+
+\Address{
+  Georgi N. Boshnakov\\
+  School of Mathematics\\
+  The University of Manchester\\
+  Oxford Road, Manchester M13 9PL, UK\\
+  URL: \url{https://personalpages.manchester.ac.uk/staff/georgi.boshnakov/}
+}
+
+%\date{}
+%\maketitle
+
+ 
+\Abstract{
+
+  % this paragraph is the same as the opening one below, except that t doesn't inlude the
+  % citation \citep{baseR}
+  Objects from class \code{"bibentryExtra"} can represent any type of bibliographic entries.
+  There are functions for import, manipulation and export in different formats.  In
+  comparison, class \code{"bibentry"} from base R package 'utils' has a different emphasis
+  and supports only the default Bibtex types.
+  
+  
+  This vignette is part of package \pkg{rbibutils}, version~\Sexpr{pd$Version}. %$
+}
+
+\Keywords{bibtex, bib, bibliographic references, R}
+\Plainkeywords{bibtex, bib, bibliographic references, R}
+
+
+\begin{document}
+
+\section{Introduction}
+\label{sec:introduction}
+
+Objects from class \code{"bibentryExtra"} can represent any type of bibliographic entries.
+There are functions for import, manipulation and export in different formats.  In comparison,
+class \code{"bibentry"} from base R package 'utils'
+\citep{baseR}
+has a different emphasis and supports only the default Bibtex types.
+ 
+Functions are available for import and export, as well as subsetting with index operators.
+Export can be to plain text, bibtex, Latex, R code, html and Rd.  There is also a style,
+"JSSextra", which adds a few types for exporting bibliography references to Latex.
+
+Class \code{"bibentryExtra"} inherits from \code{"bibentry"} and is fully compatible with it
+for biblography items that are handled by \code{"bibentry"}.
+
+In this document we use \emph{bib file} of just \emph{bib} to refer to files or character
+vectors containing bibliographic entries in Bibtex format, including Biblatex.
+
+
+\section{Import to bibentryExtra}
+\label{sec:import-bibentryextra}
+
+The most common case is importing from a bib file, containing bibliographic entries (items).
+<<>>=
+bibdir <- system.file("bib", package = "rbibutils")
+wuertzetal <- readBib(file.path(bibdir, "WuertzEtalGarch.bib"), direct = TRUE)
+wuertzetal
+print(wuertzetal, style = "bibtex")
+@
+There is a long field 'note' which we may not wish to print. We can use the assignment
+version of the dollar operator, \code{$<-}, to remove it or replace it with another
+value. Here we remove it:
+<<>>=
+wuertzetal$note <- NULL
+wuertzetal
+@ 
+This modfied value is used below.
+
+There are several function for import.
+
+There is also the function \code{bibentryExtra}, which creates objects directly in R,
+similarly to \code{bibentry}.
+
+The dollar operator extracts a field, for example
+<<>>=
+wuertzetal$year
+@ 
+If the object contains more than one bib entry the value is a list.
+In this case the object contains only one bib entry, so the outer list is removed. This is
+just as a matrix becomes a vector when subsetting leaves only one row.
+
+Some fields may be \code{NULL} (absent), may have length larger than one, or have a class
+other than \code{"character"}. Here we have three authors and they are contained in a single
+object:
+<<>>=
+wuertzetal$author
+
+class(wuertzetal$author)
+@
+
+The key used for citations is also considered a field:
+<<>>=
+wuertzetal$key
+@ 
+So is the bib type:
+<<>>=
+wuertzetal$bibtype
+@ 
+In this case the bib type is a non-standrd field for Bibtex, though it is for Biblatex.
+
+It is important to note that the argument of the dollar operator is the name of a field, as
+illustrated above. We might expect that  \code{"[["} is similar but this is not the case:
+
+<<eval = FALSE>>=
+wuertzetal[["author"]]
+## Warning message:
+## In `[[.bibentry`(wuertzetal, "author") : subscript out of bounds
+@
+
+
+
+
+<<>>=
+wuertzetal[[1, "note"]]
+@ 
+
+
+
+This is because the argument of \code{"[["} is a bib entry key (a value, not the word
+\emph{key}). It returns a \code{"bibentryExtra"} object:
+<<>>=
+<<eval = FALSE>>=
+wuertzetal[["WuertzEtalGarch"]]
+@ 
+
+\section{Accessing bib items and their fields}
+\label{sec:accessing-bib-items}
+
+Currently there are \code{"bibentryExtra"} methods for \code{[}, \code{[[}, \code{[[<-}
+(assignment with \code{[[}) and \code{\$<-} (assignment with \code{\$}). Also, the method for
+\code{$} is inherited from that of class bibentry and there is no method for \code{[<-}
+(assignment with \code{[}).
+
+
+\section{Replacing bib items and fields }
+\label{sec:replacing-bib-items}
+
+
+
+% \newpage{}
+\bibliography{REFERENCES}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% TeX-master: "rbibutils-woven"
+%%% End:

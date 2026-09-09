@@ -1,0 +1,123 @@
+% from 'The LaTeX companion' book, see https://ctan.org/pkg/book-examples
+%      Georgi: I added a keyword field for tests
+
+@String{ttct    = "Tools and Techniques for Computer
+                    Typesetting"   }
+
+ @Book{LGC97,
+   author =       "Michel Goossens and Sebastian Rahtz
+                   and Frank Mittelbach",
+   title =        "The {\LaTeX} Graphics Companion:
+                   Illustrating Documents with {\TeX}
+                   and {PostScript}",
+   publisher =    "Ad{\-d}i{\-s}on-Wes{\-l}ey Longman",
+   address =      "Reading, MA, USA",
+   pages =        "xxi + 554",
+   year =         "1997",
+   ISBN =         "0-201-85469-4",
+   series =       ttct
+ }
+ @UNPUBLISHED{test97,
+  author = "Michel Goossens and Ben User
+             and Joe Doe and others",
+  title  = "Ambiguous citations",
+  year   = "1997",
+  note   = "Submitted to the " # ibmjrd
+ }
+ @Book{LWC99,
+   author =       "Michel Goossens and Sebastian Rahtz",
+   title =        "The {\LaTeX} {Web} companion:
+                   integrating {\TeX}, {HTML},
+                   and {XML}",
+   publisher =    "Ad{\-d}i{\-s}on-Wes{\-l}ey Longman",
+   address =      "Reading, MA, USA",
+   pages =        "xxii + 522",
+   year =         "1999",
+   ISBN =         "0-201-43311-7",
+   note =         "With Eitan M. Gurari and Ross Moore
+                   and Robert S. Sutor",
+   series =       ttct
+ }
+ @Book{Knuth-CT-a,
+   Author         = "Donald E. Knuth",
+   Title          = "The {\TeX}book",
+   Publisher      = "Ad{\-d}i{\-s}on-Wes{\-l}ey",
+   Address        = "Reading, MA, USA",
+   Volume         = "A",
+   Series         = "Computers and Typesetting",
+   pages          = "ix + 483",
+   year           = 1986,
+   isbn           = "0-201-13447-0",
+   keyword        = "typesetting",
+ }
+ @Article{Knuth:TB10-1-31,
+   Author         = "Donald E. Knuth",
+   Title          = "{Typesetting  Concrete
+                     Mathematics}",
+   Journal        = "TUGboat",
+   Volume         = "10",
+   Number         = "1",
+   Pages          = "31--36",
+   year           = 1989,
+   month          = apr,
+   issn           = "0896-3207"
+ }
+ @Book{vLeunen:92,
+   author       = "Mary-Claire van Leunen",
+   gender       = "sf",
+   title        = "A handbook for scholars",
+   publisher    = "Oxford University Press",
+   address      = "Walton Street, Oxford OX2 6DP, UK",
+   pages        = "xi + 348",
+   year         = "92"
+ }
+
+ @manual{GNUMake,     key = {make},
+  title = {{GNU Make}, A Program for Directing
+  Recompilation},  organization= "Free
+  Software Foundation",address = "Boston,
+  Massachusetts",ISBN={1-882114-80-9},year = 2000}
+
+ @book{G-G,
+  TITLE     = {{Gutenberg Jahrbuch}},
+  EDITOR    = {Hans-Joachim Koppitz},
+  PUBLISHER = {Gutenberg-Gesellschaft, Internationale
+                 Vereinigung f\"ur Geschichte und
+                 Gegenwart der Druckkunst e.V.},
+  ADDRESS   = {Mainz, Germany},
+  NOTE      = {Contains results on the past and present
+               history of the art of printing. Founded
+               by Aloys Ruppel. Published since 1926.}
+ }
+ @misc{oddity,
+   title        = "{{TUGboat} The Communications of the
+                    {\TeX} User Group}",
+   howpublished = "Quarterly published.",
+   year         = {1980ff},
+ }
+@InProceedings{MR-PQ,
+  author     = "Frank Mittelbach and Chris Rowley",
+  title      = "The Pursuit of Quality: How can
+                Automated Typesetting achieve the
+                Highest Standards of Craft
+                Typography?",
+  pages      = "261--273",
+  crossref   = "EP92"}
+@InProceedings{Southall,
+  Author         = "Richard Southall",
+  Title          = "Presentation Rules and Rules of
+                   Composition in the Formatting of
+                   Complex Text",
+  Pages          = "275--290",
+  crossref       = "EP92"}
+@Proceedings{EP92,
+  title       = "{EP92}---Proceedings of Electronic
+                 Publishing, '92",
+  shorttitle  = "{EP92}",
+  editor      = "Christine Vanoirbeek and Giovanni Coray",
+  publisher   = "Cambridge University Press",
+  address     = "Cambridge",
+  year        = 1992,
+  booktitle   = "{EP92}---Proceedings of Electronic
+                 Publishing, '92"
+}

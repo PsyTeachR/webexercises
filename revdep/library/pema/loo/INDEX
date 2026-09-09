@@ -1,0 +1,56 @@
+E_loo                   Compute weighted expectations
+ap_psis                 Pareto smoothed importance sampling (PSIS)
+                        using approximate posteriors
+compare                 Model comparison (deprecated, old version)
+crps                    Continuously ranked probability score
+elpd                    Generic (expected) log-predictive density
+example_loglik_array    Objects to use in examples and tests
+extract_log_lik         Extract pointwise log-likelihood from a Stan
+                        model
+find_model_names        Find the model names associated with '"loo"'
+                        objects
+gpdfit                  Estimate parameters of the Generalized Pareto
+                        distribution
+importance_sampling     A parent class for different importance
+                        sampling methods.
+kfold-generic           Generic function for K-fold cross-validation
+                        for developers
+kfold-helpers           Helper functions for K-fold cross-validation
+loo                     Efficient approximate leave-one-out
+                        cross-validation (LOO)
+loo-datasets            Datasets for loo examples and vignettes
+loo-glossary            LOO package glossary
+loo-package             Efficient LOO-CV and WAIC for Bayesian models
+loo_approximate_posterior
+                        Efficient approximate leave-one-out
+                        cross-validation (LOO) for posterior
+                        approximations
+loo_compare             Model comparison
+loo_model_weights       Model averaging/weighting via stacking or
+                        pseudo-BMA weighting
+loo_moment_match        Moment matching for efficient approximate
+                        leave-one-out cross-validation (LOO)
+loo_moment_match_split
+                        Split moment matching for efficient approximate
+                        leave-one-out cross-validation (LOO)
+loo_predictive_metric   Estimate leave-one-out predictive performance..
+loo_subsample           Efficient approximate LOO-CV using subsampling
+nobs.psis_loo_ss        The number of observations in a 'psis_loo_ss'
+                        object.
+obs_idx                 Get observation indices used in subsampling
+pareto-k-diagnostic     Diagnostics for Pareto smoothed importance
+                        sampling (PSIS)
+pointwise               Convenience function for extracting pointwise
+                        estimates
+print.loo               Print methods
+psis                    Pareto smoothed importance sampling (PSIS)
+psislw                  Pareto smoothed importance sampling
+                        (deprecated, old version)
+relative_eff            Convenience function for computing relative
+                        efficiencies
+sis                     Standard importance sampling (SIS)
+tis                     Truncated importance sampling (TIS)
+update.psis_loo_ss      Update 'psis_loo_ss' objects
+waic                    Widely applicable information criterion (WAIC)
+weights.importance_sampling
+                        Extract importance sampling weights

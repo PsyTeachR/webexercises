@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Advanced Tensor Arithmetic with Named Indices</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Advanced Tensor Arithmetic with Named Indices
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;tensorA&rsquo; version 0.36.2.1</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain">DESCRIPTION file</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="tensorA.package.html">tensorA-package</a></td>
+<td>The tensorA package for tensor arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="sequencing.html">$.tensor</a></td>
+<td>Working with index sequences</td></tr>
+<tr><td style="width: 25%;"><a href="einstein.html">%e%</a></td>
+<td>Tensor multiplication with Einstein's convention, by summing over all equally named indices.</td></tr>
+<tr><td style="width: 25%;"><a href="einstein.html">%e%.tensor</a></td>
+<td>Tensor multiplication with Einstein's convention, by summing over all equally named indices.</td></tr>
+<tr><td style="width: 25%;"><a href="riemann.html">%r%</a></td>
+<td>Tensor multiplication with Riemann's convention</td></tr>
+<tr><td style="width: 25%;"><a href="riemann.html">%r%.tensor</a></td>
+<td>Tensor multiplication with Riemann's convention</td></tr>
+<tr><td style="width: 25%;"><a href="addtensor.html">*.tensor</a></td>
+<td>Element-wise arithmetic operations +,-,*,/ with tensors</td></tr>
+<tr><td style="width: 25%;"><a href="addtensor.html">+.tensor</a></td>
+<td>Element-wise arithmetic operations +,-,*,/ with tensors</td></tr>
+<tr><td style="width: 25%;"><a href="addtensor.html">-.tensor</a></td>
+<td>Element-wise arithmetic operations +,-,*,/ with tensors</td></tr>
+<tr><td style="width: 25%;"><a href="addtensor.html">/.tensor</a></td>
+<td>Element-wise arithmetic operations +,-,*,/ with tensors</td></tr>
+<tr><td style="width: 25%;"><a href="addtensor.html">add.tensor</a></td>
+<td>Element-wise arithmetic operations +,-,*,/ with tensors</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">as.contravariate</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">as.contravariate.character</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">as.covariate</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">as.covariate.character</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="astensor.html">as.tensor</a></td>
+<td>Coercion to a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="astensor.html">as.tensor.default</a></td>
+<td>Coercion to a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="astensor.html">as.tensor.tensor</a></td>
+<td>Coercion to a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="bindtensor.html">bind.tensor</a></td>
+<td>A cbind/rbind for tensors</td></tr>
+<tr><td style="width: 25%;"><a href="choltensor.html">chol.tensor</a></td>
+<td>Cholesky decomposition of a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">contraname</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="deltatensor.html">delta.tensor</a></td>
+<td>Creates a Kronecker delta tensor</td></tr>
+<tr><td style="width: 25%;"><a href="diagtensor.html">diag.tensor</a></td>
+<td>Creates a "diagonal" tensor</td></tr>
+<tr><td style="width: 25%;"><a href="diagmul.html">diagmul.tensor</a></td>
+<td>Multiplication of a tensor with a tensor given by its diagonal</td></tr>
+<tr><td style="width: 25%;"><a href="names.html">dim&lt;-.tensor</a></td>
+<td>Getting and setting index and dimensionnames of a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="names.html">dimnames.tensor</a></td>
+<td>Getting and setting index and dimensionnames of a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="names.html">dimnames&lt;-.tensor</a></td>
+<td>Getting and setting index and dimensionnames of a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">drag.tensor</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="einstein.html">einstein.tensor</a></td>
+<td>Tensor multiplication with Einstein's convention, by summing over all equally named indices.</td></tr>
+<tr><td style="width: 25%;"><a href="ftabletensor.html">ftable.tensor</a></td>
+<td>Pretty printing of tensors</td></tr>
+<tr><td style="width: 25%;"><a href="invtensor.html">inv.tensor</a></td>
+<td>Inversion of a tensor as linear mapping from tensors to tensors</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">is.contravariate</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">is.contravariate.character</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">is.contravariate.numeric</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">is.contravariate.tensor</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">is.covariate</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">is.covariate.character</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">is.covariate.numeric</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="dragtensor.html">is.covariate.tensor</a></td>
+<td>Managing covariate and contravariate indices</td></tr>
+<tr><td style="width: 25%;"><a href="istensor.html">is.tensor</a></td>
+<td>Checking for being a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="leveltensor.html">level.tensor</a></td>
+<td>The level (number of indices) of a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="margin.html">margin.tensor</a></td>
+<td>Marginalization of tensors</td></tr>
+<tr><td style="width: 25%;"><a href="marktensor.html">mark</a></td>
+<td>Marks the names of a tensor with a mark</td></tr>
+<tr><td style="width: 25%;"><a href="marktensor.html">mark.character</a></td>
+<td>Marks the names of a tensor with a mark</td></tr>
+<tr><td style="width: 25%;"><a href="marktensor.html">mark.numeric</a></td>
+<td>Marks the names of a tensor with a mark</td></tr>
+<tr><td style="width: 25%;"><a href="marktensor.html">mark.tensor</a></td>
+<td>Marks the names of a tensor with a mark</td></tr>
+<tr><td style="width: 25%;"><a href="meantensor.html">mean.tensor</a></td>
+<td>Mean and variance of tensors</td></tr>
+<tr><td style="width: 25%;"><a href="multensor.html">mul.tensor</a></td>
+<td>Tensor multiplication for the tensor class</td></tr>
+<tr><td style="width: 25%;"><a href="names.html">names.tensor</a></td>
+<td>Getting and setting index and dimensionnames of a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="names.html">names&lt;-.tensor</a></td>
+<td>Getting and setting index and dimensionnames of a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="normtensor.html">norm</a></td>
+<td>Calculate the Euclidean norm or Euclidean operator norm of a tensor or its subtensors</td></tr>
+<tr><td style="width: 25%;"><a href="normtensor.html">norm.tensor</a></td>
+<td>Calculate the Euclidean norm or Euclidean operator norm of a tensor or its subtensors</td></tr>
+<tr><td style="width: 25%;"><a href="onetensor.html">one.tensor</a></td>
+<td>Creates a tensor with all entries 1</td></tr>
+<tr><td style="width: 25%;"><a href="normtensor.html">opnorm</a></td>
+<td>Calculate the Euclidean norm or Euclidean operator norm of a tensor or its subtensors</td></tr>
+<tr><td style="width: 25%;"><a href="normtensor.html">opnorm.tensor</a></td>
+<td>Calculate the Euclidean norm or Euclidean operator norm of a tensor or its subtensors</td></tr>
+<tr><td style="width: 25%;"><a href="postensor.html">pos.tensor</a></td>
+<td>enumeration of index combinations</td></tr>
+<tr><td style="width: 25%;"><a href="powertensor.html">power.tensor</a></td>
+<td>Compute the power of a symmetric tensor</td></tr>
+<tr><td style="width: 25%;"><a href="sequencing.html">renamefirst.tensor</a></td>
+<td>Working with index sequences</td></tr>
+<tr><td style="width: 25%;"><a href="reordertensor.html">reorder.tensor</a></td>
+<td>Permutation of indices and storage sequence of a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="reptensor.html">rep.tensor</a></td>
+<td>Repeats a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="riemann.html">riemann.tensor</a></td>
+<td>Tensor multiplication with Riemann's convention</td></tr>
+<tr><td style="width: 25%;"><a href="slicetensor.html">slice.tensor</a></td>
+<td>Working with the indices of a tensor (accessing, slicing, renaming, ...)</td></tr>
+<tr><td style="width: 25%;"><a href="solvetensor.html">solve.tensor</a></td>
+<td>Solving linear equations with tensors</td></tr>
+<tr><td style="width: 25%;"><a href="svdtensor.html">svd.tensor</a></td>
+<td>Singular value decomposition of tensors</td></tr>
+<tr><td style="width: 25%;"><a href="tensorA.package.html">Tensor</a></td>
+<td>The tensorA package for tensor arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="tensorA.package.html">tensor</a></td>
+<td>The tensorA package for tensor arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="tensorA.package.html">tensorA</a></td>
+<td>The tensorA package for tensor arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="tomatrixtensor.html">to.matrix.tensor</a></td>
+<td>The matrix corresponding to a tensor seen as a linear mapping of tensors.</td></tr>
+<tr><td style="width: 25%;"><a href="totensor.html">to.tensor</a></td>
+<td>Creates a tensor object</td></tr>
+<tr><td style="width: 25%;"><a href="totensor.html">to.tensor.default</a></td>
+<td>Creates a tensor object</td></tr>
+<tr><td style="width: 25%;"><a href="toPos.html">toPos.tensor</a></td>
+<td>get the position of an index of tensor</td></tr>
+<tr><td style="width: 25%;"><a href="tracetensor.html">trace.tensor</a></td>
+<td>Collapse a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="tripledelta.html">tripledelta.tensor</a></td>
+<td>A tensor with entry 1 if and only if three indices are equal</td></tr>
+<tr><td style="width: 25%;"><a href="undroptensor.html">undrop.tensor</a></td>
+<td>Adds a spurious dimension to a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="untensor.html">untensor</a></td>
+<td>Removes indices/dimensions from a tensor</td></tr>
+<tr><td style="width: 25%;"><a href="meantensor.html">var.tensor</a></td>
+<td>Mean and variance of tensors</td></tr>
+<tr><td style="width: 25%;"><a href="slicetensor.html">[.tensor</a></td>
+<td>Working with the indices of a tensor (accessing, slicing, renaming, ...)</td></tr>
+<tr><td style="width: 25%;"><a href="slicetensor.html">[&lt;-.tensor</a></td>
+<td>Working with the indices of a tensor (accessing, slicing, renaming, ...)</td></tr>
+<tr><td style="width: 25%;"><a href="slicetensor.html">[[.tensor</a></td>
+<td>Working with the indices of a tensor (accessing, slicing, renaming, ...)</td></tr>
+<tr><td style="width: 25%;"><a href="slicetensor.html">[[&lt;-.tensor</a></td>
+<td>Working with the indices of a tensor (accessing, slicing, renaming, ...)</td></tr>
+<tr><td style="width: 25%;"><a href="sequencing.html">^.tensor</a></td>
+<td>Working with index sequences</td></tr>
+<tr><td style="width: 25%;"><a href="sequencing.html">|.tensor</a></td>
+<td>Working with index sequences</td></tr>
+</table>
+</div></body></html>

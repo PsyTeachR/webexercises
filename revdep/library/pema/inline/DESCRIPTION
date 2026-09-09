@@ -1,0 +1,39 @@
+Package: inline
+Version: 0.3.21
+Date: 2025-01-08
+Title: Functions to Inline C, C++, Fortran Function Calls from R
+Authors@R: c(person("Oleg", "Sklyar", role = "aut"),
+             person("Dirk", "Eddelbuettel", role = c("aut", "cre"), email = "edd@debian.org",
+                    comment = c(ORCID = "0000-0001-6419-907X")),
+             person("Romain", "Francois", role = "aut",
+                    comment = c(ORCID = "0000-0002-2444-4226")),
+             person("Mike", "Smith", role = "ctb"),
+             person("Duncan", "Murdoch", role = "ctb"),
+             person("Karline", "Soetaert", role = "ctb",
+                    comment = c(ORCID = "0000-0003-4603-7100")),
+             person("Johannes", "Ranke", role = "ctb",
+                    comment = c(ORCID = "0000-0003-4371-6538")))
+Imports: methods
+Suggests: Rcpp, tinytest
+Description: Functionality to dynamically define R functions and S4 methods
+ with 'inlined' C, C++ or Fortran code supporting the .C and .Call calling
+ conventions.
+License: LGPL
+Copyright: Oleg Sklyar, 2005-2010 and other authors per their commits
+LazyLoad: yes
+URL: https://github.com/eddelbuettel/inline,
+        https://dirk.eddelbuettel.com/code/inline.html
+BugReports: https://github.com/eddelbuettel/inline/issues
+NeedsCompilation: no
+Packaged: 2025-01-08 22:04:33 UTC; edd
+Author: Oleg Sklyar [aut],
+  Dirk Eddelbuettel [aut, cre] (<https://orcid.org/0000-0001-6419-907X>),
+  Romain Francois [aut] (<https://orcid.org/0000-0002-2444-4226>),
+  Mike Smith [ctb],
+  Duncan Murdoch [ctb],
+  Karline Soetaert [ctb] (<https://orcid.org/0000-0003-4603-7100>),
+  Johannes Ranke [ctb] (<https://orcid.org/0000-0003-4371-6538>)
+Maintainer: Dirk Eddelbuettel <edd@debian.org>
+Repository: CRAN
+Date/Publication: 2025-01-09 13:00:02 UTC
+Built: R 4.6.1; ; 2026-09-02 01:29:17 UTC; windows

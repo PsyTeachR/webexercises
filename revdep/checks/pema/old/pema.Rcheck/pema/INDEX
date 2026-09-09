@@ -1,0 +1,14 @@
+I2                      Compute I2
+as.stan                 Convert an object to stanfit
+bonapersona             Data from 'The behavioral phenotype of early
+                        life adversity'
+brma                    Conduct Bayesian Regularized Meta-Analysis
+check_workshop_data     Check Data for BRMA Workshop
+curry                   Data from 'Happy to Help?'
+maxap                   Maximum a posteriori parameter estimate
+pema-package            pema: Conduct penalized meta-regression.
+plot_sensitivity        Plot posterior distributions for BRMA models
+sample_prior            Sample from the Prior Distribution
+shiny_prior             Interactively Sample from the Prior
+                        Distribution
+simulate_smd            Simulates a meta-analytic dataset

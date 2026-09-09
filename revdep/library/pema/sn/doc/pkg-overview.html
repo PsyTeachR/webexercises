@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Package 'sn': overview of the structure and the main commands</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body  bgcolor="#DDDDDD" text="#660000">
+
+<table width="100%" summary="page for overview"><tr><td>R computing
+environment</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Package <span class="pkg">sn</span>: 
+   overview of the package structure and commands</h2>
+
+<h3>Description</h3>
+
+ 
+<p>The package provides facilities to build and manipulate probability 
+distributions of the skew-normal  and some related families, notably the
+skew-<i>t</i> family and the `unified skew-normal' (<acronym><span class="acronym">SUN</span></acronym>))  family.  
+For the  skew-normal,  the skew-<i>t</i> and the skew-Cauchy families,
+it also makes available statistical methods for data fitting and model 
+diagnostics,  in the univariate and  the multivariate case.
+</p>
+<p>The package comprises two main sides:
+one side provides facilities for the pertaining probability distributions; 
+the other one deals with related statistical methods.
+</p>
+<p>Underlying formulation, parameterizations of distributions and terminology 
+are in agreement with the monograph of Azzalini and Capitanio (2014),
+which provides background information.
+</p>
+<p>The present document refers to version 2.0.0 of the package.
+</p>
+
+
+<h3>Probability side</h3>
+
+
+<p>There are two layers of support for the probability distributions of interest.
+At the basic level, there exist functions which follow the classical <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span>  
+scheme for distributions.
+In addition, there exists facilities to build an object which incapsulates 
+a probability distribution and then certain operations can be be performed 
+on such an object;
+these probability objects operate according to the S4 protocol. 
+The two schemes are described next.
+</p>
+
+<dl>
+<dt>Classical <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> scheme</dt><dd>
+<p>The following functions work similary to <code>{d,p,q,r}norm</code> and other <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span>
+functions for probability distributions:
+</p>
+
+<ul>
+<li><p> skew-normal (<acronym><span class="acronym">SN</span></acronym>): functions <code>{d,p,q,r}sn</code> for the 
+univariate case, functions  <code>{d,p,r}msn</code> for the multivariate case, 
+where in both cases the &lsquo;Extended skew-normal&rsquo; (<acronym><span class="acronym">ESN</span></acronym>) 
+variant form is included;
+</p>
+</li>
+<li><p> skew-<i>t</i> (<acronym><span class="acronym">ST</span></acronym>): functions <code>{d,p,q,r}st</code> for the
+univariate case,  functions  <code>{d,p,r}mst</code> for the multivariate case;
+</p>
+</li>
+<li><p> skew-Cauchy (<acronym><span class="acronym">SC</span></acronym>): functions <code>{d,p,q,r}sc</code> for the 
+univariate case, functions <code>{d,p,r}msc</code> for the multivariate case.
+</p>
+</li></ul>
+
+<p>In addition to the usual specification of their parameters as a sequence of
+individual components, a parameter set can be specified as a single <code>dp</code>
+entity, namely a vector in the univariate case, a list in the multivariate
+case; <code>dp</code> stands for &lsquo;Direct Parameters&rsquo; (<acronym><span class="acronym">DP</span></acronym>).
+</p>
+<p>Conversion from the <code>dp</code> parameter set to the corresponding Centred 
+Parameters (<acronym><span class="acronym">CP</span></acronym>) can be accomplished using the function <code>dp2cp</code>,
+while function <code>cp2dp</code> performs the inverse transformation.
+</p>
+
+The <acronym><span class="acronym">SUN</span></acronym> family is mostly 
+targeted to the multivariate context, and this is reflected in the organization
+of the pertaining functions, although univariate  <acronym><span class="acronym">SUN</span></acronym> distributions are supported.
+Density, distribution function and random numbers are handled by 
+<code>{d,p,r}sun</code>. Mean value, variance matrix and Mardia's measures
+of multivariate skewness and kurtosis are computed by
+ <code>sun{Mean,Vcov,Mardia}</code>.
+ 
+
+<p>In addition, one can introduce a user-specified density function using
+<code>dSymmModulated</code> and <code>dmSymmModulated</code>, in the univariate and the
+multivariate case, respectively. These densities are of the
+&lsquo;symmetry-modulated&rsquo; type, also called &lsquo;skew-symmetric&rsquo;, where
+one can specify the base density and the modulation factor with high degree of
+flexibility.  Random numbers can be sampled using the corresponding functions
+<code>rSymmModulated</code> and <code>rmSymmModulated</code>. In the bivariate case,
+a dedicated plotting function exists.
+</p>
+</dd>
+<dt>Probability distribution objects: SEC families</dt><dd>
+<p>Function <code>makeSECdistr</code> can be used to build a 
+&lsquo;<acronym><span class="acronym">SEC</span></acronym>
+distribution&rsquo; object representing a member of a specified parametric family
+(among the types <acronym><span class="acronym">SN, ESN, ST, SC</span></acronym>) 
+with a given <code>dp</code> parameter set. 
+This object can be used for various operations such as plotting  or
+extraction of moments and other summary quantities.  
+Another way of constructing a <acronym><span class="acronym">SEC</span></acronym>
+distribution object is via <code>extractSECdistr</code> which extracts suitable
+components of an object produced by function <code>selm</code> to be described
+below.
+</p>
+<p>Additional operations on these objects are possible in the multivariate case,
+namely <code>marginalSECdistr</code> for marginalization and <code>marginalSECdistr</code>
+for affine trasformations. For the multivariate <acronym><span class="acronym">SN</span></acronym> family only,
+<code>marginalSECdistr</code> performs a conditioning on the values taken on by some
+components of the multivariate variable.
+</p>
+</dd>
+<dt>Probability distribution objects: SUN family</dt><dd>
+<p>Function <code>makeSUNdistr</code> can be used to build 
+a &lsquo;<acronym><span class="acronym">SUN</span></acronym>
+distribution&rsquo; object representing a member of the SUN parametric family.
+This object can be used for various operations such as plotting  or
+extraction of moments and other summary quantities.  
+
+Moreover there are several trasformation operations which can be performed 
+on a  <acronym><span class="acronym">SUN</span></acronym>
+distribution object, or two such objects in some cases:
+computing a (multivariate) marginal distribution,  a conditional distribution
+(on given values of some components or on one-sided intervals), an affine
+trasformation, a convolution (that is, the distribution of the sum of two 
+independent variables), and joining two distributions under assumption of
+independence.
+</dd>
+</dl>
+
+
+<h3>Statistics side</h3>
+
+
+<p>The main function for data fitting is represented by <code>selm</code>, which allows
+to specify a linear regression model for the location parameter, similarly 
+to function <code>lm</code>, but assuming a <dfn>skew-elliptical</dfn> distribution;
+this explains the name <dfn>selm=(se+lm)</dfn>. Allowed types of distributions
+are  <acronym><span class="acronym">SN</span></acronym> (but not <acronym><span class="acronym">ESN</span></acronym>), <acronym><span class="acronym">ST</span></acronym> and <acronym><span class="acronym">SC</span></acronym>.
+The fitted distribution is univariate or multivariate, depending on the nature
+of the response variable of the posited regression model. The model fitting
+method is either maximum likelihood or maximum penalized likelihood; 
+the latter option effectively allows the introduction of a prior distribution 
+on the slant parameter of the error distribution, hence leading to a 
+&lsquo;maximum a posteriori&rsquo; estimate.
+</p>
+<p>Once the fitting process has been accomplished, an object of class either
+<dfn>selm</dfn> (for univariate response) or <dfn>mselm</dfn> (for multivariate 
+response) is produced.
+A number of &lsquo;methods&rsquo; are available for these objects: <code>show</code>, 
+<code>plot</code>, <code>summary</code>, <code>coef</code>, <code>residuals</code>, <code>logLik</code> 
+and others.
+For univariate <dfn>selm</dfn>-class objects, univariate and bivariate profile
+log-likelihood functions can be obtained; a <code>predict</code> method also exists.
+These methods are built following the S4 protocol; however, the user must not
+be concerned with the choice of the adopted protocol (unless this is wished).
+</p>
+<p>The actual fitting process invoked via <code>selm</code> is actually performed by a
+set of lower-level procedures. These are accessible for direct call, 
+if so wished, typically for improved efficiency, at the expense of a little 
+additional programming effort. Similarly, functions to compute the Fisher 
+information matrix are available, in the expected and the observed form 
+(with some restrictions depending on the selected distribution).
+</p>
+<p>The <code>extractSECdistr</code> function extracts the fitted <acronym><span class="acronym">SEC</span></acronym> 
+distribution from  <dfn>selm</dfn>-class and <dfn>mselm</dfn>-class objects, hence
+providing a bridge with the probability side of the package.
+</p>
+<p>The facilities for statistical work do not support the <acronym><span class="acronym">SUN</span></acronym> family.
+</p>
+
+
+<h3>Author</h3>
+
+<p>Adelchi Azzalini.
+
+Please send comments, error reports <em>et cetera</em> to the author, 
+whose web page is <a href="http://azzalini.stat.unipd.it/">http://azzalini.stat.unipd.it/</a>.
+</p>
+
+
+<h3>References</h3>
+
+<p>Azzalini, A. with the collaboration of Capitanio, A. (2014). 
+<em>The Skew-Normal and Related Families</em>. 
+Cambridge University Press, IMS Monographs series.
+</p>
+
+
+</body></html>

@@ -1,0 +1,23 @@
+csrf                    Case-specific random forests.
+deforest                Deforesting a random forest
+getTerminalNodeIDs      Get terminal node IDs (deprecated)
+holdoutRF               Hold-out random forests
+hshrink                 Hierarchical shrinkage
+importance.ranger       ranger variable importance
+importance_pvalues      ranger variable importance p-values
+parse.formula           Parse formula
+predict.ranger          Ranger prediction
+predict.ranger.forest   Ranger prediction
+predictions.ranger      Ranger predictions
+predictions.ranger.prediction
+                        Ranger predictions
+print.deforest.ranger   Print deforested ranger summary
+print.ranger            Print Ranger
+print.ranger.forest     Print Ranger forest
+print.ranger.prediction
+                        Print Ranger prediction
+ranger                  Ranger
+timepoints.ranger       Ranger timepoints
+timepoints.ranger.prediction
+                        Ranger timepoints
+treeInfo                Tree information in human readable format

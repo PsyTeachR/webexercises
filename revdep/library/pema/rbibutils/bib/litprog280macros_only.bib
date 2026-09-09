@@ -1,0 +1,28 @@
+@String{j-J-APPL-ECONOMETRICS   = "Journal of Applied Econometrics"}
+
+% from texjourn001.bib
+@String{ack-nhfb = "Nelson H. F. Beebe,
+                    University of Utah,
+                    Department of Mathematics, 110 LCB,
+                    155 S 1400 E RM 233,
+                    Salt Lake City, UT 84112-0090, USA,
+                    Tel: +1 801 581 5254,
+                    FAX: +1 801 581 4148,
+                    e-mail: \path|beebe@math.utah.edu|,
+                            \path|beebe@acm.org|,
+                            \path|beebe@computer.org| (Internet),
+                    URL: \path|http://www.math.utah.edu/~beebe/|"}
+
+% from litprog.bib
+@Preamble{"\input bibnames.sty " #
+    "\hyphenation{
+        Ker-n-i-ghan
+        Port-able
+        Post-Script
+        Pren-tice
+        Richt-er
+        Spring-er
+    }" #
+    "\ifx \undefined \pkg       \def \pkg       #1{{{\tt #1}}} \fi" #
+    "\ifx \undefined \acro      \def \acro      #1{{\sc #1}}   \fi"
+}

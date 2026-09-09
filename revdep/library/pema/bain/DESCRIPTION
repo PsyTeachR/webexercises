@@ -1,0 +1,46 @@
+Package: bain
+Type: Package
+Title: Bayes Factors for Informative Hypotheses
+Version: 0.2.12
+Authors@R: c(
+    person(c("Xin"), "Gu", role = c("aut"), email = "guxin57@hotmail.com"),
+    person(c("Herbert"), "Hoijtink", role = c("aut"), email = "h.hoijtink@uu.nl"),
+    person(c("Joris"), "Mulder", role = c("aut"), email = "jomulder@gmail.com"),
+    person(c("Caspar", "J"), "van Lissa", role = c("aut", "cre"), email = "c.j.vanlissa@tilburguniversity.edu"),
+    person(c("Van Zundert"), "Camiel", role = "ctb"),
+    person(c("Jeff"), "Jones", role = "ctb"),
+    person(c("Niels"), "Waller", role = "ctb")
+    )
+Description: Computes approximated adjusted fractional Bayes factors for
+    equality, inequality, and about equality constrained hypotheses.
+    For a tutorial on this method, see Hoijtink, Mulder, van Lissa, & Gu,
+    (2019) <doi:10.1037/met0000201>. For applications in structural equation
+    modeling, see: Van Lissa, Gu, Mulder, Rosseel, Van Zundert, &
+    Hoijtink, (2021) <doi:10.1080/10705511.2020.1745644>. For the statistical
+    underpinnings, see Gu, Mulder, and Hoijtink (2018) <doi:10.1111/bmsp.12110>;
+    Hoijtink, Gu, & Mulder, J. (2019) <doi:10.1111/bmsp.12145>; Hoijtink, Gu, 
+    Mulder, & Rosseel, (2019) <doi:10.31234/osf.io/q6h5w>.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+URL: https://informative-hypotheses.sites.uu.nl/software/bain/
+BugReports: https://github.com/cjvanlissa/bain/issues
+NeedsCompilation: yes
+Depends: R (>= 3.0.0), stats
+Imports: lavaan
+Suggests: MASS, testthat, knitr, rmarkdown
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.0
+Packaged: 2026-08-20 06:30:08 UTC; Studio
+Author: Xin Gu [aut],
+  Herbert Hoijtink [aut],
+  Joris Mulder [aut],
+  Caspar J van Lissa [aut, cre],
+  Van Zundert Camiel [ctb],
+  Jeff Jones [ctb],
+  Niels Waller [ctb]
+Maintainer: Caspar J van Lissa <c.j.vanlissa@tilburguniversity.edu>
+Repository: CRAN
+Date/Publication: 2026-08-24 11:20:08 UTC
+Built: R 4.6.1; x86_64-w64-mingw32; 2026-09-02 02:34:01 UTC; windows
+Archs: x64

@@ -1,0 +1,69 @@
+Package: rstantools
+Type: Package
+Title: Tools for Developing R Packages Interfacing with 'Stan'
+Version: 2.7.1
+Date: 2026-08-29
+Authors@R: 
+    c(person(given = "Jonah",
+             family = "Gabry",
+             role = "aut",
+             email = "jgabry@gmail.com"),
+      person(given = "Ben",
+             family = "Goodrich",
+             role = "aut",
+             email = "benjamin.goodrich@columbia.edu"),
+      person(given = "Martin",
+             family = "Lysy",
+             role = "aut",
+             email = "mlysy@uwaterloo.ca"),
+      person(given = "Andrew",
+             family = "Johnson",
+             role = c("aut", "cre"),
+             email = "andrew.johnson@arjohnsonau.com"),
+      person(given = "Hamada S.",
+             family = "Badr",
+             role = "ctb"),
+      person(given = "Marco",
+             family = "Colombo",
+             role = "ctb"),
+      person(given = "Stefan",
+             family = "Siegert",
+             role = "ctb"),
+      person(given = "Visruth",
+             family = "Srimath Kandali",
+             role = "ctb"),
+      person(given = "Trustees of",
+             family = "Columbia University",
+             role = "cph"))
+Description: Provides various tools for developers of R packages interfacing
+    with 'Stan' <https://mc-stan.org>, including functions to set up the required
+    package structure, S3 generics and default methods to unify function naming
+    across 'Stan'-based R packages, and vignettes with recommendations for
+    developers.
+License: GPL (>= 3)
+URL: https://mc-stan.org/rstantools/, https://discourse.mc-stan.org/
+BugReports: https://github.com/stan-dev/rstantools/issues
+Encoding: UTF-8
+SystemRequirements: pandoc
+Imports: desc, stats, utils, Rcpp (>= 0.12.16), RcppParallel (>=
+        5.0.1), QuickJSR
+Suggests: rstan (>= 2.17.2), usethis (>= 1.5.1), testthat (>= 2.0.0),
+        knitr, pkgbuild, pkgload, roxygen2 (>= 7.0.0), rmarkdown,
+        rstudioapi
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
+NeedsCompilation: no
+Packaged: 2026-08-29 03:27:07 UTC; andrew
+Author: Jonah Gabry [aut],
+  Ben Goodrich [aut],
+  Martin Lysy [aut],
+  Andrew Johnson [aut, cre],
+  Hamada S. Badr [ctb],
+  Marco Colombo [ctb],
+  Stefan Siegert [ctb],
+  Visruth Srimath Kandali [ctb],
+  Trustees of Columbia University [cph]
+Maintainer: Andrew Johnson <andrew.johnson@arjohnsonau.com>
+Repository: CRAN
+Date/Publication: 2026-08-29 15:20:07 UTC
+Built: R 4.6.1; ; 2026-09-02 02:33:58 UTC; windows

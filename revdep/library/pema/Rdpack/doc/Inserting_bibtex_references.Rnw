@@ -1,0 +1,381 @@
+% Created 2022-07-20 Wed 17:30
+% Intended LaTeX compiler: pdflatex
+\documentclass[a4paper,twoside,11pt,nojss,article]{jss}
+	       \usepackage[T1]{fontenc}
+	       \usepackage[left=2cm,right=2cm,bottom=15mm]{geometry}
+	       \usepackage{graphicx,color,alltt}
+	       \usepackage[authoryear,round,longnamesfirst]{natbib}
+	       \usepackage{hyperref}
+                              % \usepackage{Sweave}
+\author{Georgi N. Boshnakov}
+\Plainauthor{Georgi N. Boshnakov}
+\Address{
+Georgi N. Boshnakov\\
+School of Mathematics\\
+The University of Manchester\\
+Oxford Road, Manchester M13 9PL, UK\\
+URL: \url{https://personalpages.manchester.ac.uk/staff/georgi.boshnakov/}
+}
+<<echo=FALSE>>=
+library(Rdpack)
+pd <- packageDescription("Rdpack")
+@
+\Abstract{
+Package \pkg{Rdpack} provides a straightforward way to insert BibTeX references in the
+documentation of an R package, using the RdMacros feature introduced in R~3.2.0. It
+works for `roxygen2' documentation, as well.
+\par
+This vignette is part of package Rdpack, version~\Sexpr{pd$Version}.
+}
+\Keywords{bibliographic references, Rd, bibtex, citations, \proglang{R}}
+\Plainkeywords{bibliographic references, Rd, bibtex, citations, R}
+\author{Georgi N. Boshnakov}
+\date{\today}
+\title{Inserting references in Rd and roxygen2 documentation}
+\hypersetup{
+ pdfauthor={Georgi N. Boshnakov},
+ pdftitle={Inserting references in Rd and roxygen2 documentation},
+ pdfkeywords={bibliographic references, Rd, bibtex, citations, R},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.1.9)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+%\SweaveOpts{engine=R,eps=FALSE}
+
+%\VignetteIndexEntry{Inserting references in Rd and roxygen2 documentation}
+%\VignetteDepends{Rdpack}
+%\VignetteKeywords{bibliographic references, Rd, bibtex, citations, R}
+%\VignettePackage{Rdpack}
+
+\section{Setup}
+\label{sec:org778a336}
+
+To prepare a package for importing BibTeX references it is necessary to tell the
+package management tools that package \pkg{Rdpack} and its Rd macros are
+needed. The references should be put in file \texttt{inst/REFERENCES.bib}.
+These steps are enumerated below in somewhat more detail for convenince:
+
+\begin{enumerate}
+\item Add the following lines to  file `DESCRIPTION':
+\begin{verbatim}
+   Imports: Rdpack
+   RdMacros: Rdpack
+\end{verbatim}
+Make sure the capitalisation of \texttt{RdMacros} is as shown. If the field 'RdMacros' is already
+present, add `Rdpack' to the list on that line. Similarly for field 'Imports'.
+
+\item Add the following line to file `NAMESPACE'\footnote{Any function for package \pkg{Rdpack} will do. This is to avoid getting a
+warning from 'R CMD check'.}:
+\begin{verbatim}
+   importFrom(Rdpack,reprompt)
+\end{verbatim}
+The equivalent line for `roxygen2' is
+\begin{verbatim}
+   #' @importFrom Rdpack reprompt
+\end{verbatim}
+
+\item Create file \texttt{REFERENCES.bib} in subdirectory \texttt{inst/} of your package and put
+the bibtex references in it.
+\end{enumerate}
+
+
+\section{Inserting references in package documentation}
+\label{sec:orgd4ad0fc}
+
+Once the steps outlined in the previous section are done, references can be
+inserted in the documentation as \texttt{\textbackslash{}insertRef\{key\}\{package\}},
+where \texttt{key} is the bibtex key of the reference and \texttt{package} is your package.
+This works in Rd files and in roxygen documentation chunks.
+
+In fact, argument 'package' can be any installed R package\footnote{There is of course the risk that the referenced entry may be removed from
+the other package. So this is probably only useful for one's own
+packages. Also, the other package would better be one of the packages
+mentioned in DESCRIPTION.\}},
+not necessarily the current
+one. This means that you don't need to copy references from other packages to your
+\texttt{"REFERENCES.bib"} file.  This works for packages that have \texttt{"REFERENCES.bib"} in
+their installation directory and for the default packages.
+See also the help pages \texttt{?Rdpack::insertRef} and \texttt{?Rdpack::Rdpack-package}.  For
+example, the help page \texttt{?Rdpack::insertRef} contains the following lines in section
+``References'' of the Rd file:
+\begin{verbatim}
+    \insertRef{Rpack:bibtex}{Rdpack}
+\end{verbatim}
+The first line above inserts the reference labeled \texttt{Rpack:bibtex} in Rdpack's
+\texttt{REFERENCES.bib}. The second line inserts the reference labeled \texttt{R} in file
+\texttt{REFERENCES.bib} in package `bibtex'.
+
+A roxygen2 documentation chunk might look like this:
+\begin{verbatim}
+    #' @references
+    #' \insertRef{Rpack:bibtex}{Rdpack}
+\end{verbatim}
+
+
+
+\section{Inserting citations}
+\label{sec:orgb97375b}
+
+From version 0.7 of \pkg{Rdpack}, additional Rd macros are available for
+citations\footnote{They were introduced in the development version 0.6-1, but 0.7
+is the first version with them released on CRAN.}.  They can be used in both Rd and roxygen2 documentation.  If you are
+using these, it will be prudent to require at least this version of Rdpack in
+the ``Imports:'' directive in file DESCRIPTION: \texttt{Rdpack (>= 0.7)}.
+
+\subsection{Macros for citations}
+\label{sec:org3007a43}
+\label{sec:macros-citations}
+
+\texttt{\textbackslash{}insertCite\{key\}\{package\}} cites the key and records it for use by
+\texttt{\textbackslash{}insertAllCited\{\}}, see below. The style of the citations is author-year. 
+The ''et al'' convention is used when there are  more than two authors\footnote{This feature was introduced in Rdpack 0.8-2.}. 
+
+\code{key} can contain more keys separated by commas.
+Here are some examples (on the left is
+the code in the documentation chunk, on the right the rendered citation):
+
+\begin{center}
+\begin{tabular}{ll}
+Documentation source & rendered\\
+\hline
+\texttt{\textbackslash{}insertCite\{parseRd\}\{Rdpack\}} & (Murdoch 2010)\\
+\texttt{\textbackslash{}insertCite\{Rpack:bibtex\}\{Rdpack\}} & (Francois 2014)\\
+\texttt{\textbackslash{}insertCite\{parseRd,Rpack:bibtex\}\{Rdpack\}} & (Murdoch 2010; Francois 2014)\\
+\end{tabular}
+\end{center}
+
+By default the citations are parenthesised \texttt{\textbackslash{}insertCite\{parseRd\}\{Rdpack\}} produces
+\Sexpr{ insert_citeOnly("parseRd", "Rdpack") }, 
+as in the examples above.  To get textual
+citations, like 
+\Sexpr{ insert_citeOnly("parseRd;textual", "Rdpack") }, 
+put the string
+\texttt{;textual} at the end of the key. Here are the examples from the table above, rendered
+as textual citations:
+
+\begin{center}
+\begin{tabular}{ll}
+Documentation source & rendered\\
+\hline
+\texttt{\textbackslash{}insertCite\{parseRd;textual\}\{Rdpack\}} & Murdoch (2010)\\
+\texttt{\textbackslash{}insertCite\{Rpack:bibtex;textual\}\{Rdpack\}} & Francois (2014)\\
+\texttt{\textbackslash{}insertCite\{parseRd,Rpack:bibtex;textual\}\{Rdpack\}} & Murdoch (2010); Francois (2014)\\
+\end{tabular}
+\end{center}
+
+The last line in the table demonstrates that this also works with several citations.
+
+To mix the citations with other text, such as ``see also'' and ``chapter 3'', write the list
+of keys as a free text, starting it with the symbol \texttt{@} and prefixing each key with it.
+The \texttt{@} symbol will not appear in the output. For example, the following code:
+\begin{verbatim}
+  \insertCite{@see also @parseRd and @Rpack:bibtex}{Rdpack}
+  \insertCite{@see also @parseRd; @Rpack:bibtex}{Rdpack}
+  \insertCite{@see also @parseRd and @Rpack:bibtex;textual}{Rdpack}
+\end{verbatim}
+produces:
+
+\qquad
+\begin{tabular}{l}
+Rendered\\
+\hline
+\Sexpr{insert_citeOnly("@see also @parseRd and @Rpack:bibtex", "Rdpack")}\\
+\Sexpr{insert_citeOnly("@see also @parseRd; @Rpack:bibtex", "Rdpack")}\\
+\Sexpr{insert_citeOnly("@see also @parseRd and @Rpack:bibtex;textual", "Rdpack")}\\
+\end{tabular}
+
+The text of the arguments of the macro in this free form should have no markup. For example,
+if you want to put the phrase \texttt{see also} in italic, enclosing it with \texttt{\textbackslash{}emph\{...\}} (in Rd) or
+the equivalent \texttt{\_...\_} (in markdown) will not work\footnote{For details see \href{https://github.com/GeoBosh/Rdpack/issues/23}{Github issue \#23} raised by  Martin R. Smith.}. For textual citations a
+workaround is to invoke \texttt{\textbackslash{}insertCite} for each key and type the markup outside the macro
+arguments. For parenthetical citations the solutions is to ask \texttt{\textbackslash{}insertCite} to omit the
+parentheses by putting \texttt{;nobrackets} at the end of the argument\footnote{With \pkg{Rdpack} versions greater than 2.1.3.}. The
+parentheses can then be put manually where needed.  For example,
+
+\begin{verbatim}
+  (\emph{see also} \insertCite{@@parseRd and @Rpack:bibtex;nobrackets}{Rdpack})
+\end{verbatim}
+produces: (\emph{see also} \Sexpr{insert_citeOnly("@@parseRd and @Rpack:bibtex;nobrackets", "Rdpack")}).
+
+\subsubsection{Further macros for citations}
+\label{sec:org89632ba}
+
+The macro \texttt{\textbackslash{}insertNoCite\{key\}\{package\}} records one or more references for
+\texttt{\textbackslash{}insertAllCited} but does not cite it. Setting \texttt{key} to \texttt{*} will record all
+references from the specified package. For example, \texttt{\textbackslash{}insertNoCite\{R\}\{bibtex\}} records
+the reference whose key is \texttt{R}, while \texttt{\textbackslash{}insertNoCite\{*\}\{utils\}} records all
+references from package ``utils'' for inclusion by \texttt{\textbackslash{}insertAllCited}.
+
+\texttt{\textbackslash{}insertCiteOnly\{key\}\{package\}} is as \texttt{\textbackslash{}insertCite} but does not record the key 
+for the list of references assembled by \texttt{\textbackslash{}insertAllCited}.
+
+\subsection{Automatically generating lists of references}
+\label{sec:orgfdcfa4f}
+
+The macro \texttt{\textbackslash{}insertAllCited\{\}} can be used to insert all references cited with
+\texttt{\textbackslash{}insertCite} or \texttt{\textbackslash{}insertNoCite}. A natural place to put this macro is the
+references section.  The Rd section may look something like:
+\begin{verbatim}
+    \references{
+      \insertAllCited{}
+    }
+\end{verbatim}
+The analogous documentation chunk in roxygen2 might look like this:
+\begin{verbatim}
+    #' @references
+    #'   insertAllCited{}
+\end{verbatim}
+Don't align the backslash with the second 'e' of \texttt{@references}, since roxygen2 may interpret
+it as verbatim text, not macro.
+
+Rd macro \texttt{\textbackslash{}insertCited\{\}} works like \texttt{\textbackslash{}insertAllCited} but empties the references list after
+finishing its work. This means that the second and subsequent \texttt{\textbackslash{}insertCited} in the same help
+page will list only citations done since the preceding \texttt{\textbackslash{}insertCited}. Prompted by issue 27
+on github to allow separate references lists for each method and the class in R6
+documentation.
+
+\subsection{Changing the style of references}
+\label{sec:orgb5b1c57}
+
+Package \texttt{Rdpack} supports bibliography styles for lists of references\footnote{Support for styles is available since \texttt{Rdpack (>= 0.8)}.}.
+Currently the only alternative offered is to use long names (Georgi
+N. Boshnakov) in place of the default style (Boshnakov GN). More comprehensive
+alternatives can be included if needed or requested.
+
+To cause all lists of references produced by \texttt{\textbackslash{}insertAllCited} in a package to appear with
+full names, add \texttt{.onLoad()} function to your package. If you don't have \texttt{.onLoad()}, just
+copy the following definition: 
+<<>>=
+.onLoad <- function(lib, pkg){
+    Rdpack::Rdpack_bibstyles(package = pkg, authors = "LongNames")
+    invisible(NULL)
+}
+@ %def
+
+If you already have \texttt{.onLoad()}, add the line containing the
+\texttt{Rdpack::Rdpack\_bibstyles} call to it.
+
+After installling/reloading your package the lists of references should appear
+with long author names. "Rdpack" itself now uses this style.
+
+\section{Possible issues}
+\label{sec:org98c15ef}
+
+\subsection{Warning from 'R CMD build'}
+\label{sec:org5c929bd}
+
+If 'R CMD build' or \texttt{devtools::build()} gives a warning along the lines of:
+\begin{verbatim}
+    Warning: C:/temp/RtmpqWQqji/.../XXX.Rd:52: unknown macro '\insertRef'
+\end{verbatim}
+then check the syntax in file DESCRIPTION --- the most common cause of this is misspelling
+\texttt{RdMacros:}.  Make sure in particular that `M' is uppercase.
+
+
+\subsection{Development using `devtools'}
+\label{sec:org9e2f214}
+
+The described procedure works transparently in `roxygen2' chunks and with Hadley Wickham's
+`devtools'.  Packages are built and installed properly with the `devtools' commands and the
+references are processed as expected.
+
+Currently (2017-08-04) if you run help commands \texttt{?xxx} for functions from the package
+you are working on and their help pages contain references, you may encounter some puzzling
+warning messages in `developer' mode, something like:
+\begin{verbatim}
+    1: In tools::parse_Rd(path) :
+      ~/mypackage/man/abcde.Rd: 67: unknown macro '\insertRef'
+\end{verbatim}
+These warnings are again about unknown macros but the reason is completely different:
+they pop up because ``devtools'' reroutes the
+help command to process the developer's Rd sources
+(rather than the documentation in the
+installed directory) but doesn't tell \texttt{parse\_Rd} where to look for additional macros\footnote{The claims in this sentence can be deduced entirely from the informative
+message. Indeed, (1)\textasciitilde{}the error is in processing a source Rd file in the
+development directory of the package, and (2)\textasciitilde{}the call to
+\texttt{\textbackslash{}parse\_Rd} specifies only the file.}.
+
+These warnings are harmless - the help pages are built properly and no warnings appear
+outside ``developer'' mode, e.g. in a separate R\textasciitilde{}session. You may also consider using the
+function \texttt{viewRd()}, discussed below, for viewing Rd files.
+
+
+\subsection{Latex markup in BibTeX entries}
+\label{sec:org83922f5}
+
+In principle, BibTeX entries may contain arbitrary Latex markup, while the Rd format
+supports only a subset. As a consequence, some BibTeX entries may need some editing when
+included in REFERENCES.bib\footnote{Thanks to Michael Dewey for suggesting the discussion of this.}. Only do this for entries that do not render properly or
+cause errors, since most of the time this should not be necessary. For encoding related
+issues of REFERENCES.bib see the dedicated subsection below.
+
+If mathematics doesn't render properly replace the Latex dollar syntax with Rd's \texttt{\textbackslash{}eqn},
+e.g. \texttt{\$x\textasciicircum{}2\$} with \texttt{\textbackslash{}eqn\{x\textasciicircum{}2\}}. This should not be needed for versions of Rdpack
+0.8-4 or later. 
+
+Some Latex macros may have to be removed or replaced with suitable Rd markup. Again,
+do this only if they cause problems, since some are supported, e.g. \texttt{\textbackslash{}doi}.
+
+See also the overview help page, \code{help("Rdpack-package")}, of \pkg{Rdpack}. 
+Among other things, it contains some dummy references which illustrate the above.
+
+
+\subsection{Encoding of file REFERENCES.bib}
+\label{sec:org663630e}
+
+If a package has a declared encoding (in file \texttt{DESCRIPTION}), \texttt{REFERENCES.bib} is read-in
+with that encoding\footnote{From \texttt{Rdpack (>=0.9-1)} The issue of not handling the encoding was raised by
+Professor Brian Ripley.}.  Otherwise, the encoding of \texttt{REFERENCES.bib} is assumed to be
+UTF-8 (which includes ASCII as a subset).
+
+
+Note that BibTeX entries downloaded from online databases and similar sources may contain
+unexpected characters in other encodings, e.g. 'latin1'. In such cases the check tools in
+R-devel (since about 2018-10-01) may give warnings like:
+\begin{verbatim}
+    prepare_Rd: input string 1 is invalid in this locale
+\end{verbatim}
+To resolve this, convert the file to the declared encoding or UTF-8. Alternatively, replace
+the offending symbols with their classic \TeX{}/\LaTeX{} equivalents (which are ASCII). Non-ASCII
+symbols in BibTeX entries obtained from online databases are often in fields like "Abstract",
+which are normally not included in lists of references and can be deleted from REFERENCES.bib.
+
+One way to check for non-ASCII symbols in a file is \texttt{tools::showNonASCIIfile()}.
+
+Since \pkg{Rdpack} switched to the bibtex parser in package \pkg{rbibutils}, if the bib file
+contains Latex escape sequences standing for accented Latin characters, such as \texttt{\textbackslash{}'e} and
+\texttt{\textbackslash{}"o}, they are imported as is. They are converted to UTF-8 only when the text is rendered
+for output. If R's checking tools complain about non-ASCII characters add the following
+encoding declaration to file DESCRIPTION\footnote{Admittedly, this is not ideal since the user should not need to care how things are
+processed internally but I haven't pinpointed the exact cause for this.}:
+\begin{verbatim}
+Encoding: UTF-8
+\end{verbatim}
+Needless to say, make sure that there are really no characters from encodings like 'latin1'.
+
+With the previous bibtex parser (before Rdpack version 1.1.0) the conversion was done
+earlier, which resulted in confusing messages about non-ASCII characters, even when the file
+REFERENCES.bib was pure ASCII. This should no longer happen.
+
+
+\section{Viewing Rd files}
+\label{sec:org54eca5d}
+
+
+A function, \code{viewRd}, to view Rd files in the source directory of a package was
+introduced in version 0.4-23 of \pkg{Rdpack}. A typical user call would look something like:
+\begin{verbatim}
+    Rdpack::viewRd("./man/filename.Rd")
+\end{verbatim}
+By default the requested help page is shown in text format. To open the page in a browser,
+set argument \code{type} to \code{"html"}:
+\begin{verbatim}
+    Rdpack::viewRd("./man/filename.Rd", type = "html")
+\end{verbatim}
+
+Users of 'devtools' can use \code{viewRd()} in place of \code{help()} to view Rd sources\footnote{Yes, your real sources are the \texttt{*.R} files but
+\code{devtools::document()} transfers the roxygen2 documentation chunks to Rd
+files (and a few others), which are then rendered by \pkg{R} tools.}.
+\end{document}

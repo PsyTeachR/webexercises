@@ -1,0 +1,145 @@
+Error in eval(x, envir = envir) : object 'run_everything' not found
+
+> knitr::opts_chunk$set(collapse = TRUE, echo = TRUE, 
++     eval = FALSE, comment = "#>")
+
+> options(digits = 2)
+
+> run_everything = FALSE
+
+> library(pema)
+
+> library(ggplot2)
+Warning: package 'ggplot2' was built under R version 4.6.1
+
+> options(mc.cores = 4)
+
+> data("bonapersona")
+
+> descs <- readRDS("descs.RData")
+
+> descs
+                   name      type   n unique     mean     sd     v
+1                   exp   integer 734    411  222.644 111.88    NA
+2                    id   integer 734    212   99.402  60.03    NA
+3                author character 734    209       NA     NA 0.990
+4                  year   integer 734     21 2011.014   4.45    NA
+5               journal character 734     69       NA     NA 0.945
+6               species    factor 734      3       NA     NA 0.433
+7         strainGrouped    factor 734     15       NA     NA 0.762
+8                origin    factor 734      4       NA     NA 0.617
+9                   sex    factor 734      3       NA     NA 0.373
+10              ageWeek   numeric 721     25   13.333   5.75    NA
+11                model    factor 734      6       NA     NA 0.667
+12           mTimeStart   integer 734     12    2.357   2.51    NA
+13             mTimeEnd   integer 734     18   12.802   4.39    NA
+14            mHoursAve   numeric 734     33   54.076  47.73    NA
+15         mCageGrouped    factor 734      4       NA     NA 0.485
+16           mLDGrouped    factor 734      5       NA     NA 0.469
+17          mRepetition    factor 734      7       NA     NA 0.446
+18      mControlGrouped    factor 734      4       NA     NA 0.069
+19          hit2Grouped    factor 734      3       NA     NA 0.493
+20    testAuthorGrouped    factor 734     27       NA     NA 0.894
+21        testLDGrouped    factor 734      4       NA     NA 0.295
+22     varAuthorGrouped    factor 734     47       NA     NA 0.914
+23               waterT    factor 734      9       NA     NA 0.125
+24           waterTcate    factor 734      5       NA     NA 0.123
+25         freezingType    factor 734     10       NA     NA 0.221
+26     retentionGrouped    factor 734      5       NA     NA 0.520
+27     directionGrouped    factor 734      5       NA     NA 0.648
+28 effectSizeCorrection   integer   5      2    1.000   0.00    NA
+29               cut_nC   integer  37      2    1.000   0.00    NA
+30         n_notRetriev   integer   5      2    1.000   0.00    NA
+31                   nC   numeric 734     25   10.719   4.07    NA
+32                meanC   numeric 734    412  167.110 112.13    NA
+33                  sdC   numeric 734    499   73.919  62.43    NA
+34                  seC   numeric 734    209   23.314  19.61    NA
+35                   nE   numeric 734     25   11.200   4.15    NA
+36                meanE   numeric 734    430  163.209 114.28    NA
+37                  sdE   numeric 734    500   76.684  62.99    NA
+38                  seE   numeric 734    206   23.554  19.54    NA
+39             dataFrom    factor 734      4       NA     NA 0.288
+40        seqGeneration    factor 734      3       NA     NA 0.487
+41             baseline    factor 734      4       NA     NA 0.412
+42           allocation    factor 734      3       NA     NA 0.170
+43              housing    factor 734      2       NA     NA 0.000
+44             blindExp    factor 734      4       NA     NA 0.429
+45              control    factor 734      4       NA     NA 0.043
+46               outAss    factor 734      4       NA     NA 0.456
+47             outBlind    factor 734      5       NA     NA 0.654
+48              incData    factor 734      3       NA     NA 0.219
+49            waterTNum   numeric  48      8   22.292   1.37    NA
+50                 each   integer 734    734  367.500 212.03    NA
+51          mTimeLength   integer 734     19   10.446   5.61    NA
+52 speciesStrainGrouped    factor 734     16       NA     NA 0.762
+53            blindRand    factor 734      3       NA     NA 0.317
+54                 bias   numeric 734      9    2.884   0.75    NA
+55                   tV    factor 734     60       NA     NA 0.929
+56              anxiety   integer 734      2    0.486   0.50    NA
+57            sLearning   numeric 734      2    0.277   0.45    NA
+58           nsLearning   numeric 734      2    0.143   0.35    NA
+59               social   integer 734      2    0.063   0.24    NA
+60             multiply   integer 734      2   -0.272   0.96    NA
+61               noMeta   numeric 734      2    0.031   0.17    NA
+62               domain    factor 734      6       NA     NA 0.662
+63        directionQual   numeric 617      4    0.183   0.58    NA
+64                   yi   numeric 734    726    0.243   1.34    NA
+65                   vi   numeric 734    728    0.263   0.36    NA
+
+> bonapersona$ageWeek[is.na(bonapersona$ageWeek)] <- median(bonapersona$ageWeek, 
++     na.rm = TRUE)
+
+> datsel <- bonapersona[, c("yi", "vi", "author", "mTimeLength", 
++     "year", "model", "ageWeek", "strainGrouped", "bias", "species", 
++     "domain ..." ... [TRUNCATED] 
+
+> dat2l <- datsel
+
+> dat2l[["author"]] <- NULL
+
+> if (run_everything) {
++     bonapersona$ageWeek[is.na(bonapersona$ageWeek)] <- median(bonapersona$ageWeek, 
++         na.rm = TRUE)
++     datsel <-  .... [TRUNCATED] 
+
+> sums <- readRDS("sum.RData")
+
+> i2s <- readRDS("i2.RData")
+
+> sums
+                                 mean      sd     2.5%   97.5% n_eff Rhat
+Intercept                    -20.7265 14.4136 -50.9609  3.6187  1657    1
+mTimeLength                   -0.0032  0.0048  -0.0143  0.0049  2070    1
+year                           0.0104  0.0072  -0.0017  0.0254  1660    1
+modelLG                        0.0855  0.1438  -0.1759  0.4025  2283    1
+modelLNB                       0.1430  0.1059  -0.0270  0.3721  1210    1
+modelM                         0.0213  0.0496  -0.0695  0.1329  2208    1
+modelMD                        0.0229  0.0773  -0.1253  0.1856  2320    1
+ageWeek                       -0.0073  0.0053  -0.0187  0.0015  1364    1
+strainGroupedC57Bl6           -0.0189  0.0662  -0.1587  0.1117  2193    1
+strainGroupedCD1              -0.1158  0.1813  -0.5305  0.2004  2074    1
+strainGroupedDBA              -0.0253  0.1625  -0.3563  0.3059  1591    1
+strainGroupedlisterHooded     -0.0540  0.3135  -0.7133  0.5434  2062    1
+strainGroupedlongEvans         0.0712  0.1205  -0.1421  0.3397  2253    1
+strainGroupedlongEvansHooded   0.1790  0.2181  -0.1823  0.6557  2302    1
+strainGroupedNMRI              0.1200  0.2423  -0.3336  0.6518  2225    1
+strainGroupedNS                0.0289  0.1497  -0.2674  0.3448  2842    1
+strainGroupedother            -0.0227  0.1263  -0.2832  0.2302  2079    1
+strainGroupedspragueDawley    -0.0041  0.0615  -0.1343  0.1176  1921    1
+strainGroupedswissWebster      0.5557  0.4900  -0.2266  1.6393  2230    1
+strainGroupedwistar            0.0236  0.0567  -0.0807  0.1512  2078    1
+strainGroupedwistarKyoto       0.0295  0.2698  -0.5350  0.5813  2392    1
+bias                          -0.0086  0.0290  -0.0716  0.0473  2087    1
+speciesrat                     0.1191  0.0877  -0.0203  0.3179  1380    1
+domainsLearning                0.0017  0.0501  -0.1012  0.1072  1986    1
+domainnsLearning               0.1159  0.0815  -0.0215  0.2892  1553    1
+domainsocial                   0.1702  0.1183  -0.0249  0.4232  1600    1
+domainnoMeta                  -0.3615  0.1843  -0.7299 -0.0184  1212    1
+sexM                           0.1205  0.0689  -0.0017  0.2605  1602    1
+tau2                           0.4291  0.0394   0.3524  0.5098  1112    1
+
+> I2(fit_lasso)
+
+  When sourcing 'using-brma.R':
+Error: object 'fit_lasso' not found
+Execution halted

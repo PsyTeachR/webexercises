@@ -1,0 +1,53 @@
+@String{j-J-APPL-ECONOMETRICS   = "Journal of Applied Econometrics"}
+
+% from texjourn001.bib
+@String{ack-nhfb = "Nelson H. F. Beebe,
+                    University of Utah,
+                    Department of Mathematics, 110 LCB,
+                    155 S 1400 E RM 233,
+                    Salt Lake City, UT 84112-0090, USA,
+                    Tel: +1 801 581 5254,
+                    FAX: +1 801 581 4148,
+                    e-mail: \path|beebe@math.utah.edu|,
+                            \path|beebe@acm.org|,
+                            \path|beebe@computer.org| (Internet),
+                    URL: \path|http://www.math.utah.edu/~beebe/|"}
+
+% from litprog.bib
+@Preamble{"\input bibnames.sty " #
+    "\hyphenation{
+        Ker-n-i-ghan
+        Port-able
+        Post-Script
+        Pren-tice
+        Richt-er
+        Spring-er
+    }" #
+    "\ifx \undefined \pkg       \def \pkg       #1{{{\tt #1}}} \fi" #
+    "\ifx \undefined \acro      \def \acro      #1{{\sc #1}}   \fi"
+}
+
+@Article{Racine:2012:RPI,
+  author =       "Jeffrey S. Racine",
+  title =        "{RStudio}: A Platform-Independent {IDE} for {R} and
+                 {Sweave}",
+  journal =      j-J-APPL-ECONOMETRICS,
+  volume =       "27",
+  number =       "1",
+  pages =        "167--172",
+  month =        jan # "--" # feb,
+  year =         "2012",
+  CODEN =        "JAECET",
+  DOI =          "https://doi.org/10.1002/jae.1278",
+  ISSN =         "0883-7252 (print), 1099-1255 (electronic)",
+  ISSN-L =       "0883-7252",
+  bibdate =      "Sat Mar 9 10:20:32 MST 2019",
+  bibsource =    "http://www.math.utah.edu/pub/tex/bib/jappleconometrics.bib;
+                 http://www.math.utah.edu/pub/tex/bib/litprog.bib;
+                 http://www.math.utah.edu/pub/tex/bib/s-plus.bib",
+  acknowledgement = ack-nhfb,
+  fjournal =     "Journal of Applied Econometrics",
+  journal-URL =  "https://onlinelibrary.wiley.com/journal/10991255;
+                 https://www.jstor.org/journal/japplecon",
+  onlinedate =   "26 October 2011",
+}

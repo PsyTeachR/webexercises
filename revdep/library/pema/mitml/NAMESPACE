@@ -1,0 +1,122 @@
+import(stats)
+import(jomo)
+import(pan)
+
+importFrom(graphics, abline, layout, par, plot, plot.new, axTicks, axis, lines, text, title)
+importFrom(grDevices, dev.new, dev.off, devAskNewPage)
+importFrom(methods, slot)
+importFrom(utils, flush.console, tail, write.table)
+
+export(panImpute,
+       jomoImpute,
+       mitmlComplete,
+       clusterMeans,
+       plot.mitml,
+       read.mitml,
+       summary.mitml,
+       multilevelR2,
+       testEstimates,
+       testModels,
+       testConstraints,
+       with.mitml.list,
+       within.mitml.list,
+       long2mitml.list,
+       jomo2mitml.list,
+       mids2mitml.list,
+       mitml.list2mids,
+       amelia2mitml.list,
+       as.mitml.list,
+       is.mitml.list,
+       c.mitml.list,
+       cbind.mitml.list,
+       rbind.mitml.list,
+       sort.mitml.list,
+       subset.mitml.list,
+       anova.mitml.result,
+       confint.mitml.testEstimates,
+       write.mitml,
+       write.mitmlMplus,
+       write.mitmlSAV,
+       write.mitmlSPSS
+      )
+
+S3method(c, mitml.list)
+S3method(cbind, mitml.list)
+S3method(rbind, mitml.list)
+S3method(sort, mitml.list)
+S3method(subset, mitml.list)
+S3method(with, mitml.list)
+S3method(within, mitml.list)
+S3method(plot, mitml)
+S3method(anova, mitml.result)
+S3method(coef, mitml.testEstimates)
+S3method(vcov, mitml.testEstimates)
+S3method(confint, mitml.testEstimates)
+S3method(print, mitml)
+S3method(print, mitml.summary)
+S3method(print, mitml.testEstimates)
+S3method(print, mitml.testModels)
+S3method(print, mitml.testConstraints)
+S3method(print, mitml.anova)
+S3method(summary, mitml)
+S3method(summary, mitml.testEstimates)
+S3method(summary, mitml.testModels)
+S3method(summary, mitml.testConstraints)
+
+S3method(.getCoef, default)
+S3method(.getCoef, merMod)
+S3method(.getCoef, lme)
+S3method(.getCoef, glmmTMB)
+S3method(.getCoef, lavaan)
+S3method(.getCoef, coxph.null)
+S3method(.getCoef, polr)
+S3method(.getVcov, default)
+S3method(.getVcov, glmmTMB)
+S3method(.getVcov, lavaan)
+S3method(.getVcov, coxph.null)
+S3method(.getMisc, default)
+S3method(.getMisc, lm)
+S3method(.getMisc, glm)
+S3method(.getMisc, merMod)
+S3method(.getMisc, lme)
+S3method(.getMisc, glmmTMB)
+S3method(.getMisc, geeglm)
+S3method(.getMisc, lavaan)
+
+S3method(.getLL, default)
+S3method(.getLL, geeglm)
+S3method(.getLL, lavaan)
+S3method(.getArgsLL, default)
+S3method(.getArgsLL, lm)
+S3method(.getArgsLL, glm)
+S3method(.getArgsLL, geeglm)
+S3method(.getArgsLL, lmerMod)
+S3method(.getArgsLL, lme)
+S3method(.getArgsLL, lavaan)
+S3method(.getUserLL, default)
+S3method(.getUserLL, lm)
+S3method(.getUserLL, lmerMod)
+S3method(.getUserLL, lme)
+S3method(.getUserLL, lavaan)
+S3method(.getDataLL, default)
+S3method(.getDataLL, lme)
+S3method(.getDataLL, gls)
+S3method(.getDataLL, lavaan)
+S3method(.updateStackedLL, default)
+S3method(.updateStackedLL, merMod)
+S3method(.updateStackedLL, lme)
+S3method(.updateStackedLL, gls)
+S3method(.updateStackedLL, lavaan)
+
+S3method(.checkREML, default)
+S3method(.checkREML, merMod)
+S3method(.checkREML, lme)
+S3method(.updateML, default)
+S3method(.updateML, merMod)
+S3method(.updateML, lme)
+S3method(.getDFs, default)
+S3method(.getDFs, lavaan)
+S3method(.getFormula, default)
+S3method(.getFormula, lme)
+S3method(.getFormula, lavaan)
+

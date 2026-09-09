@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Aki Vehtari" />
+
+
+<title>Pareto-khat diagnostics</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Pareto-khat diagnostics</h1>
+<h4 class="author">Aki Vehtari</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a>
+<ul>
+<li><a href="#simulated-data" id="toc-simulated-data">Simulated
+data</a></li>
+<li><a href="#mcmc-convergence-diagnostics" id="toc-mcmc-convergence-diagnostics">MCMC convergence
+diagnostics</a></li>
+</ul></li>
+<li><a href="#pareto-hatk" id="toc-pareto-hatk">Pareto-<span class="math inline">\(\hat{k}\)</span></a></li>
+<li><a href="#pareto-smoothing" id="toc-pareto-smoothing">Pareto
+smoothing</a></li>
+<li><a href="#minimum-sample-size-required" id="toc-minimum-sample-size-required">Minimum sample size
+required</a></li>
+<li><a href="#convergence-rate" id="toc-convergence-rate">Convergence
+rate</a></li>
+<li><a href="#pareto-hatk-threshold" id="toc-pareto-hatk-threshold">Pareto-<span class="math inline">\(\hat{k}\)</span>-threshold</a></li>
+<li><a href="#pareto-diagnostics" id="toc-pareto-diagnostics">Pareto
+diagnostics</a></li>
+<li><a href="#discussion" id="toc-discussion">Discussion</a></li>
+<li><a href="#reference" id="toc-reference">Reference</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The paper</p>
+<ul>
+<li>Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao, and Jonah
+Gabry (2024). Pareto smoothed importance sampling. <em>Journal of
+Machine Learning Research</em>, 25(72):1-58.</li>
+</ul>
+<p>presents Pareto smoothed importance sampling, but also Pareto-<span class="math inline">\(\hat{k}\)</span> diagnostic that can be used when
+estimating any expectation based on finite sample. This vignette
+illustrates the use of these diagnostics. The individual diagnostic
+functions are <code>pareto_khat()</code>, <code>pareto_min_ss()</code>,
+<code>pareto_convergence_rate()</code> and
+<code>pareto_khat_threshold()</code>. The function
+<code>pareto_diags()</code> will return all of these.</p>
+<p>Additionally, the <code>pareto_smooth()</code> function can be used
+to transform draws by smoothing the tail(s). ## Example</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(posterior)</span></code></pre></div>
+<pre><code>## This is posterior version 1.7.0</code></pre>
+<pre><code>## 
+## Attaching package: &#39;posterior&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     mad, sd, var</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     %in%, match</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">pillar.neg =</span> <span class="cn">FALSE</span>, <span class="at">pillar.subtle=</span><span class="cn">FALSE</span>, <span class="at">pillar.sigfig=</span><span class="dv">2</span>)</span></code></pre></div>
+<div id="simulated-data" class="section level3">
+<h3>Simulated data</h3>
+<p>Generate <code>xn</code> a simulated MCMC sample with 4 chains each
+with 1000 iterations using AR process with marginal normal(0,1)</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>phi <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6534</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>dr <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="at">data=</span><span class="fu">replicate</span>(<span class="dv">4</span>,<span class="fu">as.numeric</span>(<span class="fu">arima.sim</span>(<span class="at">n =</span> N,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>                                                <span class="fu">list</span>(<span class="at">ar =</span> <span class="fu">c</span>(phi)),</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>                                                <span class="at">sd =</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">-</span>phi<span class="sc">^</span><span class="dv">2</span>))))),</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>         <span class="at">dim=</span><span class="fu">c</span>(N,<span class="dv">4</span>,<span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="fu">as_draws_df</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  <span class="fu">set_variables</span>(<span class="st">&#39;xn&#39;</span>)</span></code></pre></div>
+<p>Transform <code>xn</code> via cdf-inverse-cdf so that we have
+variables that have marginally distributions <span class="math inline">\(t_3\)</span>, <span class="math inline">\(t_{2.5}\)</span>, <span class="math inline">\(t_2\)</span>, <span class="math inline">\(t_{1.5}\)</span>, and <span class="math inline">\(t_1\)</span>. These all have thick tails. In
+addition <span class="math inline">\(t_2\)</span>, <span class="math inline">\(t_{1.5}\)</span>, and <span class="math inline">\(t_1\)</span> have infinite variance, and <span class="math inline">\(t_1\)</span> (aka Cauchy) has infinite mean.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>drt <span class="ot">&lt;-</span> dr <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="fu">mutate_variables</span>(<span class="at">xt3=</span><span class="fu">qt</span>(<span class="fu">pnorm</span>(xn), <span class="at">df=</span><span class="dv">3</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>                   <span class="at">xt2_5=</span><span class="fu">qt</span>(<span class="fu">pnorm</span>(xn), <span class="at">df=</span><span class="fl">2.5</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>                   <span class="at">xt2=</span><span class="fu">qt</span>(<span class="fu">pnorm</span>(xn), <span class="at">df=</span><span class="dv">2</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>                   <span class="at">xt1_5=</span><span class="fu">qt</span>(<span class="fu">pnorm</span>(xn), <span class="at">df=</span><span class="fl">1.5</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>                   <span class="at">xt1=</span><span class="fu">qt</span>(<span class="fu">pnorm</span>(xn), <span class="at">df=</span><span class="dv">1</span>))</span></code></pre></div>
+</div>
+<div id="mcmc-convergence-diagnostics" class="section level3">
+<h3>MCMC convergence diagnostics</h3>
+<p>We examine the draws with the default
+<code>summarise_draws()</code>.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>drt <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">summarise_draws</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 10
+##   variable  mean  median    sd   mad    q5   q95  rhat ess_bulk ess_tail
+##   &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1 xn       0.010 0.00094  0.99  0.99  -1.6   1.6   1.0    2284.    3189.
+## 2 xt3      0.025 0.0010   1.6   1.1   -2.3   2.3   1.0    2284.    3189.
+## 3 xt2_5    0.031 0.0010   2.0   1.1   -2.5   2.5   1.0    2284.    3189.
+## 4 xt2      0.046 0.0011   2.9   1.2   -2.8   2.9   1.0    2284.    3189.
+## 5 xt1_5    0.092 0.0011   7.6   1.3   -3.5   3.6   1.0    2284.    3189.
+## 6 xt1      0.33  0.0012  93.    1.5   -5.8   6.1   1.0    2284.    3189.</code></pre>
+<p>All the usual convergence diagnostics <span class="math inline">\(\widehat{R}\)</span>, Bulk-ESS, and Tail-ESS look
+good, which is fine as they have been designed to work also with
+infinite variance (Vehtari et al., 2020).</p>
+<p>If these variables would present variables of interest for which we
+would like to estimate means, we would be also interested in Monte Carlo
+standard error (MCSE, see case study <a href="https://users.aalto.fi/~ave/casestudies/Digits/digits.html">How
+many iterations to run and how many digits to report</a>).</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>drt <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="fu">summarise_draws</span>(mean, sd, mcse_mean, ess_bulk, ess_basic)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 6
+##   variable  mean    sd mcse_mean ess_bulk ess_basic
+##   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 xn       0.010  0.99     0.021    2284.     2280.
+## 2 xt3      0.025  1.6      0.033    2284.     2452.
+## 3 xt2_5    0.031  2.0      0.039    2284.     2584.
+## 4 xt2      0.046  2.9      0.054    2284.     2903.
+## 5 xt1_5    0.092  7.6      0.13     2284.     3553.
+## 6 xt1      0.33  93.       1.5      2284.     3976.</code></pre>
+<p>Here MCSE for mean is based on standard deviation and Basic-ESS, but
+these assume finite variance. We did sample also from distributions with
+infinite variance, but given a finite sample size, the empirical
+variance estimates are always finite, and thus we get overoptimistic
+MCSE.</p>
+</div>
+</div>
+<div id="pareto-hatk" class="section level2">
+<h2>Pareto-<span class="math inline">\(\hat{k}\)</span></h2>
+<p>To diagnose whether our variables of interest may have infinite
+variance and even infinite mean, we can use Pareto-<span class="math inline">\(\hat{k}\)</span> diagnostic.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>drt <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="fu">summarise_draws</span>(mean, sd, mcse_mean, ess_basic, pareto_khat)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 6
+##   variable  mean    sd mcse_mean ess_basic pareto_khat
+##   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+## 1 xn       0.010  0.99     0.021     2280.      -0.072
+## 2 xt3      0.025  1.6      0.033     2452.       0.33 
+## 3 xt2_5    0.031  2.0      0.039     2584.       0.41 
+## 4 xt2      0.046  2.9      0.054     2903.       0.52 
+## 5 xt1_5    0.092  7.6      0.13      3553.       0.69 
+## 6 xt1      0.33  93.       1.5       3976.       1.0</code></pre>
+<p><span class="math inline">\(\hat{k} \leq 0\)</span> indicates that
+all moments exist, and the inverse of positive <span class="math inline">\(\hat{k}\)</span> tells estimate for the number of
+finite (fractional) moments. Thus, <span class="math inline">\(\hat{k}\geq 1/2\)</span> indicates infinite
+variance, and <span class="math inline">\(\hat{k}\geq 1\)</span>
+indicates infinite mean. Sometimes very thick distribution tails may
+affect also sampling, but assuming sampling did go well, and we would be
+interested only in quantiles, infinite variance and mean are not a
+problem. But if we are interested in mean, then we need to care about
+the number of (fractional) moments. Here we see <span class="math inline">\(\hat{k} \geq 1/2\)</span> for <span class="math inline">\(t_2\)</span>, <span class="math inline">\(t_{1.5}\)</span>, and <span class="math inline">\(t_{1}\)</span>, and we should not trust their
+<code>mcse_mean</code> values. Without trustworthy MCSE estimate we
+don’t have good estimate of how accurate the mean estimate is.
+Furthermore, as <span class="math inline">\(\hat{k} \geq 1\)</span> for
+<span class="math inline">\(t_{1}\)</span>, the mean is not finite and
+the mean estimate is not valid.</p>
+</div>
+<div id="pareto-smoothing" class="section level2">
+<h2>Pareto smoothing</h2>
+<p>If we really do need those mean estimates, we can improve
+trustworthiness by Pareto smoothing, which replaces extreme tail draws
+with expected ordered statistics of Pareto distribution fitted to the
+tails of the distribution. Pareto smoothed mean estimate (computed using
+Pareto smoothed draws) has finite variance with a cost of some bias
+which we know when it is negligible. As a thumb rule when <span class="math inline">\(\hat{k}&lt;0.7\)</span>, the bias is
+negligible.</p>
+<p>We do Pareto smoothing for all the variables.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>drts <span class="ot">&lt;-</span> drt <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  <span class="fu">mutate_variables</span>(<span class="at">xt3_s=</span><span class="fu">pareto_smooth</span>(xt3),</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>                   <span class="at">xt2_5_s=</span><span class="fu">pareto_smooth</span>(xt2_5),</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>                   <span class="at">xt2_s=</span><span class="fu">pareto_smooth</span>(xt2),</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>                   <span class="at">xt1_5_s=</span><span class="fu">pareto_smooth</span>(xt1_5),</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>                   <span class="at">xt1_s=</span><span class="fu">pareto_smooth</span>(xt1)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>  <span class="fu">subset_draws</span>(<span class="at">variable=</span><span class="st">&quot;_s&quot;</span>, <span class="at">regex=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## Pareto k-hat = 0.33.</code></pre>
+<pre><code>## Pareto k-hat = 0.41.</code></pre>
+<pre><code>## Pareto k-hat = 0.52.</code></pre>
+<pre><code>## Pareto k-hat = 0.69.</code></pre>
+<pre><code>## Pareto k-hat = 1.03. Mean does not exist, making empirical mean estimate of the draws not applicable.</code></pre>
+<p>Now the <code>mcse_mean</code> values are more trustworthy when <span class="math inline">\(\hat{k} &lt; 0.7\)</span>. When <span class="math inline">\(\hat{k}&gt;0.7\)</span> both bias and variance
+grow so fast that Pareto smoothing rarely helps (see more details in the
+paper).</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>drts <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="fu">summarise_draws</span>(mean, mcse_mean, ess_basic, pareto_khat)</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 5
+##   variable  mean mcse_mean ess_basic pareto_khat
+##   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+## 1 xt3_s    0.026     0.033     2439.        0.34
+## 2 xt2_5_s  0.034     0.038     2538.        0.41
+## 3 xt2_s    0.053     0.051     2768.        0.51
+## 4 xt1_5_s  0.13      0.10      3305.        0.68
+## 5 xt1_s    1.0       0.83      3908.        1.00</code></pre>
+</div>
+<div id="minimum-sample-size-required" class="section level2">
+<h2>Minimum sample size required</h2>
+<p>The bias and variance depend on the sample size, and we can use
+additional diagnostic <code>min_ss</code> which tells the minimum sample
+size needed so that <code>mcse_mean</code> can be trusted.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>drt <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>  <span class="fu">summarise_draws</span>(mean, mcse_mean, ess_basic,</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>                  pareto_khat, <span class="at">min_ss=</span>pareto_min_ss)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 6
+##   variable  mean mcse_mean ess_basic pareto_khat min_ss
+##   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;
+## 1 xn       0.010     0.021     2280.      -0.072    10 
+## 2 xt3      0.025     0.033     2452.       0.33     31.
+## 3 xt2_5    0.031     0.039     2584.       0.41     48.
+## 4 xt2      0.046     0.054     2903.       0.52    116.
+## 5 xt1_5    0.092     0.13      3553.       0.69   1746.
+## 6 xt1      0.33      1.5       3976.       1.0     Inf</code></pre>
+<p>Here required <code>min_ss</code> is smaller than
+<code>ess_basic</code> for all except <span class="math inline">\(t_1\)</span>, for which there is no hope.</p>
+</div>
+<div id="convergence-rate" class="section level2">
+<h2>Convergence rate</h2>
+<p>Given finite variance, the central limit theorem states that to halve
+MCSE we need four times bigger sample size. With Pareto smoothing, we
+can go further, but the convergence rate decreases when <span class="math inline">\(\hat{k}\)</span> increases.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>drt <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  <span class="fu">summarise_draws</span>(mean, mcse_mean, ess_basic,</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>                  pareto_khat, <span class="at">min_ss=</span>pareto_min_ss,</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>                  <span class="at">conv_rate=</span>pareto_convergence_rate)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 7
+##   variable  mean mcse_mean ess_basic pareto_khat min_ss conv_rate
+##   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+## 1 xn       0.010     0.021     2280.      -0.072    10       1   
+## 2 xt3      0.025     0.033     2452.       0.33     31.      0.98
+## 3 xt2_5    0.031     0.039     2584.       0.41     48.      0.95
+## 4 xt2      0.046     0.054     2903.       0.52    116.      0.86
+## 5 xt1_5    0.092     0.13      3553.       0.69   1746.      0.60
+## 6 xt1      0.33      1.5       3976.       1.0     Inf       0</code></pre>
+<p>We see that with <span class="math inline">\(t_2\)</span>, <span class="math inline">\(t_{1.5}\)</span>, and <span class="math inline">\(t_1\)</span> we need <span class="math inline">\(4^{1/0.86}\approx 5\)</span>, <span class="math inline">\(4^{1/0.60}\approx 10\)</span>, and <span class="math inline">\(4^{1/0}\approx \infty\)</span> times bigger sample
+sizes to halve MCSE for mean.</p>
+</div>
+<div id="pareto-hatk-threshold" class="section level2">
+<h2>Pareto-<span class="math inline">\(\hat{k}\)</span>-threshold</h2>
+<p>The final Pareto diagnostic, <span class="math inline">\(\hat{k}\)</span>-threshold, is useful for smaller
+sample sizes. Here we select only 100 iterations per chain to get total
+of 400 draws.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>drt <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  <span class="fu">subset_draws</span>(<span class="at">iteration=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>  <span class="fu">summarise_draws</span>(mean, mcse_mean, ess_basic,</span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>                  pareto_khat, <span class="at">min_ss=</span>pareto_min_ss,</span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>                  <span class="at">khat_thres=</span>pareto_khat_threshold,</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>                  <span class="at">conv_rate=</span>pareto_convergence_rate)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 8
+##   variable   mean mcse_mean ess_basic pareto_khat min_ss khat_thres conv_rate
+##   &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+## 1 xn        0.038     0.066      244.      -0.015 1  e 1       0.62      1   
+## 2 xt3       0.054     0.11       237.       0.32  2.9e 1       0.62      0.96
+## 3 xt2_5     0.057     0.13       237.       0.38  4.1e 1       0.62      0.93
+## 4 xt2       0.063     0.17       243.       0.47  7.9e 1       0.62      0.86
+## 5 xt1_5     0.061     0.31       271.       0.63  4.9e 2       0.62      0.68
+## 6 xt1      -0.26      1.6        344.       0.93  2.0e15       0.62      0.13</code></pre>
+<p>With only 400 draws, we can trust the Pareto smoothed result only
+when <span class="math inline">\(\hat{k}&lt;0.62\)</span>. For <span class="math inline">\(t_{1.5}\)</span> <span class="math inline">\(\hat{k}\approx 0.64\)</span>, and
+<code>min_ss</code> reveals we would probably need more than 560 draws
+to be on the safe side.</p>
+</div>
+<div id="pareto-diagnostics" class="section level2">
+<h2>Pareto diagnostics</h2>
+<p>We can get all these diagnostics with <code>pareto_diags()</code>,
+and it’s easy to use it also for derived quantities.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>drt <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="fu">mutate_variables</span>(<span class="at">xt2_5_sq=</span>xt2_5<span class="sc">^</span><span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>  <span class="fu">subset_draws</span>(<span class="at">variable=</span><span class="st">&quot;xt2_5_sq&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>  <span class="fu">summarise_draws</span>(mean, mcse_mean,</span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>                  pareto_diags)</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 7
+##   variable  mean mcse_mean  khat min_ss khat_threshold convergence_rate
+##   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;
+## 1 xt2_5_sq   3.9      0.56  0.67  1051.           0.72             0.64</code></pre>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<p>All these diagnostics are presented in Section 3 and summarized in
+Table 1 in PSIS paper (Vehtari et al., 2024).</p>
+<p>If you don’t need to estimate means of thick tailed distributions,
+and there are no sampling issues due to thick tails, then you don’t need
+to check existence of finite variance, and thus there is no need to
+check Pareto-<span class="math inline">\(\hat{k}\)</span> for all the
+parameters and derived quantities.</p>
+<p>It is possible that the distribution has finite variance, but
+pre-asymptotically given a finite sample size the behavior can be
+similar to infinite variance. Thus the diagnostic is useful even in
+cases where theory guarantees finite variance.</p>
+</div>
+<div id="reference" class="section level2">
+<h2>Reference</h2>
+<p>Vehtari, A., Simpson, D., Gelman, A., Yao, Y., &amp; Gabry, J.
+(2024). Pareto smoothed importance sampling. <em>Journal of Machine
+Learning Research</em>, 25(72):1-58.</p>
+<p>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C.
+(2020). Rank-normalization, folding, and localization: An improved Rhat
+for assessing convergence of MCMC. <em>Bayesian Analysis</em>,
+16(2):667-718.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

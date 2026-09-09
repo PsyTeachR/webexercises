@@ -1,0 +1,145 @@
+
+R version 4.6.0 (2026-04-24 ucrt) -- "Because it was There"
+Copyright (C) 2026 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(testthat)
+Warning message:
+package 'testthat' was built under R version 4.6.1 
+> library(pema)
+> 
+> test_check("pema")
+
+SAMPLING FOR MODEL 'lasso_MA' NOW (CHAIN 1).
+Chain 1: 
+Chain 1: Gradient evaluation took 6.3e-05 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.63 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 1: WARNING: No variance estimation is
+Chain 1:          performed for num_warmup < 20
+Chain 1: 
+Chain 1: Iteration: 1 / 10 [ 10%]  (Warmup)
+Chain 1: Iteration: 2 / 10 [ 20%]  (Warmup)
+Chain 1: Iteration: 3 / 10 [ 30%]  (Warmup)
+Chain 1: Iteration: 4 / 10 [ 40%]  (Warmup)
+Chain 1: Iteration: 5 / 10 [ 50%]  (Warmup)
+Chain 1: Iteration: 6 / 10 [ 60%]  (Sampling)
+Chain 1: Iteration: 7 / 10 [ 70%]  (Sampling)
+Chain 1: Iteration: 8 / 10 [ 80%]  (Sampling)
+Chain 1: Iteration: 9 / 10 [ 90%]  (Sampling)
+Chain 1: Iteration: 10 / 10 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 0.008 seconds (Warm-up)
+Chain 1:                0 seconds (Sampling)
+Chain 1:                0.008 seconds (Total)
+Chain 1: 
+
+SAMPLING FOR MODEL 'lasso_MA' NOW (CHAIN 2).
+Chain 2: 
+Chain 2: Gradient evaluation took 3e-05 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.3 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 2: WARNING: No variance estimation is
+Chain 2:          performed for num_warmup < 20
+Chain 2: 
+Chain 2: Iteration: 1 / 10 [ 10%]  (Warmup)
+Chain 2: Iteration: 2 / 10 [ 20%]  (Warmup)
+Chain 2: Iteration: 3 / 10 [ 30%]  (Warmup)
+Chain 2: Iteration: 4 / 10 [ 40%]  (Warmup)
+Chain 2: Iteration: 5 / 10 [ 50%]  (Warmup)
+Chain 2: Iteration: 6 / 10 [ 60%]  (Sampling)
+Chain 2: Iteration: 7 / 10 [ 70%]  (Sampling)
+Chain 2: Iteration: 8 / 10 [ 80%]  (Sampling)
+Chain 2: Iteration: 9 / 10 [ 90%]  (Sampling)
+Chain 2: Iteration: 10 / 10 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 0 seconds (Warm-up)
+Chain 2:                0 seconds (Sampling)
+Chain 2:                0 seconds (Total)
+Chain 2: 
+
+SAMPLING FOR MODEL 'lasso_MA' NOW (CHAIN 3).
+Chain 3: 
+Chain 3: Gradient evaluation took 3.1e-05 seconds
+Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.31 seconds.
+Chain 3: Adjust your expectations accordingly!
+Chain 3: 
+Chain 3: 
+Chain 3: WARNING: No variance estimation is
+Chain 3:          performed for num_warmup < 20
+Chain 3: 
+Chain 3: Iteration: 1 / 10 [ 10%]  (Warmup)
+Chain 3: Iteration: 2 / 10 [ 20%]  (Warmup)
+Chain 3: Iteration: 3 / 10 [ 30%]  (Warmup)
+Chain 3: Iteration: 4 / 10 [ 40%]  (Warmup)
+Chain 3: Iteration: 5 / 10 [ 50%]  (Warmup)
+Chain 3: Iteration: 6 / 10 [ 60%]  (Sampling)
+Chain 3: Iteration: 7 / 10 [ 70%]  (Sampling)
+Chain 3: Iteration: 8 / 10 [ 80%]  (Sampling)
+Chain 3: Iteration: 9 / 10 [ 90%]  (Sampling)
+Chain 3: Iteration: 10 / 10 [100%]  (Sampling)
+Chain 3: 
+Chain 3:  Elapsed Time: 0.014 seconds (Warm-up)
+Chain 3:                0 seconds (Sampling)
+Chain 3:                0.014 seconds (Total)
+Chain 3: 
+
+SAMPLING FOR MODEL 'lasso_MA' NOW (CHAIN 4).
+Chain 4: 
+Chain 4: Gradient evaluation took 3.2e-05 seconds
+Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.32 seconds.
+Chain 4: Adjust your expectations accordingly!
+Chain 4: 
+Chain 4: 
+Chain 4: WARNING: No variance estimation is
+Chain 4:          performed for num_warmup < 20
+Chain 4: 
+Chain 4: Iteration: 1 / 10 [ 10%]  (Warmup)
+Chain 4: Iteration: 2 / 10 [ 20%]  (Warmup)
+Chain 4: Iteration: 3 / 10 [ 30%]  (Warmup)
+Chain 4: Iteration: 4 / 10 [ 40%]  (Warmup)
+Chain 4: Iteration: 5 / 10 [ 50%]  (Warmup)
+Chain 4: Iteration: 6 / 10 [ 60%]  (Sampling)
+Chain 4: Iteration: 7 / 10 [ 70%]  (Sampling)
+Chain 4: Iteration: 8 / 10 [ 80%]  (Sampling)
+Chain 4: Iteration: 9 / 10 [ 90%]  (Sampling)
+Chain 4: Iteration: 10 / 10 [100%]  (Sampling)
+Chain 4: 
+Chain 4:  Elapsed Time: 0.008 seconds (Warm-up)
+Chain 4:                0 seconds (Sampling)
+Chain 4:                0.008 seconds (Total)
+Chain 4: 
+
+Attaching package: 'mice'
+
+The following object is masked from 'package:stats':
+
+    filter
+
+The following objects are masked from 'package:base':
+
+    cbind, rbind
+
+[ FAIL 0 | WARN 1 | SKIP 0 | PASS 20 ]
+
+[ FAIL 0 | WARN 1 | SKIP 0 | PASS 20 ]
+> 
+> proc.time()
+   user  system elapsed 
+  24.76    0.53   25.76 

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Topi Paananen, Paul Bürkner, Aki Vehtari and Jonah Gabry" />
+
+<meta name="date" content="2026-07-23" />
+
+<title>Avoiding model refits in leave-one-out cross-validation with moment matching</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Avoiding model refits in leave-one-out
+cross-validation with moment matching</h1>
+<h4 class="author">Topi Paananen, Paul Bürkner, Aki Vehtari and Jonah
+Gabry</h4>
+<h4 class="date">2026-07-23</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#example-eradication-of-roaches" id="toc-example-eradication-of-roaches">Example: Eradication of
+Roaches</a>
+<ul>
+<li><a href="#coding-the-stan-model" id="toc-coding-the-stan-model">Coding the Stan model</a></li>
+<li><a href="#setup" id="toc-setup">Setup</a></li>
+<li><a href="#fitting-the-model-with-rstan" id="toc-fitting-the-model-with-rstan">Fitting the model with
+RStan</a></li>
+<li><a href="#moment-matching-correction-for-importance-sampling" id="toc-moment-matching-correction-for-importance-sampling">Moment
+matching correction for importance sampling</a></li>
+</ul></li>
+<li><a href="#using-loo_moment_match-directly" id="toc-using-loo_moment_match-directly">Using
+<code>loo_moment_match()</code> directly</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul>
+</div>
+
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Avoiding model refits in leave-one-out cross-validation with moment matching}
+-->
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This vignette demonstrates how to improve the Monte Carlo sampling
+accuracy of leave-one-out cross-validation with the <strong>loo</strong>
+package and Stan. The <strong>loo</strong> package automatically
+monitors the sampling accuracy using Pareto <span class="math inline">\(k\)</span> diagnostics for each observation. Here,
+we present a method for quickly improving the accuracy when the Pareto
+diagnostics indicate problems. This is done by performing some
+additional computations using the existing posterior sample. If
+successful, this will decrease the Pareto <span class="math inline">\(k\)</span> values, making the model assessment
+more reliable. <strong>loo</strong> also stores the original Pareto
+<span class="math inline">\(k\)</span> values with the name
+<code>influence_pareto_k</code> which are not changed. They can be used
+as a diagnostic of how much each observation influences the posterior
+distribution.</p>
+<p>The methodology presented is based on the paper</p>
+<ul>
+<li>Paananen, T., Piironen, J., Buerkner, P.-C., Vehtari, A. (2020).
+Implicitly Adaptive Importance Sampling. <a href="https://arxiv.org/abs/1906.08850">arXiv preprint
+arXiv:1906.08850</a>.</li>
+</ul>
+<p>More information about the Pareto <span class="math inline">\(k\)</span> diagnostics is given in the following
+papers</p>
+<ul>
+<li><p>Vehtari, A., Gelman, A., and Gabry, J. (2017). Practical Bayesian
+model evaluation using leave-one-out cross-validation and WAIC.
+<em>Statistics and Computing</em>. 27(5), 1413–1432.
+:10.1007/s11222-016-9696-4. Links: <a href="https://link.springer.com/article/10.1007/s11222-016-9696-4">published</a>
+| <a href="https://arxiv.org/abs/1507.04544">arXiv
+preprint</a>.</p></li>
+<li><p>Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J.
+(2024). Pareto smoothed importance sampling. <em>Journal of Machine
+Learning Research</em>, 25(72):1-58. <a href="https://jmlr.org/papers/v25/19-556.html">PDF</a></p></li>
+</ul>
+</div>
+<div id="example-eradication-of-roaches" class="section level1">
+<h1>Example: Eradication of Roaches</h1>
+<p>We will use the same example as in the vignette <a href="https://mc-stan.org/loo/articles/loo2-example.html"><em>Using the
+loo package (version &gt;= 2.0.0)</em></a>. See the demo for a
+description of the problem and data. We will use the same Poisson
+regression model as in the case study.</p>
+<div id="coding-the-stan-model" class="section level2">
+<h2>Coding the Stan model</h2>
+<p>Here is the Stan code for fitting the Poisson regression model, which
+we will use for modeling the number of roaches.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Note: some syntax used in this Stan program requires RStan &gt;= 2.26 (or CmdStanR)</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># To use an older version of RStan change the line declaring `y` to: int y[N];</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>stancode <span class="ot">&lt;-</span> <span class="st">&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="st">data {</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="st">  int&lt;lower=1&gt; K;</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="st">  int&lt;lower=1&gt; N;</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="st">  matrix[N,K] x;</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="st">  array[N] int y;</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="st">  vector[N] offset_; // offset is reserved keyword in Stan so use offset_</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="st">  real beta_prior_scale;</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="st">  real alpha_prior_scale;</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="st">parameters {</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="st">  vector[K] beta;</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="st">  real intercept;</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="st">model {</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="st">  y ~ poisson(exp(x * beta + intercept + offset_));</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="st">  beta ~ normal(0,beta_prior_scale);</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="st">  intercept ~ normal(0,alpha_prior_scale);</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="st">generated quantities {</span></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="st">  vector[N] log_lik;</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="st">  for (n in 1:N) {</span></span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="st">    log_lik[n] = poisson_lpmf(y[n] | exp(x[n] * beta + intercept + offset_[n]));</span></span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a><span class="st">&quot;</span></span></code></pre></div>
+<p>Following the usual approach recommended in <a href="http://mc-stan.org/loo/articles/loo2-with-rstan.html"><em>Writing
+Stan programs for use with the loo package</em></a>, we compute the
+log-likelihood for each observation in the
+<code>generated quantities</code> block of the Stan program.</p>
+</div>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>In addition to <strong>loo</strong>, we load the
+<strong>rstan</strong> package for fitting the model, and the
+<strong>rstanarm</strong> package for the data.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;rstan&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;loo&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>seed <span class="ot">&lt;-</span> <span class="dv">9547</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">set.seed</span>(seed)</span></code></pre></div>
+</div>
+<div id="fitting-the-model-with-rstan" class="section level2">
+<h2>Fitting the model with RStan</h2>
+<p>Next we fit the model in Stan using the <strong>rstan</strong>
+package:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Prepare data</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">data</span>(roaches, <span class="at">package =</span> <span class="st">&quot;rstanarm&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>roaches<span class="sc">$</span>roach1 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(roaches<span class="sc">$</span>roach1)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> roaches<span class="sc">$</span>y</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>x <span class="ot">&lt;-</span> roaches[, <span class="fu">c</span>(<span class="st">&quot;roach1&quot;</span>, <span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;senior&quot;</span>)]</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>offset <span class="ot">&lt;-</span> <span class="fu">log</span>(roaches[, <span class="st">&quot;exposure2&quot;</span>])</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">dim</span>(x)[<span class="dv">1</span>]</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">dim</span>(x)[<span class="dv">2</span>]</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>standata <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">N =</span> n,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">K =</span> k,</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">as.matrix</span>(x),</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  <span class="at">y =</span> y,</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  <span class="at">offset_ =</span> offset,</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="at">beta_prior_scale =</span> <span class="fl">2.5</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  <span class="at">alpha_prior_scale =</span> <span class="fl">5.0</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>)</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co"># Compile</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>stanmodel <span class="ot">&lt;-</span> <span class="fu">stan_model</span>(<span class="at">model_code =</span> stancode)</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co"># Fit model</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sampling</span>(stanmodel, <span class="at">data =</span> standata, <span class="at">seed =</span> seed, <span class="at">refresh =</span> <span class="dv">0</span>)</span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="fu">print</span>(fit, <span class="at">pars =</span> <span class="st">&quot;beta&quot;</span>)</span></code></pre></div>
+<pre><code>Inference for Stan model: anon_model.
+4 chains, each with iter=2000; warmup=1000; thin=1; 
+post-warmup draws per chain=1000, total post-warmup draws=4000.
+
+         mean se_mean   sd  2.5%   25%   50%   75% 97.5% n_eff Rhat
+beta[1]  0.16       0 0.00  0.16  0.16  0.16  0.16  0.16  2344    1
+beta[2] -0.57       0 0.03 -0.62 -0.59 -0.57 -0.55 -0.52  2395    1
+beta[3] -0.31       0 0.03 -0.38 -0.34 -0.31 -0.29 -0.25  2135    1
+
+Samples were drawn using NUTS(diag_e) at Thu Jul 23 16:02:40 2026.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).</code></pre>
+<p>Let us now evaluate the predictive performance of the model using
+<code>loo()</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>loo1 <span class="ot">&lt;-</span> <span class="fu">loo</span>(fit)</span></code></pre></div>
+<pre><code>Replacing NAs in `r_eff` with 1s</code></pre>
+<pre><code>Warning: Some Pareto k diagnostic values are too high. See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>loo1</span></code></pre></div>
+<pre><code>
+Computed from 4000 by 262 log-likelihood matrix.
+
+         Estimate     SE
+elpd_loo  -5459.2  694.1
+p_loo       258.5   55.3
+looic     10918.4 1388.2
+------
+MCSE of elpd_loo is NA.
+MCSE and ESS estimates assume MCMC draws (r_eff in [0.4, 1.0]).
+
+Pareto k diagnostic values:
+                         Count Pct.    Min. ESS
+(-Inf, 0.7]   (good)     250   95.4%   66      
+   (0.7, 1]   (bad)        5    1.9%   &lt;NA&gt;    
+   (1, Inf)   (very bad)   7    2.7%   &lt;NA&gt;    
+See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+<p>The <code>loo()</code> function output warnings that there are some
+observations which are highly influential, and thus the accuracy of
+importance sampling is compromised as indicated by the large Pareto
+<span class="math inline">\(k\)</span> diagnostic values (&gt; 0.7). As
+discussed in the vignette <a href="https://mc-stan.org/loo/articles/loo2-example.html"><em>Using the
+loo package (version &gt;= 2.0.0)</em></a>, this may be an indication of
+model misspecification. Despite that, it is still beneficial to be able
+to evaluate the predictive performance of the model accurately.</p>
+</div>
+<div id="moment-matching-correction-for-importance-sampling" class="section level2">
+<h2>Moment matching correction for importance sampling</h2>
+<p>To improve the accuracy of the <code>loo()</code> result above, we
+could perform leave-one-out cross-validation by explicitly leaving out
+single observations and refitting the model using MCMC repeatedly.
+However, the Pareto <span class="math inline">\(k\)</span> diagnostics
+indicate that there are 19 observations which are problematic. This
+would require 19 model refits which may require a lot of computation
+time.</p>
+<p>Instead of refitting with MCMC, we can perform a faster moment
+matching correction to the importance sampling for the problematic
+observations. This can be done with the <code>loo_moment_match()</code>
+function in the <strong>loo</strong> package, which takes our existing
+<code>loo</code> object as input and modifies it. The moment matching
+requires some evaluations of the model posterior density. For models
+fitted with <strong>rstan</strong>, this can be conveniently done by
+using the existing <code>stanfit</code> object.</p>
+<p>First, we show how the moment matching can be used for a model fitted
+using <strong>rstan</strong>. It only requires setting the argument
+<code>moment_match</code> to <code>TRUE</code> in the <code>loo()</code>
+function. Optionally, you can also set the argument
+<code>k_threshold</code> which determines the Pareto <span class="math inline">\(k\)</span> threshold, above which moment matching
+is used. By default, it operates on all observations whose Pareto <span class="math inline">\(k\)</span> value is larger than the sample size
+(<span class="math inline">\(S\)</span>) specific threshold <span class="math inline">\(\min(1 - 1 / \log_{10}(S), 0.7)\)</span> (which is
+<span class="math inline">\(0.7\)</span> for <span class="math inline">\(S&gt;2200\)</span>).</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># available in rstan &gt;= 2.21</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>loo2 <span class="ot">&lt;-</span> <span class="fu">loo</span>(fit, <span class="at">moment_match =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>Replacing NAs in `r_eff` with 1s</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>loo2</span></code></pre></div>
+<pre><code>
+Computed from 4000 by 262 log-likelihood matrix.
+
+         Estimate     SE
+elpd_loo  -5478.9  700.0
+p_loo       278.2   63.1
+looic     10957.8 1400.1
+------
+MCSE of elpd_loo is NA.
+MCSE and ESS estimates assume MCMC draws (r_eff in [0.4, 1.0]).
+
+All Pareto k estimates are good (k &lt; 0.7).
+See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+<p>After the moment matching, all observations have the diagnostic
+Pareto <span class="math inline">\(k\)</span> less than 0.7, meaning
+that the estimates are now reliable. The total <code>elpd_loo</code>
+estimate also changed from <code>-5457.8</code> to <code>-5478.5</code>,
+showing that before moment matching, <code>loo()</code> overestimated
+the predictive performance of the model.</p>
+<p>The updated Pareto <span class="math inline">\(k\)</span> values
+stored in <code>loo2$diagnostics$pareto_k</code> are considered
+algorithmic diagnostic values that indicate the sampling accuracy. The
+original Pareto <span class="math inline">\(k\)</span> values are stored
+in <code>loo2$pointwise[,&quot;influence_pareto_k&quot;]</code> and these are not
+modified by the moment matching. These can be considered as diagnostics
+for how big influence each observation has on the posterior
+distribution. In addition to the Pareto <span class="math inline">\(k\)</span> diagnostics, moment matching also
+updates the effective sample size estimates.</p>
+</div>
+</div>
+<div id="using-loo_moment_match-directly" class="section level1">
+<h1>Using <code>loo_moment_match()</code> directly</h1>
+<p>The moment matching can also be performed by explicitly calling the
+function <code>loo_moment_match()</code>. This enables its use also for
+models that are not using <strong>rstan</strong> or another package with
+built-in support for <code>loo_moment_match()</code>. To use
+<code>loo_moment_match()</code>, the user must give the model object
+<code>x</code>, the <code>loo</code> object, and 5 helper functions as
+arguments to <code>loo_moment_match()</code>. The helper functions
+are</p>
+<ul>
+<li><code>post_draws</code>
+<ul>
+<li>A function the takes <code>x</code> as the first argument and
+returns a matrix of posterior draws of the model parameters,
+<code>pars</code>.</li>
+</ul></li>
+<li><code>log_lik_i</code>
+<ul>
+<li>A function that takes <code>x</code> and <code>i</code> and returns
+a matrix (one column per chain) or a vector (all chains stacked) of
+log-likeliood draws of the ith observation based on the model
+<code>x</code>. If the draws are obtained using MCMC, the matrix with
+MCMC chains separated is preferred.</li>
+</ul></li>
+<li><code>unconstrain_pars</code>
+<ul>
+<li>A function that takes arguments <code>x</code> and
+<code>pars</code>, and returns posterior draws on the unconstrained
+space based on the posterior draws on the constrained space passed via
+<code>pars</code>.</li>
+</ul></li>
+<li><code>log_prob_upars</code>
+<ul>
+<li>A function that takes arguments <code>x</code> and
+<code>upars</code>, and returns a matrix of log-posterior density values
+of the unconstrained posterior draws passed via <code>upars</code>.</li>
+</ul></li>
+<li><code>log_lik_i_upars</code>
+<ul>
+<li>A function that takes arguments <code>x</code>, <code>upars</code>,
+and <code>i</code> and returns a vector of log-likelihood draws of the
+<code>i</code>th observation based on the unconstrained posterior draws
+passed via <code>upars</code>.</li>
+</ul></li>
+</ul>
+<p>Next, we show how the helper functions look like for RStan objects,
+and show an example of using <code>loo_moment_match()</code> directly.
+For stanfit objects from <strong>rstan</strong> objects, the functions
+look like this:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># create a named list of draws for use with rstan methods</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>.rstan_relist <span class="ot">&lt;-</span> <span class="cf">function</span>(x, skeleton) {</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  out <span class="ot">&lt;-</span> utils<span class="sc">::</span><span class="fu">relist</span>(x, skeleton)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(skeleton)) {</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="fu">dim</span>(out[[i]]) <span class="ot">&lt;-</span> <span class="fu">dim</span>(skeleton[[i]])</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  }</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  out</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>}</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co"># rstan helper function to get dims of parameters right</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>.create_skeleton <span class="ot">&lt;-</span> <span class="cf">function</span>(pars, dims) {</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">seq_along</span>(pars), <span class="cf">function</span>(i) {</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>    len_dims <span class="ot">&lt;-</span> <span class="fu">length</span>(dims[[i]])</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>    <span class="cf">if</span> (len_dims <span class="sc">&lt;</span> <span class="dv">1</span>) {</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>      <span class="fu">return</span>(<span class="dv">0</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>    }</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">array</span>(<span class="dv">0</span>, <span class="at">dim =</span> dims[[i]]))</span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>  })</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>  <span class="fu">names</span>(out) <span class="ot">&lt;-</span> pars</span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>  out</span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a>}</span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co"># extract original posterior draws</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>post_draws_stanfit <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>  <span class="fu">as.matrix</span>(x)</span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>}</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="co"># compute a matrix of log-likelihood values for the ith observation</span></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co"># matrix contains information about the number of MCMC chains</span></span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>log_lik_i_stanfit <span class="ot">&lt;-</span> <span class="cf">function</span>(x, i, <span class="at">parameter_name =</span> <span class="st">&quot;log_lik&quot;</span>, ...) {</span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>  loo<span class="sc">::</span><span class="fu">extract_log_lik</span>(x, parameter_name, <span class="at">merge_chains =</span> <span class="cn">FALSE</span>)[,, i]</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>}</span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a></span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a><span class="co"># transform parameters to the unconstraint space</span></span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>unconstrain_pars_stanfit <span class="ot">&lt;-</span> <span class="cf">function</span>(x, pars, ...) {</span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>  skeleton <span class="ot">&lt;-</span> <span class="fu">.create_skeleton</span>(x<span class="sc">@</span>sim<span class="sc">$</span>pars_oi, x<span class="sc">@</span>par_dims[x<span class="sc">@</span>sim<span class="sc">$</span>pars_oi])</span>
+<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a>  upars <span class="ot">&lt;-</span> <span class="fu">apply</span>(pars, <span class="dv">1</span>, <span class="at">FUN =</span> <span class="cf">function</span>(theta) {</span>
+<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a>    rstan<span class="sc">::</span><span class="fu">unconstrain_pars</span>(x, <span class="fu">.rstan_relist</span>(theta, skeleton))</span>
+<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a>  })</span>
+<span id="cb14-40"><a href="#cb14-40" tabindex="-1"></a>  <span class="co"># for one parameter models</span></span>
+<span id="cb14-41"><a href="#cb14-41" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(<span class="fu">dim</span>(upars))) {</span>
+<span id="cb14-42"><a href="#cb14-42" tabindex="-1"></a>    <span class="fu">dim</span>(upars) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">length</span>(upars))</span>
+<span id="cb14-43"><a href="#cb14-43" tabindex="-1"></a>  }</span>
+<span id="cb14-44"><a href="#cb14-44" tabindex="-1"></a>  <span class="fu">t</span>(upars)</span>
+<span id="cb14-45"><a href="#cb14-45" tabindex="-1"></a>}</span>
+<span id="cb14-46"><a href="#cb14-46" tabindex="-1"></a></span>
+<span id="cb14-47"><a href="#cb14-47" tabindex="-1"></a><span class="co"># compute log_prob for each posterior draws on the unconstrained space</span></span>
+<span id="cb14-48"><a href="#cb14-48" tabindex="-1"></a>log_prob_upars_stanfit <span class="ot">&lt;-</span> <span class="cf">function</span>(x, upars, ...) {</span>
+<span id="cb14-49"><a href="#cb14-49" tabindex="-1"></a>  <span class="fu">apply</span>(</span>
+<span id="cb14-50"><a href="#cb14-50" tabindex="-1"></a>    upars,</span>
+<span id="cb14-51"><a href="#cb14-51" tabindex="-1"></a>    <span class="dv">1</span>,</span>
+<span id="cb14-52"><a href="#cb14-52" tabindex="-1"></a>    rstan<span class="sc">::</span>log_prob,</span>
+<span id="cb14-53"><a href="#cb14-53" tabindex="-1"></a>    <span class="at">object =</span> x,</span>
+<span id="cb14-54"><a href="#cb14-54" tabindex="-1"></a>    <span class="at">adjust_transform =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-55"><a href="#cb14-55" tabindex="-1"></a>    <span class="at">gradient =</span> <span class="cn">FALSE</span></span>
+<span id="cb14-56"><a href="#cb14-56" tabindex="-1"></a>  )</span>
+<span id="cb14-57"><a href="#cb14-57" tabindex="-1"></a>}</span>
+<span id="cb14-58"><a href="#cb14-58" tabindex="-1"></a></span>
+<span id="cb14-59"><a href="#cb14-59" tabindex="-1"></a><span class="co"># compute log_lik values based on the unconstrained parameters</span></span>
+<span id="cb14-60"><a href="#cb14-60" tabindex="-1"></a>log_lik_i_upars_stanfit <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb14-61"><a href="#cb14-61" tabindex="-1"></a>  x,</span>
+<span id="cb14-62"><a href="#cb14-62" tabindex="-1"></a>  upars,</span>
+<span id="cb14-63"><a href="#cb14-63" tabindex="-1"></a>  i,</span>
+<span id="cb14-64"><a href="#cb14-64" tabindex="-1"></a>  <span class="at">parameter_name =</span> <span class="st">&quot;log_lik&quot;</span>,</span>
+<span id="cb14-65"><a href="#cb14-65" tabindex="-1"></a>  ...</span>
+<span id="cb14-66"><a href="#cb14-66" tabindex="-1"></a>) {</span>
+<span id="cb14-67"><a href="#cb14-67" tabindex="-1"></a>  S <span class="ot">&lt;-</span> <span class="fu">nrow</span>(upars)</span>
+<span id="cb14-68"><a href="#cb14-68" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">numeric</span>(S)</span>
+<span id="cb14-69"><a href="#cb14-69" tabindex="-1"></a>  <span class="cf">for</span> (s <span class="cf">in</span> <span class="fu">seq_len</span>(S)) {</span>
+<span id="cb14-70"><a href="#cb14-70" tabindex="-1"></a>    out[s] <span class="ot">&lt;-</span> rstan<span class="sc">::</span><span class="fu">constrain_pars</span>(x, <span class="at">upars =</span> upars[s, ])[[parameter_name]][i]</span>
+<span id="cb14-71"><a href="#cb14-71" tabindex="-1"></a>  }</span>
+<span id="cb14-72"><a href="#cb14-72" tabindex="-1"></a>  out</span>
+<span id="cb14-73"><a href="#cb14-73" tabindex="-1"></a>}</span></code></pre></div>
+<p>Using these function, we can call <code>loo_moment_match()</code> to
+update the existing <code>loo</code> object.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>loo3 <span class="ot">&lt;-</span> loo<span class="sc">::</span><span class="fu">loo_moment_match.default</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="at">x =</span> fit,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">loo =</span> loo1,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">post_draws =</span> post_draws_stanfit,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">log_lik_i =</span> log_lik_i_stanfit,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="at">unconstrain_pars =</span> unconstrain_pars_stanfit,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>  <span class="at">log_prob_upars =</span> log_prob_upars_stanfit,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>  <span class="at">log_lik_i_upars =</span> log_lik_i_upars_stanfit</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>)</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>loo3</span></code></pre></div>
+<pre><code>
+Computed from 4000 by 262 log-likelihood matrix.
+
+         Estimate     SE
+elpd_loo  -5478.9  700.0
+p_loo       278.2   63.1
+looic     10957.8 1400.1
+------
+MCSE of elpd_loo is NA.
+MCSE and ESS estimates assume MCMC draws (r_eff in [0.4, 1.0]).
+
+All Pareto k estimates are good (k &lt; 0.7).
+See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
+<p>As expected, the result is identical to the previous result of
+<code>loo2 &lt;- loo(fit, moment_match = TRUE)</code>.</p>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Gelman, A., and Hill, J. (2007). <em>Data Analysis Using Regression
+and Multilevel Hierarchical Models.</em> Cambridge University Press.</p>
+<p>Stan Development Team (2020) <em>RStan: the R interface to Stan,
+Version 2.21.1</em> <a href="https://mc-stan.org" class="uri">https://mc-stan.org</a></p>
+<p>Paananen, T., Piironen, J., Buerkner, P.-C., Vehtari, A. (2021).
+Implicitly adaptive importance sampling. <em>Statistics and
+Computing</em>, 31, 16. :10.1007/s11222-020-09982-2. arXiv preprint
+arXiv:1906.08850.</p>
+<p>Vehtari, A., Gelman, A., and Gabry, J. (2017). Practical Bayesian
+model evaluation using leave-one-out cross-validation and WAIC.
+<em>Statistics and Computing</em>. 27(5), 1413–1432.
+:10.1007/s11222-016-9696-4. Links: <a href="https://link.springer.com/article/10.1007/s11222-016-9696-4">published</a>
+| <a href="https://arxiv.org/abs/1507.04544">arXiv preprint</a>.</p>
+<p>Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J. (2024).
+Pareto smoothed importance sampling. <em>Journal of Machine Learning
+Research</em>, 25(72):1-58. <a href="https://jmlr.org/papers/v25/19-556.html">PDF</a></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

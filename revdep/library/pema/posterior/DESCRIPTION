@@ -1,0 +1,57 @@
+Package: posterior
+Title: Tools for Working with Posterior Distributions
+Version: 1.7.0
+Date: 2026-04-01
+Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
+             person("Jonah", "Gabry", email = "jgabry@gmail.com", role = c("aut")),
+             person("Matthew", "Kay", email = "mjskay@northwestern.edu", role = c("aut")),
+             person("Aki", "Vehtari", email = "Aki.Vehtari@aalto.fi", role = c("aut")),
+             person("Måns", "Magnusson", role = c("ctb")),
+             person("Rok", "Češnovar", role = c("ctb")),
+             person("Ben", "Lambert", role = c("ctb")),
+             person("Ozan", "Adıgüzel", role = c("ctb")), 
+             person("Jacob", "Socolar", role = c("ctb")),
+             person("Noa", "Kallioinen", role = c("ctb")),
+             person("Teemu", "Säilynoja", role = c("ctb")))
+Description: Provides useful tools for both users and developers of packages 
+  for fitting Bayesian models or working with output from Bayesian models.
+  The primary goals of the package are to: 
+  (a) Efficiently convert between many different useful formats of
+  draws (samples) from posterior or prior distributions.
+  (b) Provide consistent methods for operations commonly performed on draws, 
+  for example, subsetting, binding, or mutating draws.
+  (c) Provide various summaries of draws in convenient formats.
+  (d) Provide lightweight implementations of state of the art posterior 
+  inference diagnostics. References: Vehtari et al. (2021) 
+  <doi:10.1214/20-BA1221>.
+Depends: R (>= 3.2.0)
+Imports: methods, abind, checkmate, rlang (>= 1.0.6), stats, tibble (>=
+        3.1.0), vctrs (>= 0.5.0), tensorA, pillar, distributional,
+        parallel, matrixStats
+Suggests: testthat (>= 2.1.0), caret (>= 6.0-84), gbm (>= 2.1.8),
+        randomForest (>= 4.6.14), e1071 (>= 1.7-3), dplyr, tidyr,
+        knitr, ggplot2, ggdist, rmarkdown
+Config/Needs/website: stan-dev/pkgdown-config
+License: BSD_3_clause + file LICENSE
+Encoding: UTF-8
+URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
+BugReports: https://github.com/stan-dev/posterior/issues
+RoxygenNote: 7.3.3
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2026-04-01 11:52:27 UTC; wa.bocktif1
+Author: Paul-Christian Bürkner [aut, cre],
+  Jonah Gabry [aut],
+  Matthew Kay [aut],
+  Aki Vehtari [aut],
+  Måns Magnusson [ctb],
+  Rok Češnovar [ctb],
+  Ben Lambert [ctb],
+  Ozan Adıgüzel [ctb],
+  Jacob Socolar [ctb],
+  Noa Kallioinen [ctb],
+  Teemu Säilynoja [ctb]
+Maintainer: Paul-Christian Bürkner <paul.buerkner@gmail.com>
+Repository: CRAN
+Date/Publication: 2026-04-01 13:00:02 UTC
+Built: R 4.6.1; ; 2026-09-02 03:39:49 UTC; windows

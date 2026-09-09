@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Matthew Kay" />
+
+<meta name="date" content="2026-04-01" />
+
+<title>rvar: The Random Variable Datatype</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">rvar: The Random Variable Datatype</h1>
+<h4 class="author">Matthew Kay</h4>
+<h4 class="date">2026-04-01</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#the-rvars-datatype" id="toc-the-rvars-datatype">The
+<code>rvars</code> datatype</a>
+<ul>
+<li><a href="#rvar_factor" id="toc-rvar_factor"><code>rvar_factor</code>
+and <code>rvar_ordered</code> subtypes</a></li>
+</ul></li>
+<li><a href="#the-draws_rvars-datatype" id="toc-the-draws_rvars-datatype">The <code>draws_rvars</code>
+datatype</a></li>
+<li><a href="#math-with-rvars" id="toc-math-with-rvars">Math with
+<code>rvar</code>s</a></li>
+<li><a href="#expectations-and-summary-functions" id="toc-expectations-and-summary-functions">Expectations and summary
+functions</a></li>
+<li><a href="#constants" id="toc-constants">Constants</a></li>
+<li><a href="#using-existing-r-functions-and-expressions-with-rvars" id="toc-using-existing-r-functions-and-expressions-with-rvars">Using
+existing R functions and expressions with <code>rvar</code>s</a>
+<ul>
+<li><a href="#converting-functions-with-rfun" id="toc-converting-functions-with-rfun">Converting functions with
+<code>rfun()</code></a></li>
+<li><a href="#evaluating-expressions-with-rdo" id="toc-evaluating-expressions-with-rdo">Evaluating expressions with
+<code>rdo()</code></a></li>
+<li><a href="#evaluating-random-number-generators-with-rvar_rng" id="toc-evaluating-random-number-generators-with-rvar_rng">Evaluating
+random number generators with <code>rvar_rng()</code></a></li>
+</ul></li>
+<li><a href="#broadcasting" id="toc-broadcasting">Broadcasting</a></li>
+<li><a href="#slicing-and-conditionals" id="toc-slicing-and-conditionals">Slicing and conditionals</a>
+<ul>
+<li><a href="#subsetting-rvars-by-draw-xlogical-rvar" id="toc-subsetting-rvars-by-draw-xlogical-rvar">Subsetting
+<code>rvar</code>s by draw:
+<code>x[&lt;logical rvar&gt;]</code></a></li>
+<li><a href="#conditionals-using-rvar_ifelse" id="toc-conditionals-using-rvar_ifelse">Conditionals using
+<code>rvar_ifelse()</code></a></li>
+<li><a href="#selecting-different-elements-in-each-draw-xnumeric-rvar" id="toc-selecting-different-elements-in-each-draw-xnumeric-rvar">Selecting
+different elements in each draw:
+<code>x[[&lt;numeric rvar&gt;]]</code></a></li>
+</ul></li>
+<li><a href="#applying-functions-over-rvars" id="toc-applying-functions-over-rvars">Applying functions over
+<code>rvar</code>s</a></li>
+<li><a href="#looping-over-draws-and-rvars" id="toc-looping-over-draws-and-rvars">Looping over <code>draws</code>
+and <code>rvar</code>s</a></li>
+<li><a href="#using-rvars-in-data-frames-and-in-ggplot2" id="toc-using-rvars-in-data-frames-and-in-ggplot2">Using
+<code>rvar</code>s in data frames and in ggplot2</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette describes the <code>rvar()</code> datatype, a
+multidimensional, sample-based representation of random variables
+designed to act as much like base R arrays as possible (e.g., by
+supporting many math operators and functions). This format is also the
+basis of the <code>draws_rvars()</code> format.</p>
+<p>The <code>rvar()</code> datatype is inspired by the <a href="https://cran.r-project.org/package=rv">rv</a> package and <a href="https://doi.org/10.1007%2Fs11222-007-9020-4">Kerman and Gelman
+(2007)</a>, though with a slightly different backing format
+(multidimensional arrays). It is also designed to interoperate with
+vectorized distributions in the <a href="https://pkg.mitchelloharawild.com/distributional/">distributional</a>
+package, to be able to be used inside <code>data.frame()</code>s and
+<code>tibble()</code>s, and to be used with distribution visualizations
+in the <a href="https://mjskay.github.io/ggdist/">ggdist</a>
+package.</p>
+</div>
+<div id="the-rvars-datatype" class="section level2">
+<h2>The <code>rvars</code> datatype</h2>
+<p>The <code>rvar()</code> datatype is a wrapper around a
+multidimensional array where the first dimension is the number of draws
+in the random variable. The most direct way to create a random variable
+is to pass such an array to the <code>rvar()</code> function.</p>
+<p>For example, to create a “scalar” <code>rvar</code>, one would pass a
+one-dimensional array or a vector whose length (here <code>4000</code>)
+is the desired number of draws:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rvar</span>(<span class="fu">rnorm</span>(<span class="dv">4000</span>, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="dv">1</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[1] mean ± sd:
+## [1] 1 ± 1</code></pre>
+<p>The default display of an <code>rvar</code> shows the mean and
+standard deviation of each element of the array.</p>
+<p>We can create random vectors by adding an additional dimension beyond
+just the draws dimension to the input array:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">4</span>   <span class="co"># length of output vector</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rvar</span>(<span class="fu">array</span>(<span class="fu">rnorm</span>(<span class="dv">4000</span><span class="sc">*</span>n, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="dv">1</span>), <span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">4000</span>, n)))</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[4] mean ± sd:
+## [1] 1.01 ± 0.99  1.02 ± 0.99  0.98 ± 1.00  0.99 ± 1.02</code></pre>
+<p>Or we can create a random matrix:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>rows <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rvar</span>(<span class="fu">array</span>(<span class="fu">rnorm</span>(<span class="dv">4000</span> <span class="sc">*</span> rows <span class="sc">*</span> cols, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="dv">1</span>), <span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">4000</span>, rows, cols)))</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[4,3] mean ± sd:
+##      [,1]         [,2]         [,3]        
+## [1,] 1.00 ± 0.98  1.00 ± 1.00  0.97 ± 1.00 
+## [2,] 1.00 ± 1.01  1.01 ± 1.02  0.99 ± 0.99 
+## [3,] 1.02 ± 1.01  0.99 ± 1.00  1.00 ± 0.99 
+## [4,] 1.01 ± 1.01  1.02 ± 1.00  1.00 ± 1.01</code></pre>
+<p>Or any array up to an arbitrary number of dimensions. The array
+backing an <code>rvar</code> can be accessed (and modified, with
+caution) via <code>draws_of()</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">draws_of</span>(x))</span></code></pre></div>
+<pre><code>##  num [1:4000, 1:4, 1:3] -0.6879 0.0448 0.3519 1.261 -0.2197 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 3
+##   ..$ : chr [1:4000] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
+##   ..$ : NULL
+##   ..$ : NULL</code></pre>
+<p>While the above examples assume all draws come from a single chain,
+<code>rvar</code>s can also contain samples from multiple chains. For
+example, if your array of draws has iterations as the first dimension
+and chains as the second dimension, you can use
+<code>with_chains = TRUE</code> to create an <code>rvar</code> that
+includes chain information:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>iterations <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>chains <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>rows <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>x_array <span class="ot">&lt;-</span> <span class="fu">array</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="fu">rnorm</span>(iterations <span class="sc">*</span> chains <span class="sc">*</span> rows <span class="sc">*</span> cols, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">dim =</span> <span class="fu">c</span>(iterations, chains, rows, cols)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>)</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rvar</span>(x_array, <span class="at">with_chains =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;1000,4&gt;[4,3] mean ± sd:
+##      [,1]         [,2]         [,3]        
+## [1,] 0.97 ± 1.00  1.00 ± 0.99  1.02 ± 0.99 
+## [2,] 1.02 ± 1.00  0.99 ± 1.01  1.01 ± 0.99 
+## [3,] 1.00 ± 1.00  1.00 ± 1.00  1.01 ± 1.00 
+## [4,] 1.03 ± 0.99  1.05 ± 1.00  0.98 ± 1.00</code></pre>
+<p>Manual construction and modification of <code>rvar</code>s in this
+way is not always recommended unless you need it for performance
+reasons: several other higher-level interfaces to constructing and
+manipulating <code>rvar</code>s are described below.</p>
+<div id="rvar_factor" class="section level3">
+<h3><code>rvar_factor</code> and <code>rvar_ordered</code> subtypes</h3>
+<p>You can also use <code>rvar</code>s to represent discrete
+distributions, using the <code>rvar_factor()</code> and
+<code>rvar_ordered()</code> subtypes. If you attempt to create an
+<code>rvar</code> using character values or a <code>factor</code>, it
+will automatically be treated as an <code>rvar_factor</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rvar</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>,<span class="st">&quot;b&quot;</span>,<span class="st">&quot;c&quot;</span>), <span class="dv">4000</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>), <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar_factor&lt;4000&gt;[1] mode &lt;entropy&gt;:
+## [1] a &lt;0.74&gt; 
+## 3 levels: a b c</code></pre>
+<p>Numeric arrays with a <code>&quot;levels&quot;</code> attribute can also be
+passed to <code>rvar_factor()</code>. This (along with conversion of
+character values) means output from
+<code>rstanarm::posterior_predict()</code> and
+<code>brms::posterior_predict()</code> on categorical models can be
+passed directly to <code>rvar_factor()</code>.</p>
+<p>The default display shows the mode (as returned by
+<code>modal_category()</code>) and normalized entropy
+(<code>entropy()</code>), which is Shannon entropy scaled by the maximum
+possible entropy for a distribution with the same number of levels: thus
+0 means all probability is concentrated in one category, and 1 means the
+distribution is uniform.</p>
+<p>You can construct an ordered factor using <code>rvar_ordered()</code>
+(or by passing an <code>ordered()</code> vector to
+<code>rvar()</code>):</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rvar_ordered</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>,<span class="st">&quot;b&quot;</span>,<span class="st">&quot;c&quot;</span>), <span class="dv">4000</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>), <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar_ordered&lt;4000&gt;[1] mode &lt;dissent&gt;:
+## [1] a &lt;0.55&gt; 
+## 3 levels: a &lt; b &lt; c</code></pre>
+<p>For <code>rvar_ordered()</code>, the default display is mode and
+dissention (<code>dissent()</code>), which is 0 when all probability is
+concentrated in one category, and 1 when the distribution is bimodal at
+opposite ends of the scale.</p>
+<p><code>rvar_factor</code>s attempt to mimic <code>factor()</code> and
+<code>rvar_ordered</code>s attempt to mimic <code>ordered()</code>s, by
+implementing factor-specific functions like <code>levels()</code>.
+Comparison operations are also implemented where valid. For example, in
+<code>x</code> as defined above, approximately 90% of draws should be
+less than <code>&quot;b&quot;</code> (which means the <code>&quot;a&quot;</code> and
+<code>&quot;b&quot;</code> levels):</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>x <span class="sc">&lt;=</span> <span class="st">&quot;b&quot;</span></span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[1] mean ± sd:
+## [1] 0.9 ± 0.29</code></pre>
+<p><code>rvar</code>s also supply an implementation of
+<code>match()</code> and <code>%in%</code>, which can be especially
+useful with <code>rvar_factor</code>s:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>x <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;c&quot;</span>)</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[1] mean ± sd:
+## [1] 0.8 ± 0.4</code></pre>
+</div>
+</div>
+<div id="the-draws_rvars-datatype" class="section level2">
+<h2>The <code>draws_rvars</code> datatype</h2>
+<p>The <code>draws_rvars()</code> datatype, like all <code>draws</code>
+datatypes in posterior, contains multiple variables in a joint sample
+from some distribution (e.g. a posterior or prior distribution).</p>
+<p>You can construct <code>draws_rvars()</code> objects directly using
+the <code>draws_rvars()</code> function. The input <code>rvar</code>s
+must have the same number of chains and iterations, but can otherwise
+have different shapes:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">draws_rvars</span>(<span class="at">x =</span> x, <span class="at">y =</span> <span class="fu">rvar</span>(<span class="fu">rnorm</span>(iterations <span class="sc">*</span> chains), <span class="at">nchains =</span> <span class="dv">4</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>d</span></code></pre></div>
+<pre><code>## # A draws_rvars: 4000 iterations, 1 chains, and 2 variables
+## $x: rvar_ordered&lt;4000&gt;[1] mode &lt;dissent&gt;:
+## [1] a &lt;0.55&gt; 
+## 3 levels: a &lt; b &lt; c
+## 
+## $y: rvar&lt;4000&gt;[1] mean ± sd:
+## [1] -0.012 ± 0.98</code></pre>
+<p>Existing objects can also be converted to the
+<code>draws_rvars()</code> format using <code>as_draws_rvars()</code>.
+Below is the <code>example_draws(&quot;multi_normal&quot;)</code> dataset
+converted into the <code>draws_rvars()</code> format. This dataset has
+100 iterations from 4 chains from the posterior of a a 3-dimensional
+multivariate normal model. The <code>mu</code> variable is a mean vector
+of length 3 and the <code>Sigma</code> variable is a <span class="math inline">\(3 \times 3\)</span> covariance matrix:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>post <span class="ot">&lt;-</span> <span class="fu">as_draws_rvars</span>(<span class="fu">example_draws</span>(<span class="st">&quot;multi_normal&quot;</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>post</span></code></pre></div>
+<pre><code>## # A draws_rvars: 100 iterations, 4 chains, and 2 variables
+## $mu: rvar&lt;100,4&gt;[3] mean ± sd:
+## [1] 0.051 ± 0.11  0.111 ± 0.20  0.186 ± 0.31 
+## 
+## $Sigma: rvar&lt;100,4&gt;[3,3] mean ± sd:
+##      [,1]          [,2]          [,3]         
+## [1,]  1.28 ± 0.17   0.53 ± 0.20  -0.40 ± 0.28 
+## [2,]  0.53 ± 0.20   3.67 ± 0.45  -2.10 ± 0.48 
+## [3,] -0.40 ± 0.28  -2.10 ± 0.48   8.12 ± 0.95</code></pre>
+<p>The <code>draws_rvars()</code> datatype works much the same way that
+other <code>draws</code> formats do; see the main package vignette at
+<code>vignette(&quot;posterior&quot;)</code> for an introduction to
+<code>draws</code> objects. One difference is that
+<code>draws_rvars</code> counts variables differently, because it allows
+variables to be multidimensional. For example, the <code>post</code>
+object above contains two variables, <code>mu</code> and
+<code>Sigma</code>:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">variables</span>(post)</span></code></pre></div>
+<pre><code>## [1] &quot;mu&quot;    &quot;Sigma&quot;</code></pre>
+<p>But converted to a <code>draws_list()</code>, it contains one
+variable for each combination of the dimensions of its variables:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">variables</span>(<span class="fu">as_draws_list</span>(post))</span></code></pre></div>
+<pre><code>##  [1] &quot;mu[1]&quot;      &quot;mu[2]&quot;      &quot;mu[3]&quot;      &quot;Sigma[1,1]&quot; &quot;Sigma[2,1]&quot;
+##  [6] &quot;Sigma[3,1]&quot; &quot;Sigma[1,2]&quot; &quot;Sigma[2,2]&quot; &quot;Sigma[3,2]&quot; &quot;Sigma[1,3]&quot;
+## [11] &quot;Sigma[2,3]&quot; &quot;Sigma[3,3]&quot;</code></pre>
+</div>
+<div id="math-with-rvars" class="section level2">
+<h2>Math with <code>rvar</code>s</h2>
+<p>The <code>rvar()</code> datatype implements most math operations,
+including basic arithmetic, functions in the <em>Math</em> and
+<em>Summary</em> groups, like <code>log()</code> and <code>exp()</code>
+(see <code>help(&quot;groupGeneric&quot;)</code> for a list), and more. Binary
+operators can be performed between multiple <code>rvar</code>s or
+between <code>rvar</code>s and <code>numeric</code>s. A simple
+example:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>mu <span class="ot">&lt;-</span> post<span class="sc">$</span>mu</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>Sigma <span class="ot">&lt;-</span> post<span class="sc">$</span>Sigma</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>mu <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div>
+<pre><code>## rvar&lt;100,4&gt;[3] mean ± sd:
+## [1] 1.1 ± 0.11  1.1 ± 0.20  1.2 ± 0.31</code></pre>
+<p>Matrix multiplication is also implemented (using a tensor product
+under the hood). In R &lt; 4.3, the normal matrix multiplication
+operator (<code>%*%</code>) cannot be properly implemented for S3
+datatypes, so <code>rvar</code> uses <code>%**%</code> instead. In R ≥
+4.3, which does support matrix multiplication for S3 datatypes, you can
+use <code>%*%</code> to matrix-multiply <code>rvar</code>s.</p>
+<p>A trivial example:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>Sigma <span class="sc">%**%</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## rvar&lt;100,4&gt;[3,3] mean ± sd:
+##      [,1]          [,2]          [,3]         
+## [1,]  1.28 ± 0.17   1.05 ± 0.40  -1.21 ± 0.85 
+## [2,]  0.53 ± 0.20   7.33 ± 0.89  -6.30 ± 1.44 
+## [3,] -0.40 ± 0.28  -4.20 ± 0.96  24.35 ± 2.84</code></pre>
+<p>The set of mathematical functions and operators supported by
+<code>rvar</code>s includes:</p>
+<table>
+<colgroup>
+<col width="53%" />
+<col width="46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Group</th>
+<th align="left">Functions and operators</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Arithmetic operators</td>
+<td align="left"><code>+</code>, <code>-</code>, <code>*</code>,
+<code>/</code>, <code>^</code>, <code>%%</code>, <code>%/%</code></td>
+</tr>
+<tr class="even">
+<td align="left">Logical operators</td>
+<td align="left"><code>&amp;</code>, <code>|</code>, <code>!</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Comparison operators</td>
+<td align="left"><code>==</code>, <code>!=</code>, <code>&lt;</code>,
+<code>&lt;=</code>, <code>&gt;=</code>, <code>&gt;</code></td>
+</tr>
+<tr class="even">
+<td align="left">Value matching</td>
+<td align="left"><code>match()</code>, <code>%in%</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Matrix multiplication</td>
+<td align="left"><code>%**%</code>, <code>%*%</code> (R ≥ 4.3 only)</td>
+</tr>
+<tr class="even">
+<td align="left">Basic functions</td>
+<td align="left"><code>abs()</code>,
+<code>sign()</code><br><code>sqrt()</code><br><code>floor()</code>,
+<code>ceiling()</code>, <code>trunc()</code>, <code>round()</code>,
+<code>signif()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Logarithms and exponentials</td>
+<td align="left"><code>exp()</code>,
+<code>expm1()</code><br><code>log()</code>, <code>log10()</code>,
+<code>log2()</code>, <code>log1p()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Trigonometric functions</td>
+<td align="left"><code>cos()</code>, <code>sin()</code>,
+<code>tan()</code><br><code>cospi()</code>, <code>sinpi()</code>,
+<code>tanpi()</code><br><code>acos()</code>, <code>asin()</code>,
+<code>atan()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Hyperbolic functions</td>
+<td align="left"><code>cosh()</code>, <code>sinh()</code>,
+<code>tanh()</code><br><code>acosh()</code>, <code>asinh()</code>,
+<code>atanh()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Special functions</td>
+<td align="left"><code>lgamma()</code>, <code>gamma()</code>,
+<code>digamma()</code>, <code>trigamma()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Cumulative functions</td>
+<td align="left"><code>cumsum()</code>, <code>cumprod()</code>,
+<code>cummax()</code>, <code>cummin()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Array transposition</td>
+<td align="left"><code>t()</code>, <code>aperm()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Matrix decomposition</td>
+<td align="left"><code>chol()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Matrix diagonals</td>
+<td align="left"><code>diag()</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="expectations-and-summary-functions" class="section level2">
+<h2>Expectations and summary functions</h2>
+<p>The <code>E()</code> function is an alias of <code>mean()</code>,
+producing means within each cell of an <code>rvar</code>. For example,
+given <code>mu</code>:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>mu</span></code></pre></div>
+<pre><code>## rvar&lt;100,4&gt;[3] mean ± sd:
+## [1] 0.051 ± 0.11  0.111 ± 0.20  0.186 ± 0.31</code></pre>
+<p>We can get the expectation of each cell of <code>mu</code>:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">E</span>(mu)</span></code></pre></div>
+<pre><code>## [1] 0.05139284 0.11132363 0.18581977</code></pre>
+<p>Expectations of logical expressions are probabilities, and can be
+computed either with <code>E()</code> / <code>mean()</code> or with
+<code>Pr()</code>. <code>Pr()</code> is provided as notational sugar,
+but also checks that the input is a logical variable before taking the
+mean:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">Pr</span>(mu <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code></pre></div>
+<pre><code>## [1] 0.6600 0.6900 0.7025</code></pre>
+<p>More generally, the <code>rvar</code> data type provides two types of
+summary functions:</p>
+<ol style="list-style-type: decimal">
+<li><p>Summary functions that mimic base-R vector summary functions,
+except applied to <code>rvar</code> vectors. These apply their summaries
+<strong>over</strong> elements of the input vectors
+<strong>within</strong> each draw, generally returning an
+<code>rvar</code> of length 1. These functions are prefixed with
+<code>rvar_</code> as a reminder that they return <code>rvar</code>s.
+Here is an example of <code>rvar_mean()</code>:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">rvar_mean</span>(mu)</span></code></pre></div>
+<pre><code>## rvar&lt;100,4&gt;[1] mean ± sd:
+## [1] 0.12 ± 0.11</code></pre></li>
+<li><p>Summary functions that summarise <strong>within</strong> elements
+of input vectors and <strong>over</strong> draws. These summary
+functions generally return base arrays (<code>numeric</code> or
+<code>logical</code>) of the same shape as the input <code>rvar</code>,
+and are especially useful for diagnostic summaries. These summary
+functions are not prefixed with <code>rvar_</code> as they do not return
+<code>rvar</code>s. Here is an example of <code>mean()</code>:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">mean</span>(mu)</span></code></pre></div>
+<pre><code>## [1] 0.05139284 0.11132363 0.18581977</code></pre>
+<p>You should expect the same values from these functions (though in a
+different shape) when you use them with <code>summarise_draws()</code>,
+for example:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="fu">summarise_draws</span>(mu, mean)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 2
+##   variable  mean
+##   &lt;chr&gt;    &lt;dbl&gt;
+## 1 mu[1]    0.051
+## 2 mu[2]    0.11 
+## 3 mu[3]    0.19</code></pre></li>
+</ol>
+<p>Here is a table of both types of summary functions:</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="38%" />
+<col width="41%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th align="left">1. Summarise <em>within</em> draws,<br><em>over</em>
+elements</th>
+<th align="left">2. Summarise <em>over</em> draws,<br><em>within</em>
+elements<br></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Output format</strong><br>of <code>res = f(x)</code></td>
+<td align="left"><code>rvar</code> of length 1</td>
+<td align="left"><code>array</code> of same shape as input
+<code>rvar</code></td>
+</tr>
+<tr class="even">
+<td><strong>Help page</strong></td>
+<td align="left"><code>help(&quot;rvar-summaries-within-draws&quot;)</code></td>
+<td align="left"><code>help(&quot;rvar-summaries-over-draws&quot;)</code></td>
+</tr>
+<tr class="odd">
+<td>Numeric summaries</td>
+<td align="left"><code>rvar_median()</code><br><code>rvar_sum()</code>,
+<code>rvar_prod()</code><br><code>rvar_min()</code>,
+<code>rvar_max()</code></td>
+<td align="left"><code>median()</code><br><code>sum()</code>,
+<code>prod()</code><br><code>min()</code>, <code>max()</code></td>
+</tr>
+<tr class="even">
+<td>Mean</td>
+<td align="left"><code>rvar_mean()</code><br><em>N/A</em></td>
+<td align="left"><code>mean()</code>,
+<code>E()</code><br><code>Pr()</code>: enforces that input is
+<code>logical</code></td>
+</tr>
+<tr class="odd">
+<td>Spread</td>
+<td align="left"><code>rvar_sd()</code> <br><code>rvar_var()</code> <br>
+<code>rvar_mad()</code></td>
+<td align="left"><code>sd()</code><br><code>var()</code>,
+<code>variance()</code><br> <code>mad()</code></td>
+</tr>
+<tr class="even">
+<td>Range</td>
+<td align="left"><code>rvar_range()</code><br><strong>Note:</strong>
+<code>length(res) == 2</code></td>
+<td align="left"><code>range()</code><br><strong>Note:</strong>
+<code>dim(res) == c(2, dim(x))</code></td>
+</tr>
+<tr class="odd">
+<td>Quantiles</td>
+<td align="left"><code>rvar_quantile()</code><br><strong>Note:</strong>
+<code>length(res) == length(probs)</code></td>
+<td align="left"><code>quantile()</code><br><strong>Note:</strong>
+<code>dim(res) == c(length(probs), dim(x))</code></td>
+</tr>
+<tr class="even">
+<td>Logical summaries</td>
+<td align="left"><code>rvar_all()</code>, <code>rvar_any()</code></td>
+<td align="left"><code>all()</code>, <code>any()</code></td>
+</tr>
+<tr class="odd">
+<td>Special value predicates</td>
+<td align="left"><code>rvar_is_finite()</code><br><code>rvar_is_infinite()</code><br><code>rvar_is_nan()</code><br><code>rvar_is_na()</code><br><strong>Note:</strong>
+<code>dim(res) == dim(x)</code>. These functions act within draws but do
+not summarise over elements.</td>
+<td align="left"><code>is.finite()</code><br><code>is.infinite()</code><br><code>is.nan()</code><br><code>is.na()</code><br><strong>Note:</strong>
+<code>res[i] == TRUE</code> if <code>x[i]</code> has any draws matching
+predicate (except for <code>is.finite()</code>, where all draws in
+<code>x[i]</code> must match)</td>
+</tr>
+<tr class="even">
+<td>Diagnostics</td>
+<td align="left"><em>N/A</em></td>
+<td align="left"><code>ess_basic()</code>, <code>ess_bulk()</code>,
+<code>ess_quantile()</code>, <code>ess_sd()</code>,
+<code>ess_tail()</code>,<br><code>mcse_mean()</code>,
+<code>mcse_quantile()</code>,
+<code>mcse_sd()</code><br><code>rhat()</code>,
+<code>rhat_basic()</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="constants" class="section level2">
+<h2>Constants</h2>
+<p>Constant <code>rvar</code>s can be constructed by converting numeric
+vectors or arrays into <code>rvar</code>s using <code>as_rvar()</code>,
+which will return an <code>rvar</code> with one draw and the same
+dimensions as its input:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>const <span class="ot">&lt;-</span> <span class="fu">as_rvar</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a>const</span></code></pre></div>
+<pre><code>## rvar&lt;1&gt;[3] mean ± sd:
+## [1] 1 ± NA  2 ± NA  3 ± NA</code></pre>
+<p>While normally <code>rvar</code>s must have the same number of draws
+to be used in the same expression, <code>rvar</code>s with one draw are
+treated like constants, and can be combined with other
+<code>rvar</code>s:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>mu <span class="sc">+</span> const</span></code></pre></div>
+<pre><code>## rvar&lt;100,4&gt;[3] mean ± sd:
+## [1] 1.1 ± 0.11  2.1 ± 0.20  3.2 ± 0.31</code></pre>
+</div>
+<div id="using-existing-r-functions-and-expressions-with-rvars" class="section level2">
+<h2>Using existing R functions and expressions with
+<code>rvar</code>s</h2>
+<p>While <code>rvar</code>s attempt to emulate as much of the
+functionality of base R arrays as possible, there are situations in
+which an existing R function may not work directly with an
+<code>rvar</code>. There are several approaches to solving this
+problem.</p>
+<p>For example, say you wish to generate samples from the following
+expression for <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(x\)</span>:</p>
+<p><span class="math display">\[
+\begin{align}
+\left[\begin{matrix}\mu_1 \\ \vdots \\ \mu_4 \end{matrix}\right]
+&amp;\sim \textrm{Normal}\left(\left[\begin{matrix}1 \\ \vdots \\ 4
+\end{matrix}\right],1\right)\\
+\sigma &amp;\sim \textrm{Gamma}(1,1)\\
+\left[\begin{matrix}x_1 \\ \vdots \\ x_4 \end{matrix}\right] &amp;\sim
+\textrm{Normal}\left(\left[\begin{matrix}\mu_1 \\ \vdots \\ \mu_4
+\end{matrix}\right], \sigma\right)
+\end{align}
+\]</span></p>
+<p>There are three different approaches you might take to doing this:
+converting existing R functions with <code>rfun()</code>, executing
+expressions of random variables with <code>rdo()</code>, or evaluating
+random number generator functions using <code>rvar_rng()</code>.</p>
+<div id="converting-functions-with-rfun" class="section level3">
+<h3>Converting functions with <code>rfun()</code></h3>
+<p>The <code>rfun()</code> wrapper converts an existing R function into
+a new function that <code>rvar</code>s can be passed to it as arguments,
+and which will return <code>rvar</code>s. We can use <code>rfun()</code>
+to convert the base <code>rnorm()</code> and <code>rgamma()</code>
+random number generating functions into functions that accept and return
+<code>rvar</code>s:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a>rvar_norm <span class="ot">&lt;-</span> <span class="fu">rfun</span>(rnorm)</span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a>rvar_gamma <span class="ot">&lt;-</span> <span class="fu">rfun</span>(rgamma)</span></code></pre></div>
+<p>Then we can translate the above example into code using those
+functions:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">rvar_norm</span>(<span class="dv">4</span>, <span class="at">mean =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">rvar_gamma</span>(<span class="dv">1</span>, <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">rate =</span> <span class="dv">1</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rvar_norm</span>(<span class="dv">4</span>, mu, sigma)</span>
+<span id="cb48-4"><a href="#cb48-4" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[4] mean ± sd:
+## [1] 1 ± 1.7  2 ± 1.7  3 ± 1.7  4 ± 1.8</code></pre>
+<p>While <code>rfun()</code>-converted functions work well for
+prototyping, they will generally speaking be slower than functions
+designed specifically for <code>rvar</code>s. Thus, you may find you
+need to adopt other strategies (like <code>rvar_rng()</code>, described
+below; or re-writing functions to support <code>rvar</code> directly
+using math operators and/or the <code>draws_of()</code> function).</p>
+</div>
+<div id="evaluating-expressions-with-rdo" class="section level3">
+<h3>Evaluating expressions with <code>rdo()</code></h3>
+<p>An alternative to <code>rfun()</code> is to use <code>rdo()</code>,
+which can be passed nearly-arbitrary R expressions. The expression will
+be executed multiple times to construct an <code>rvar</code>. E.g., we
+can write an expression for <code>mu</code> like in the above
+example:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">rdo</span>(<span class="fu">rnorm</span>(<span class="dv">4</span>, <span class="at">mean =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">sd =</span> <span class="dv">1</span>))</span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a>mu</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[4] mean ± sd:
+## [1] 0.98 ± 0.98  2.02 ± 1.02  2.99 ± 1.01  3.99 ± 1.01</code></pre>
+<p>We can also control the number of draws using the <code>ndraws</code>
+argument:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">rdo</span>(<span class="fu">rnorm</span>(<span class="dv">4</span>, <span class="at">mean =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">sd =</span> <span class="dv">1</span>), <span class="at">ndraws =</span> <span class="dv">1000</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" tabindex="-1"></a>mu</span></code></pre></div>
+<pre><code>## rvar&lt;1000&gt;[4] mean ± sd:
+## [1] 0.96 ± 1.05  1.99 ± 1.03  2.98 ± 0.98  4.01 ± 0.99</code></pre>
+<p><code>rdo()</code> expressions can also contain other
+<code>rvar</code>s, so long as all <code>rvar</code>s in the expression
+have the same number of draws. Thus, we can re-write the example above
+that used <code>rfun()</code> as follows:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">rdo</span>(<span class="fu">rnorm</span>(<span class="dv">4</span>, <span class="at">mean =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">sd =</span> <span class="dv">1</span>))</span>
+<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">rdo</span>(<span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">rate =</span> <span class="dv">1</span>))</span>
+<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rdo</span>(<span class="fu">rnorm</span>(<span class="dv">4</span>, mu, sigma))</span>
+<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[4] mean ± sd:
+## [1] 0.97 ± 1.7  2.05 ± 1.7  3.05 ± 1.7  4.02 ± 1.7</code></pre>
+<p>Like <code>rfun()</code>, <code>rdo()</code> is not necessarily fast,
+so you may find it more useful for prototyping than production code.</p>
+</div>
+<div id="evaluating-random-number-generators-with-rvar_rng" class="section level3">
+<h3>Evaluating random number generators with
+<code>rvar_rng()</code></h3>
+<p><code>rvar_rng()</code> is an alternative to
+<code>rfun()</code>/<code>rdo()</code> designed specifically to work
+with random number generating functions that follow the typical API of
+such functions in base R. Such functions, like <code>rnorm()</code>,
+<code>rgamma()</code>, <code>rbinom()</code>, etc all following this
+interface:</p>
+<ul>
+<li>They have a first argument, <code>n</code>, giving the number of
+draws to take from the distribution.</li>
+<li>Their arguments for distribution parameters (<code>mean</code>,
+<code>sd</code>, <code>shape</code>, <code>rate</code>, etc.) are
+vectorized.</li>
+<li>They return a single vector of length <code>n</code>, representing
+<code>n</code> draws from the distribution.</li>
+</ul>
+<p>You can use any function with this interface with
+<code>rvar_rng()</code>, and it will adapt it to be able to take
+<code>rvar</code> arguments and return an <code>rvar</code>, as
+follows:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">rvar_rng</span>(rnorm, <span class="dv">4</span>, <span class="at">mean =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">rvar_rng</span>(rgamma, <span class="dv">1</span>, <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">rate =</span> <span class="dv">1</span>)</span>
+<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rvar_rng</span>(rnorm, <span class="dv">4</span>, mu, sigma)</span>
+<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[4] mean ± sd:
+## [1] 1 ± 1.8  2 ± 1.8  3 ± 1.8  4 ± 1.8</code></pre>
+<p>In contrast to the <code>rfun()</code> and <code>rdo()</code>
+examples above, <code>rvar_rng()</code> takes advantage of the existing
+vectorization of the underlying random number generating function to
+execute quickly.</p>
+</div>
+</div>
+<div id="broadcasting" class="section level2">
+<h2>Broadcasting</h2>
+<p>Broadcasting for <code>rvar</code>s does not follow R’s vector
+recycling rules. Instead, when two variables with different dimensions
+are being used with basic arithmetic functions, dimensions are added
+until both variables have the same number of dimensions. If two
+variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> differ on the length of dimension <span class="math inline">\(d\)</span>, they can be broadcast to the same size
+so long as one of the variables has dimension <span class="math inline">\(d\)</span> of size 1. Then that variable will be
+broadcast up to the same size as the other variable along that
+dimension. If two variables disagree on the size of a dimension and
+neither has size 1, it is an error.</p>
+<p>For example, consider this random matrix:</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rdo</span>(<span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>), <span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">3</span>))</span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a>X</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[4,3] mean ± sd:
+##      [,1]          [,2]          [,3]         
+## [1,]  0.99 ± 1.00   5.00 ± 1.00   9.02 ± 0.99 
+## [2,]  1.98 ± 1.02   5.99 ± 1.01   9.96 ± 1.00 
+## [3,]  3.03 ± 0.98   6.99 ± 1.00  11.03 ± 0.99 
+## [4,]  3.99 ± 1.01   7.99 ± 0.99  11.98 ± 1.02</code></pre>
+<p>And this vector of length 3:</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rdo</span>(<span class="fu">rnorm</span>(<span class="dv">3</span>, <span class="dv">3</span><span class="sc">:</span><span class="dv">1</span>))</span>
+<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a>y</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[3] mean ± sd:
+## [1] 3.00 ± 1.00  2.02 ± 0.99  0.96 ± 0.99</code></pre>
+<p>If we attempt to add <code>X</code> and <code>y</code>, it will
+produce an error as vectors are by default treated as column vectors,
+and <code>y</code> has length 3 while columns of <code>X</code> have
+length 4:</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" tabindex="-1"></a>X <span class="sc">+</span> y</span></code></pre></div>
+<pre><code>## Error:
+## ! Cannot broadcast array of shape [4000,3,1] to array of shape [4000,4,3]:
+## All dimensions must be 1 or equal.</code></pre>
+<p>By contrast, R arrays of the same shape will simply recycle
+<code>y</code> until it is the same length as <code>X</code> (regardless
+of the dimensions). Thus will produce a result, though likely not the
+intended result:</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" tabindex="-1"></a><span class="fu">mean</span>(X) <span class="sc">+</span> <span class="fu">mean</span>(y)</span></code></pre></div>
+<pre><code>##          [,1]      [,2]      [,3]
+## [1,] 3.990551  7.019104  9.979782
+## [2,] 3.995785  6.951943 12.961398
+## [3,] 3.997008  9.996424 13.053459
+## [4,] 6.988434 10.011049 12.945383</code></pre>
+<p>On the other hand, if y were a row vector…</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" tabindex="-1"></a>row_y <span class="ot">=</span> <span class="fu">t</span>(y)</span>
+<span id="cb66-2"><a href="#cb66-2" tabindex="-1"></a>row_y</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[1,3] mean ± sd:
+##      [,1]         [,2]         [,3]        
+## [1,] 3.00 ± 1.00  2.02 ± 0.99  0.96 ± 0.99</code></pre>
+<p>…it would have the same number of columns as <code>X</code> and
+contain only one row, so it can be broadcast along rows of
+<code>X</code>:</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" tabindex="-1"></a>X <span class="sc">+</span> row_y</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[4,3] mean ± sd:
+##      [,1]      [,2]      [,3]     
+## [1,]  4 ± 1.4   7 ± 1.4  10 ± 1.4 
+## [2,]  5 ± 1.4   8 ± 1.4  11 ± 1.4 
+## [3,]  6 ± 1.4   9 ± 1.4  12 ± 1.4 
+## [4,]  7 ± 1.4  10 ± 1.4  13 ± 1.4</code></pre>
+</div>
+<div id="slicing-and-conditionals" class="section level2">
+<h2>Slicing and conditionals</h2>
+<p>The <code>[[</code> and <code>[</code> operators implement all of the
+base array slicing operations, including numeric, character, and logical
+indices, as well as slicing arrays using a matrix of indices with
+<code>[</code>. The main difference between <code>rvar</code> slicing
+and base array slicing is that <code>rvar</code>s default to
+<code>drop = FALSE</code>; i.e. they retain all dimensions of the
+original <code>rvar</code> array. For a complete list of
+<code>rvar</code> slicing types, see
+<code>help(&quot;rvar-slice&quot;)</code>.</p>
+<p>In addition to the base slicing operations, <code>rvar</code> also
+implements three slicing/conditioning methods that allow you to use
+other <code>rvar</code>s to define a slice.</p>
+<p>To demonstrate these operations, consider an <code>rvar</code> vector
+of two components:</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" tabindex="-1"></a>component <span class="ot">=</span> <span class="fu">rvar_rng</span>(rnorm, <span class="dv">2</span>, <span class="at">mean =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>))</span>
+<span id="cb70-2"><a href="#cb70-2" tabindex="-1"></a>component</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[2] mean ± sd:
+## [1] 1 ± 0.98  5 ± 0.99</code></pre>
+<p>Perhaps we want to create a mixture of these two components,
+<code>mixture</code>, with a mixing proportion of 0.75. We could create
+an index, <code>i</code>, that is a random variable indicating which
+component (1 or 2) determines the value of <code>mixture</code> on each
+draw:</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" tabindex="-1"></a>i <span class="ot">=</span> <span class="fu">rvar_rng</span>(rbinom, <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">p =</span> <span class="fl">0.75</span>) <span class="sc">+</span> <span class="dv">1</span><span class="dt">L</span></span>
+<span id="cb72-2"><a href="#cb72-2" tabindex="-1"></a>i</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[1] mean ± sd:
+## [1] 1.7 ± 0.44</code></pre>
+<p>We can use several different approaches to create the mixture
+distribution</p>
+<div id="subsetting-rvars-by-draw-xlogical-rvar" class="section level3">
+<h3>Subsetting <code>rvar</code>s by draw:
+<code>x[&lt;logical rvar&gt;]</code></h3>
+<p>A slice <code>x[i]</code> where <code>i</code> is a scalar logical
+<code>rvar</code> returns a new rvar with the same shape as
+<code>x</code>, but containing only those draws where <code>i</code> is
+<code>TRUE</code>. Thus, we can use <code>i == 2</code> to select draws
+from the second component and overwrite them in the first component,
+creating the mixture distribution:</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" tabindex="-1"></a>mixture <span class="ot">=</span> component[[<span class="dv">1</span>]]</span>
+<span id="cb74-2"><a href="#cb74-2" tabindex="-1"></a>mixture[i <span class="sc">==</span> <span class="dv">2</span>] <span class="ot">=</span> component[[<span class="dv">2</span>]][i <span class="sc">==</span> <span class="dv">2</span>]</span>
+<span id="cb74-3"><a href="#cb74-3" tabindex="-1"></a>mixture</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[1] mean ± sd:
+## [1] 4 ± 2</code></pre>
+<p>The resulting mixture looks like this:</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb76-2"><a href="#cb76-2" tabindex="-1"></a></span>
+<span id="cb76-3"><a href="#cb76-3" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> ggdist<span class="sc">::</span><span class="fu">stat_slab</span>(<span class="fu">aes</span>(<span class="at">xdist =</span> mixture))</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAACXBIWXMAAA7DAAAOwwHHb6hkAAADAFBMVEWmpqby8vL5+fnu7u7x8fH29vb6+vrr6+v////09PT4+Pjz8/Pv7+/8/Pzt7e339/fs7Oz7+/vw8PD///7+///9///8///4///9/f3R+//p/v////p5eXkzMzP///b//u7jq3PZ/P/f/f9hk83v/v9xZJf//Nr95Kzz/v9jl9Hwun/n5+e58P7T/P9waJx3Y5b83qXgqHGztb59tupgfLX4ypH78eT//O719fX705f1wofL+f9mcKf/+sn94anOzc1eXF3R6vu24vzT8v7RmmjhtYL/9cf/++f6z5XstXuUlJFmm9X81pygoKFoaGvn9v5NTU3+6rf99t2UyvRsotv1165qa6CFh5b+566kb2BjbaLnr3eOXH///uic1vsJBgrf4u21gmh4n82yrJN5lauRY3ereFxna312amSlxOLEjmiKZWRth6Z+YIZbg7xch8L826F7pMZdj8r//eQ0OzqmpKDAwr/u2ckoDQT+7rjl+//LlGbR5/dYfbhmdaLc9/9kZprE2vBfYXSIcGZdXmeHgm92aH54Wo2v4Pz86s1ida5jfpuvmYvBiWC/7v5bi8aln4fSzLFrXnWurq67u7uQkJDk2NuOWmbHrLcKDCO4czu7kH726dz/+tDW4PBZcY6VsM2we2itj3NmIhKuy+iusLfyvGv+8dF6l8GeaWzbxrh0YFZpibz2xozt/f+dv9TuzqTaxril2/eDbWGaz/COYmxdeLFaicTd3d3nzbZxwfSsho/V08nqwZEwV52HNw2Q0vqKvOY6VnGnr8tbPiKnXCy56v3OvbMYH0r82aAjEUDavauBptDMspD/+sfQxKet1/TVqoCCY2AOLnhha4i53vaad2PMnnxpX5R0fZlzZYZ8sOCKYZD+8rxhUFvExMTc7v4/kuFYU39wV3+xfobCz+SJZDkqSGiLp8GJst1RouPOpob55cYcN1XCyt6DfG08ECQ2g8+V0L2k3PzShzmh4/05i9o/j9jC8erG8P782Z+qq5xqao/C8/7x6/Dy+e66zmsIAAAKmElEQVR42u3dd3zTZhoH8Ccm9r12cF1Xwnbi4DBDgLJCIIEUkrACHCHMso49yy60BUops0BLKRQ4aBmlBUoH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" /><!-- --></p>
+<p>See <code>vignette(&quot;slabinterval&quot;, package = &quot;ggdist&quot;)</code> for
+more examples of visualizing distribution-type objects, including
+<code>rvar</code>s.</p>
+</div>
+<div id="conditionals-using-rvar_ifelse" class="section level3">
+<h3>Conditionals using <code>rvar_ifelse()</code></h3>
+<p>You could create the same mixture using
+<code>rvar_ifelse(test, yes, no)</code>, which broadcasts
+<code>test</code>, <code>yes</code>, and <code>no</code> to the same
+shape, then returns a new <code>rvar</code> containing draws from
+<code>yes</code> where <code>test == TRUE</code> and draws from
+<code>no</code> where <code>test == FALSE</code>.</p>
+<p>Thus, we can create the mixture as follows:</p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rvar_ifelse</span>(i <span class="sc">==</span> <span class="dv">1</span>, component[[<span class="dv">1</span>]], component[[<span class="dv">2</span>]])</span>
+<span id="cb77-2"><a href="#cb77-2" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[1] mean ± sd:
+## [1] 4 ± 2</code></pre>
+</div>
+<div id="selecting-different-elements-in-each-draw-xnumeric-rvar" class="section level3">
+<h3>Selecting different elements in each draw:
+<code>x[[&lt;numeric rvar&gt;]]</code></h3>
+<p>The slice <code>x[[i]]</code>, where <code>i</code> is a scalar
+numeric rvar, generalizes indexing when <code>i</code> is a scalar
+numeric. Within each draw of <code>x</code>, it selects the element of
+<code>x</code> corresponding to the value of <code>i</code> within that
+same draw.</p>
+<p>Thus, since <code>i</code> in our example is a scalar numeric
+<code>rvar</code> whose values are either <code>1</code> or
+<code>2</code> within each draw, you can use it as an index directly on
+<code>component</code> to create the mixture:</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" tabindex="-1"></a>x <span class="ot">=</span> component[[i]]</span>
+<span id="cb79-2"><a href="#cb79-2" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[1] mean ± sd:
+## [1] 4 ± 2</code></pre>
+<p>This approach is also nice because it generalizes easily to more than
+two components.</p>
+</div>
+</div>
+<div id="applying-functions-over-rvars" class="section level2">
+<h2>Applying functions over <code>rvar</code>s</h2>
+<p>The <code>rvar</code> data type supplies an implementation of
+<code>as.list()</code>, which should give compatibility with the base R
+family of functions for applying functions over arrays:
+<code>apply()</code>, <code>lapply()</code>, <code>vapply()</code>,
+<code>sapply()</code>, etc. You can also manually use
+<code>as.list()</code> to convert an <code>rvar</code> into a list along
+its first dimension, which may be necessary for compatibility with some
+functions (like <code>purrr:map()</code>).</p>
+<p>For example, given this multidimensional <code>rvar</code>…</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3456</span>)</span>
+<span id="cb81-2"><a href="#cb81-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rvar_rng</span>(rnorm, <span class="dv">24</span>, <span class="at">mean =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>)</span>
+<span id="cb81-3"><a href="#cb81-3" tabindex="-1"></a><span class="fu">dim</span>(x) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</span>
+<span id="cb81-4"><a href="#cb81-4" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[2,3,4] mean ± sd:
+## , , 1
+## 
+##      [,1]       [,2]       [,3]      
+## [1,]  1 ± 1.00   3 ± 0.98   5 ± 1.00 
+## [2,]  2 ± 1.00   4 ± 1.00   6 ± 1.01 
+## 
+## , , 2
+## 
+##      [,1]       [,2]       [,3]      
+## [1,]  7 ± 1.00   9 ± 1.00  11 ± 1.03 
+## [2,]  8 ± 0.98  10 ± 0.99  12 ± 1.00 
+## 
+## , , 3
+## 
+##      [,1]       [,2]       [,3]      
+## [1,] 13 ± 1.00  15 ± 1.00  17 ± 0.99 
+## [2,] 14 ± 1.01  16 ± 1.00  18 ± 1.00 
+## 
+## , , 4
+## 
+##      [,1]       [,2]       [,3]      
+## [1,] 19 ± 0.99  21 ± 0.99  23 ± 0.99 
+## [2,] 20 ± 1.00  22 ± 1.00  24 ± 1.00</code></pre>
+<p>… you can apply functions along the margins using
+<code>apply()</code> (here, a silly example):</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" tabindex="-1"></a><span class="fu">apply</span>(x, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), length)</span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    4    4    4
+## [2,]    4    4    4</code></pre>
+<p>One exception is that while <code>apply()</code> will work with an
+<code>rvar</code> input if your function returns base data types (like
+numerics), it will not give you simplified <code>rvar</code> arrays if
+your function returns an <code>rvar</code>. Thus, we supply the
+<code>rvar_apply()</code> function, which takes in either base arrays or
+<code>rvar</code> arrays and returns <code>rvar</code> arrays, and which
+also uses the <code>rvar</code> broadcasting rules to combine the
+results of the applied function.</p>
+<p>For example, you can use <code>rvar_apply()</code> with
+<code>rvar_mean()</code> to compute the distributions of means along one
+margin of an array:</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" tabindex="-1"></a><span class="fu">rvar_apply</span>(x, <span class="dv">1</span>, rvar_mean)</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[2] mean ± sd:
+## [1] 12 ± 0.29  13 ± 0.29</code></pre>
+<p>Or along multiple dimensions:</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" tabindex="-1"></a><span class="fu">rvar_apply</span>(x, <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), rvar_mean)</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[3,4] mean ± sd:
+##      [,1]         [,2]         [,3]         [,4]        
+## [1,]  1.5 ± 0.70   7.5 ± 0.69  13.5 ± 0.71  19.5 ± 0.70 
+## [2,]  3.5 ± 0.70   9.5 ± 0.71  15.5 ± 0.72  21.5 ± 0.70 
+## [3,]  5.5 ± 0.71  11.5 ± 0.72  17.5 ± 0.71  23.5 ± 0.70</code></pre>
+</div>
+<div id="looping-over-draws-and-rvars" class="section level2">
+<h2>Looping over <code>draws</code> and <code>rvar</code>s</h2>
+<p>The <code>rvar</code> datatype is also used in
+<code>for_each_draw()</code>, which allows you to loop over draws in a
+<code>draws</code> object or an <code>rvar</code>.
+<code>for_each_draw(x, expr)</code> converts <code>x</code> into a
+<code>draws_rvars()</code> object, then loops over each draw of
+<code>x</code>, executing the provided expression, <code>expr</code>.
+The expression can use the variables in <code>x</code> as if they were
+regular R arrays.</p>
+<p>One application of <code>for_each_draw()</code> is in constructing
+base-R plots of individual draws (for <code>ggplot2</code>-based
+plotting of <code>rvar</code>s, see the next section and the <a href="https://mjskay.github.io/ggdist/">ggdist</a> package). For
+example, it can be used to construct a parallel coordinates plot:</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" tabindex="-1"></a>eight_schools <span class="ot">&lt;-</span> <span class="fu">as_draws_rvars</span>(<span class="fu">example_draws</span>())</span>
+<span id="cb89-2"><a href="#cb89-2" tabindex="-1"></a></span>
+<span id="cb89-3"><a href="#cb89-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span>, <span class="at">type =</span> <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb89-4"><a href="#cb89-4" tabindex="-1"></a>  <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">length</span>(eight_schools<span class="sc">$</span>theta)),</span>
+<span id="cb89-5"><a href="#cb89-5" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">range</span>(<span class="fu">range</span>(eight_schools<span class="sc">$</span>theta)),</span>
+<span id="cb89-6"><a href="#cb89-6" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;school&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;theta&quot;</span></span>
+<span id="cb89-7"><a href="#cb89-7" tabindex="-1"></a>)</span>
+<span id="cb89-8"><a href="#cb89-8" tabindex="-1"></a></span>
+<span id="cb89-9"><a href="#cb89-9" tabindex="-1"></a><span class="co"># use for_each_draw() to make a parallel coordinates plot of all draws</span></span>
+<span id="cb89-10"><a href="#cb89-10" tabindex="-1"></a><span class="co"># of eight_schools$theta</span></span>
+<span id="cb89-11"><a href="#cb89-11" tabindex="-1"></a><span class="fu">for_each_draw</span>(eight_schools, {</span>
+<span id="cb89-12"><a href="#cb89-12" tabindex="-1"></a>  <span class="fu">lines</span>(<span class="fu">seq_along</span>(theta), theta, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.05</span>))</span>
+<span id="cb89-13"><a href="#cb89-13" tabindex="-1"></a>})</span>
+<span id="cb89-14"><a href="#cb89-14" tabindex="-1"></a></span>
+<span id="cb89-15"><a href="#cb89-15" tabindex="-1"></a><span class="co"># add means and 90% intervals</span></span>
+<span id="cb89-16"><a href="#cb89-16" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">seq_along</span>(eight_schools<span class="sc">$</span>theta), <span class="fu">mean</span>(eight_schools<span class="sc">$</span>theta))</span>
+<span id="cb89-17"><a href="#cb89-17" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">summarise_draws</span>(eight_schools<span class="sc">$</span>theta), </span>
+<span id="cb89-18"><a href="#cb89-18" tabindex="-1"></a>  <span class="fu">segments</span>(<span class="fu">seq_along</span>(eight_schools<span class="sc">$</span>theta), <span class="at">y0 =</span> q5, <span class="at">y1 =</span> q95)</span>
+<span id="cb89-19"><a href="#cb89-19" tabindex="-1"></a>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>As <code>for_each_draw()</code> will be slower than most other ways
+of manipulating draws, this function should generally not be used unless
+needed.</p>
+</div>
+<div id="using-rvars-in-data-frames-and-in-ggplot2" class="section level2">
+<h2>Using <code>rvar</code>s in data frames and in ggplot2</h2>
+<p><code>rvar</code>s can be used as columns in
+<code>data.frame()</code> or <code>tibble()</code> objects:</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">group =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>,<span class="st">&quot;b&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;d&quot;</span>), mu)</span>
+<span id="cb90-2"><a href="#cb90-2" tabindex="-1"></a>df</span></code></pre></div>
+<pre><code>##   group       mu
+## 1     a 1 ± 1.02
+## 2     b 2 ± 1.02
+## 3     c 3 ± 0.99
+## 4     d 4 ± 1.01</code></pre>
+<p>This makes them convenient for adding predictions to a data frame
+alongside the data used to generate the predictions. <code>rvar</code>s
+can then be visualized with ggplot2 by passing them to the
+<code>xdist</code> and <code>ydist</code> aesthetics of the
+<code>stat_...</code> family of geometries in the <a href="https://mjskay.github.io/ggdist/">ggdist</a> package, such as
+<code>stat_halfeye()</code>, <code>stat_lineribbon()</code>, and
+<code>stat_dotsinterval()</code>. For example:</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb92-2"><a href="#cb92-2" tabindex="-1"></a><span class="fu">library</span>(ggdist)</span>
+<span id="cb92-3"><a href="#cb92-3" tabindex="-1"></a></span>
+<span id="cb92-4"><a href="#cb92-4" tabindex="-1"></a><span class="fu">ggplot</span>(df) <span class="sc">+</span></span>
+<span id="cb92-5"><a href="#cb92-5" tabindex="-1"></a>  <span class="fu">stat_halfeye</span>(<span class="fu">aes</span>(<span class="at">y =</span> group, <span class="at">xdist =</span> mu))</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>See <code>vignette(&quot;slabinterval&quot;, package = &quot;ggdist&quot;)</code> or
+<code>vignette(&quot;tidy-posterior&quot;, package = &quot;tidybayes&quot;)</code> for more
+examples.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

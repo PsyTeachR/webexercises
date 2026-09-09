@@ -1,0 +1,43 @@
+Package: testthat
+Title: Unit Testing for R
+Version: 3.3.2
+Authors@R: c(
+    person("Hadley", "Wickham", , "hadley@posit.co", role = c("aut", "cre")),
+    person("Posit Software, PBC", role = c("cph", "fnd")),
+    person("R Core team", role = "ctb",
+           comment = "Implementation of utils::recover()")
+  )
+Description: Software testing is important, but, in part because it is
+    frustrating and boring, many of us avoid it. 'testthat' is a testing
+    framework for R that is easy to learn and use, and integrates with
+    your existing 'workflow'.
+License: MIT + file LICENSE
+URL: https://testthat.r-lib.org, https://github.com/r-lib/testthat
+BugReports: https://github.com/r-lib/testthat/issues
+Depends: R (>= 4.1.0)
+Imports: brio (>= 1.1.5), callr (>= 3.7.6), cli (>= 3.6.5), desc (>=
+        1.4.3), evaluate (>= 1.0.4), jsonlite (>= 2.0.0), lifecycle (>=
+        1.0.4), magrittr (>= 2.0.3), methods, pkgload (>= 1.4.0),
+        praise (>= 1.0.0), processx (>= 3.8.6), ps (>= 1.9.1), R6 (>=
+        2.6.1), rlang (>= 1.1.6), utils, waldo (>= 0.6.2), withr (>=
+        3.0.2)
+Suggests: covr, curl (>= 0.9.5), diffviewer (>= 0.1.0), digest (>=
+        0.6.33), gh, knitr, otel, otelsdk, rmarkdown, rstudioapi, S7,
+        shiny, usethis, vctrs (>= 0.1.0), xml2
+VignetteBuilder: knitr
+Config/Needs/website: tidyverse/tidytemplate
+Config/testthat/edition: 3
+Config/testthat/parallel: true
+Config/testthat/start-first: watcher, parallel*
+Encoding: UTF-8
+RoxygenNote: 7.3.3
+NeedsCompilation: yes
+Packaged: 2026-01-09 17:49:32 UTC; hadleywickham
+Author: Hadley Wickham [aut, cre],
+  Posit Software, PBC [cph, fnd],
+  R Core team [ctb] (Implementation of utils::recover())
+Maintainer: Hadley Wickham <hadley@posit.co>
+Repository: CRAN
+Date/Publication: 2026-01-11 09:10:02 UTC
+Built: R 4.6.1; x86_64-w64-mingw32; 2026-09-02 04:00:08 UTC; windows
+Archs: x64

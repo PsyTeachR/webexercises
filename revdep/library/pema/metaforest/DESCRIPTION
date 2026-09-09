@@ -1,0 +1,33 @@
+Package: metaforest
+Type: Package
+Title: Exploring Heterogeneity in Meta-Analysis using Random Forests
+Version: 0.1.5
+Authors@R: c(
+    person(
+      given = c("Caspar", "J."),
+      family = "Van Lissa",
+      email = "c.j.vanlissa@gmail.com",
+      role = c("aut", "cre"),
+      comment = c(ORCID = "0000-0002-0808-5024")
+    )
+    )
+Description: Conduct random forests-based meta-analysis, obtain partial dependence plots for metaforest and classic meta-analyses, and cross-validate and tune metaforest- and classic meta-analyses in conjunction with the caret package. A requirement of classic meta-analysis is that the studies being aggregated are conceptually similar, and ideally, close replications. However, in many fields, there is substantial heterogeneity between studies on the same topic. Classic meta-analysis lacks the power to assess more than a handful of univariate moderators. MetaForest, by contrast, has substantial power to explore heterogeneity in meta-analysis. It can identify important moderators from a larger set of potential candidates (Van Lissa, 2020). This is an appealing quality, because many meta-analyses have small sample sizes. Moreover, MetaForest yields a measure of variable importance which can be used to identify important moderators, and offers partial prediction plots to explore the shape of the marginal relationship between moderators and effect size.
+Depends: R (>= 3.5.0), ggplot2
+Imports: gtable, grid, data.table, metafor, ranger, methods, metadat
+Suggests: testthat, caret, knitr, rmarkdown, covr
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+VignetteBuilder: knitr
+URL: https://cjvanlissa.github.io/metaforest/,
+        https://github.com/cjvanlissa/metaforest
+BugReports: https://github.com/cjvanlissa/metaforest/issues
+NeedsCompilation: no
+Packaged: 2025-07-30 16:47:50 UTC; vanlissa
+Author: Caspar J. Van Lissa [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-0808-5024>)
+Maintainer: Caspar J. Van Lissa <c.j.vanlissa@gmail.com>
+Repository: CRAN
+Date/Publication: 2025-07-30 17:30:02 UTC
+Built: R 4.6.1; ; 2026-09-02 03:25:38 UTC; windows

@@ -1,0 +1,32 @@
+Package: rstudioapi
+Title: Safely Access the RStudio API
+Description: Access the RStudio API (if available) and provide informative error
+    messages when it's not.
+Version: 0.19.0
+Authors@R: c(
+    person("Kevin", "Ushey", role = c("aut", "cre"), email = "kevin@rstudio.com"),
+    person("JJ", "Allaire", role = c("aut"), email = "jj@posit.co"),
+    person("Hadley", "Wickham", role = c("aut"), email = "hadley@posit.co"),
+    person("Gary", "Ritchie", role = c("aut"), email = "gary@posit.co"),
+    person(family = "RStudio", role = "cph")
+    )
+Maintainer: Kevin Ushey <kevin@rstudio.com>
+License: MIT + file LICENSE
+URL: https://rstudio.github.io/rstudioapi/,
+        https://github.com/rstudio/rstudioapi
+BugReports: https://github.com/rstudio/rstudioapi/issues
+Suggests: testthat, knitr, rmarkdown, clipr, covr, curl, jsonlite, R6,
+        withr
+VignetteBuilder: knitr
+Encoding: UTF-8
+Config/roxygen2/version: 8.0.0
+NeedsCompilation: no
+Packaged: 2026-06-11 21:44:33 UTC; kevin
+Author: Kevin Ushey [aut, cre],
+  JJ Allaire [aut],
+  Hadley Wickham [aut],
+  Gary Ritchie [aut],
+  RStudio [cph]
+Repository: CRAN
+Date/Publication: 2026-06-11 23:10:02 UTC
+Built: R 4.6.1; ; 2026-09-02 01:27:35 UTC; windows

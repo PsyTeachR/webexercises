@@ -1,0 +1,126 @@
+* using log directory 'C:/git_repositories/webexercises/revdep/checks/pema/old/pema.Rcheck'
+* using R version 4.6.0 (2026-04-24 ucrt)
+* using platform: x86_64-w64-mingw32
+* R was compiled by
+    gcc.exe (GCC) 14.3.0
+    GNU Fortran (GCC) 14.3.0
+* running under: Windows 11 x64 (build 26200)
+* using session charset: UTF-8
+* current time: 2026-09-09 06:08:02 UTC
+* using options '--no-manual --no-build-vignettes'
+* checking for file 'pema/DESCRIPTION' ... OK
+* this is package 'pema' version '0.1.5'
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking whether package 'pema' can be installed ... WARNING
+Found the following significant warnings:
+  Warning: package 'shiny' was built under R version 4.6.1
+  Warning: package 'ggplot2' was built under R version 4.6.1
+See 'C:/git_repositories/webexercises/revdep/checks/pema/old/pema.Rcheck/00install.out' for details.
+* used C++ compiler: 'G__~1.EXE (GCC) 14.3.0'
+* checking C++ specification ... INFO
+  specified C++17
+* checking installed package size ... INFO
+  installed size is 10.6Mb
+  sub-directories of 1Mb or more:
+    libs   9.4Mb
+* checking package directory ... OK
+* checking 'build' directory ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking whether startup messages can be suppressed ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of 'data' directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking LazyData ... OK
+* checking data for ASCII and uncompressed saves ... OK
+* checking line endings in shell scripts ... OK
+* checking line endings in C/C++/Fortran sources/headers ... NOTE
+Found the following sources/headers with CR or CRLF line endings:
+  src/stanExports_horseshoe_MA.cc
+  src/stanExports_horseshoe_MA.h
+  src/stanExports_horseshoe_MA_ml.cc
+  src/stanExports_horseshoe_MA_ml.h
+  src/stanExports_horseshoe_MA_ml_noint.cc
+  src/stanExports_horseshoe_MA_ml_noint.h
+  src/stanExports_horseshoe_MA_noint.cc
+  src/stanExports_horseshoe_MA_noint.h
+  src/stanExports_hs_prior.cc
+  src/stanExports_hs_prior.h
+  src/stanExports_lasso_MA.cc
+  src/stanExports_lasso_MA.h
+  src/stanExports_lasso_MA_ml.cc
+  src/stanExports_lasso_MA_ml.h
+  src/stanExports_lasso_MA_ml_noint.cc
+  src/stanExports_lasso_MA_ml_noint.h
+  src/stanExports_lasso_MA_noint.cc
+  src/stanExports_lasso_MA_noint.h
+  src/stanExports_lasso_prior.cc
+  src/stanExports_lasso_prior.h
+  src/stanExports_prior_meff.cc
+  src/stanExports_prior_meff.h
+Some Unix compilers require LF line endings.
+* checking line endings in Makefiles ... OK
+* checking compilation flags in Makevars ... OK
+* checking for GNU extensions in Makefiles ... INFO
+GNU make is a SystemRequirements.
+* checking for portable use of $(BLAS_LIBS) and $(LAPACK_LIBS) ... OK
+* checking use of PKG_*FLAGS in Makefiles ... OK
+* checking compiled code ... OK
+* checking installed files from 'inst/doc' ... OK
+* checking files in 'vignettes' ... OK
+* checking examples ... OK
+* checking for unstated dependencies in 'tests' ... OK
+* checking tests ... OK
+  Running 'testthat.R'
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes ... OK
+* checking running R code from vignettes ... ERROR
+Errors in running code in vignettes:
+when running code in 'using-brma.Rmd'
+  ...
+domainsocial                   0.1702  0.1183  -0.0249  0.4232  1600    1
+domainnoMeta                  -0.3615  0.1843  -0.7299 -0.0184  1212    1
+sexM                           0.1205  0.0689  -0.0017  0.2605  1602    1
+tau2                           0.4291  0.0394   0.3524  0.5098  1112    1
+
+> I2(fit_lasso)
+
+  When sourcing 'using-brma.R':
+Error: object 'fit_lasso' not found
+Execution halted
+
+  'meta-analysis_tutorial.Rmd' using 'UTF-8'... OK
+  'using-brma.Rmd' using 'UTF-8'... failed
+* checking re-building of vignette outputs ... SKIPPED
+* DONE
+Status: 1 ERROR, 1 WARNING, 1 NOTE

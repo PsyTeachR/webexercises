@@ -404,9 +404,7 @@ total_correct <- function(elem = "span", args = "") {
 #'
 #' @details Implements rounding using the "round up from .5" rule,
 #'   which is more conventional than the "round to even" rule
-#'   implemented by R's built-in \code{\link{round}} function. This
-#'   implementation was taken from
-#'   \url{https://stackoverflow.com/a/12688836}.
+#'   implemented by R's built-in \code{\link{round}} function.
 #'
 #' @return A vector of rounded numeric values.
 #'

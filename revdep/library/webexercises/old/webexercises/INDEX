@@ -1,0 +1,15 @@
+add_to_bookdown         Add webexercises helper files to bookdown
+add_to_quarto           Add webexercises helper files to quarto
+create_quarto_doc       Create a quarto document with webexercise
+escape_regex            Escape a string for regex
+fitb                    Create a fill-in-the-blank question
+hide                    Create button revealing hidden content
+longmcq                 Longer MCQs with Radio Buttons
+mcq                     Create a multiple-choice question
+round2                  Round up from .5
+strip_lzero             Strip leading zero from numeric string
+style_widgets           Change webexercises widget style
+torf                    Create a true-or-false question
+total_correct           Display total correct
+unhide                  End hidden HTML content
+webexercises_default    Create default webexercises document

@@ -1,0 +1,11 @@
+RcppParallel-package	RcppParallel-package
+CxxFlags	flags
+defaultNumThreads	setThreadOptions
+flags	flags
+isProcessForkedChild	isProcessForkedChild
+LdFlags	flags
+RcppParallel	RcppParallel-package
+RcppParallel.package.skeleton	RcppParallel.package.skeleton
+RcppParallelLibs	flags
+setThreadOptions	setThreadOptions
+tbbLibraryPath	tbbLibraryPath

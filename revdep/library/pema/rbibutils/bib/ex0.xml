@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<modsCollection xmlns="http://www.loc.gov/mods/v3">
+<mods ID="beachanddavidson1983">
+    <titleInfo>
+        <title>Distribution-free statistical inference with Lorenz curves and income shares</title>
+    </titleInfo>
+    <name type="personal">
+        <namePart type="given">Charles</namePart>
+        <namePart type="given">M</namePart>
+        <namePart type="family">Beach</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">author</roleTerm>
+        </role>
+    </name>
+    <name type="personal">
+        <namePart type="given">Russell</namePart>
+        <namePart type="family">Davidson</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">author</roleTerm>
+        </role>
+    </name>
+    <originInfo>
+        <dateIssued>1983-02</dateIssued>
+    </originInfo>
+    <typeOfResource>text</typeOfResource>
+    <genre authority="bibutilsgt">journal article</genre>
+    <relatedItem type="host">
+        <titleInfo>
+            <title>Review of Economic Studies</title>
+        </titleInfo>
+        <originInfo>
+            <issuance>continuing</issuance>
+        </originInfo>
+        <genre authority="marcgt">periodical</genre>
+    </relatedItem>
+    <identifier type="citekey">beachanddavidson1983</identifier>
+    <part>
+        <detail type="volume"><number>50</number></detail>
+        <extent unit="page">
+            <start>723</start>
+            <end>735</end>
+        </extent>
+    </part>
+</mods>
+<mods ID="beachandkaliski1986a">
+    <titleInfo>
+        <title>Lorenz curve inference with sample weights: an application to the distribution of unemployment experience</title>
+    </titleInfo>
+    <name type="personal">
+        <namePart type="given">C</namePart>
+        <namePart type="given">M</namePart>
+        <namePart type="family">Beach</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">author</roleTerm>
+        </role>
+    </name>
+    <name type="personal">
+        <namePart type="given">S</namePart>
+        <namePart type="given">F</namePart>
+        <namePart type="family">Kaliski</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">author</roleTerm>
+        </role>
+    </name>
+    <originInfo>
+        <dateIssued>1986</dateIssued>
+    </originInfo>
+    <typeOfResource>text</typeOfResource>
+    <genre authority="bibutilsgt">journal article</genre>
+    <relatedItem type="host">
+        <titleInfo>
+            <title>Appl. Statist.</title>
+        </titleInfo>
+        <originInfo>
+            <issuance>continuing</issuance>
+        </originInfo>
+        <genre authority="marcgt">periodical</genre>
+    </relatedItem>
+    <identifier type="citekey">beachandkaliski1986a</identifier>
+    <part>
+        <detail type="volume"><number>35</number></detail>
+        <extent unit="page">
+            <start>38</start>
+            <end>45</end>
+        </extent>
+    </part>
+</mods>
+<mods ID="lambert1993">
+    <titleInfo>
+        <title>The distribution and redistribution of income. A mathematical analysis</title>
+    </titleInfo>
+    <name type="personal">
+        <namePart type="given">Peter</namePart>
+        <namePart type="given">J</namePart>
+        <namePart type="family">Lambert</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">author</roleTerm>
+        </role>
+    </name>
+    <originInfo>
+        <issuance>monographic</issuance>
+        <dateIssued>1993</dateIssued>
+        <publisher>Manchester University Press</publisher>
+        <place>
+            <placeTerm type="text">Manchester</placeTerm>
+        </place>
+        <edition>2</edition>
+    </originInfo>
+    <typeOfResource>text</typeOfResource>
+    <genre authority="marcgt">book</genre>
+    <identifier type="citekey">lambert1993</identifier>
+</mods>
+</modsCollection>

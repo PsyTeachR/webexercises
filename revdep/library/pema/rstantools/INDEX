@@ -1,0 +1,25 @@
+bayes_R2                Generic function and default method for
+                        Bayesian R-squared
+log_lik                 Generic function for pointwise log-likelihood
+loo-prediction          Generic functions for LOO predictions
+posterior_epred         Generic function for accessing the posterior
+                        distribution of the conditional expectation
+posterior_interval      Generic function and default method for
+                        posterior uncertainty intervals
+posterior_linpred       Generic function for accessing the posterior
+                        distribution of the linear predictor
+posterior_predict       Generic function for drawing from the posterior
+                        predictive distribution
+predictive_error        Generic function and default method for
+                        predictive errors
+predictive_interval     Generic function for predictive intervals
+prior_summary           Generic function for extracting information
+                        about prior distributions
+rstan_config            Configure system files for compiling Stan
+                        source code
+rstan_create_package    Create a new R package with compiled Stan
+                        programs
+rstantools-package      Tools for Developing R Packages Interfacing
+                        with Stan
+rstantools_load_code    Helper function for loading code in roxygenise
+use_rstan               Add Stan infrastructure to an existing package

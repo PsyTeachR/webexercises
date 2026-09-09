@@ -1,0 +1,108 @@
+as_rvar                 Coerce to a random variable
+as_rvar_factor          Coerce to a factor random variable
+bind_draws              Bind 'draws' objects together
+chol.rvar               Cholesky decomposition of random matrix
+diag,rvar-method        Matrix diagonals (including for random
+                        variables)
+diagnostics             List of available convergence diagnostics
+dissent                 Dissention
+draws                   Transform to 'draws' objects
+draws-index             Index 'draws' objects
+draws_array             The 'draws_array' format
+draws_df                The 'draws_df' format
+draws_list              The 'draws_list' format
+draws_matrix            The 'draws_matrix' format
+draws_of                Get/set array of draws underlying a random
+                        variable
+draws_rvars             The 'draws_rvars' format
+draws_summary           Summaries of 'draws' objects
+drop,rvar-method        Drop redundant dimensions
+entropy                 Normalized entropy
+ess_basic               Basic version of the effective sample size
+ess_bulk                Bulk effective sample size (bulk-ESS)
+ess_mean                Effective sample size for the mean
+ess_quantile            Effective sample sizes for quantiles
+ess_sd                  Effective sample size for the standard
+                        deviation
+ess_tail                Tail effective sample size (tail-ESS)
+example_draws           Example 'draws' objects
+extract_list_of_variable_arrays
+                        Extract arrays of multiple variables
+extract_variable        Extract draws of a single variable
+extract_variable_array
+                        Extract array of a single (possibly indexed)
+                        variable
+extract_variable_matrix
+                        Extract matrix of a single variable
+for_each_draw           Loop over draws
+is_rvar                 Is 'x' a random variable?
+is_rvar_factor          Is 'x' a factor random variable?
+match                   Value Matching
+mcse_mean               Monte Carlo standard error for the mean
+mcse_quantile           Monte Carlo standard error for quantiles
+mcse_sd                 Monte Carlo standard error for the standard
+                        deviation
+merge_chains            Merge chains of 'draws' objects
+modal_category          Modal category
+mutate_variables        Mutate variables in 'draws' objects
+order_draws             Order 'draws' objects
+pareto_diags            Pareto smoothing diagnostics
+pareto_khat             Pareto khat diagnostic
+pareto_pit              Pareto-smoothed probability integral transform
+pareto_smooth           Pareto smoothing
+pit                     Probability integral transform
+posterior-package       Tools for working with posterior (and prior)
+                        distributions
+print.draws_array       Print 'draws_array' objects
+print.draws_df          Print 'draws_df' objects
+print.draws_list        Print 'draws_list' objects
+print.draws_matrix      Print 'draws_matrix' objects
+print.draws_rvars       Print 'draws_rvars' objects
+print.draws_summary     Print summaries of 'draws' objects
+print.rvar              Print or format a random variable
+ps_convergence_rate     Pareto convergence rate
+ps_khat_threshold       Pareto k-hat threshold
+ps_min_ss               Pareto-smoothing minimum sample-size
+ps_tail                 Pareto smooth tail function to Pareto smooth
+                        the tail of a vector. Exported for usage in
+                        other packages, not by users.
+ps_tail_length          Pareto tail length
+quantile2               Compute Quantiles
+rdo                     Execute expressions of random variables
+rename_variables        Rename variables in 'draws' objects
+repair_draws            Repair indices of 'draws' objects
+resample_draws          Resample 'draws' objects
+reserved_variables      Reserved variables
+rfun                    Create functions of random variables
+rhat                    Rhat convergence diagnostic
+rhat_basic              Basic version of the Rhat convergence
+                        diagnostic
+rhat_nested             Nested Rhat convergence diagnostic
+rstar                   Calculate R* convergence diagnostic
+rvar                    Random variables of arbitrary dimension
+rvar-dist               Density, CDF, and quantile functions of random
+                        variables
+rvar-matmult            Matrix multiplication of random variables
+rvar-slice              Random variable slicing
+rvar-summaries-over-draws
+                        Summaries of random variables within array
+                        elements, over draws
+rvar-summaries-within-draws
+                        Summaries of random variables over array
+                        elements, within draws
+rvar_apply              Random variable resulting from a function
+                        applied over margins of an array or random
+                        variable
+rvar_factor             Factor random variables of arbitrary dimension
+rvar_ifelse             Random variable ifelse
+rvar_is_finite          Special value predicates for random variables
+rvar_rng                Create random variables from existing random
+                        number generators
+split_chains            Split Chains
+subset_draws            Subset 'draws' objects
+thin_draws              Thin 'draws' objects
+uniformity_test         Uniformity test for PIT values
+variables               Get variable names from 'draws' objects
+variables<-             Set variable names in 'draws' objects
+weight_draws            Weight 'draws' objects
+weights.draws           Extract Weights from Draws Objects

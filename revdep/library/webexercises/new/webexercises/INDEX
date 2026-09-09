@@ -1,0 +1,20 @@
+add_to_bookdown         Add webexercises helper files to bookdown
+add_to_pkgdown          Add webexercises helper files to pkgdown
+add_to_quarto           Add webexercises helper files to quarto
+add_to_quarto_file      Add webexercises 'YAML' metadata
+create_quarto_doc       Create a quarto document with webexercise
+escape_regex            Escape a string for regex
+fitb                    Create a fill-in-the-blank question
+hide                    Create button revealing hidden content
+longmcq                 Longer MCQs with Radio Buttons
+mcq                     Create a multiple-choice question
+quiz                    Create a Quiz
+rmd_webex_support       Add webexercises support
+round2                  Round up from .5
+strip_lzero             Strip leading zero from numeric string
+style_widgets           Change webexercises widget style
+torf                    Create a true-or-false question
+unhide                  End hidden HTML content
+use_webex_vignette      Create a webexercises vignette
+webex_vignette          Create Vignette with webexercises Support
+webexercises_default    Create default webexercises document

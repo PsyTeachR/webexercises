@@ -1,0 +1,4 @@
+Name: Reprompt
+Description: Updates Rd file based on editor contents
+Binding: RStudio_reprompt
+Interactive: false

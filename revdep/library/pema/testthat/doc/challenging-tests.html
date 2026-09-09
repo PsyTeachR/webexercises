@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Testing challenging functions</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Testing challenging functions</h1>
+
+
+
+<p>This vignette is a quick reference guide for testing challenging
+functions. It’s organized by problem type rather than technique, so you
+can quickly skim the whole vignette, spot the problem you’re facing, and
+then learn more about useful tools for solving it. In it, you’ll learn
+how to overcome the following challenges:</p>
+<ul>
+<li>Functions with implicit inputs, like options and environment
+variables.</li>
+<li>Random number generators.</li>
+<li>Tests that can’t be run in some environments.</li>
+<li>Testing web APIs.</li>
+<li>Testing graphical output.</li>
+<li>User interaction.</li>
+<li>User-facing text.</li>
+<li>Repeated code.</li>
+</ul>
+<div id="options-and-environment-variables" class="section level2">
+<h2>Options and environment variables</h2>
+<p>If your function depends on options or environment variables, first
+try refactoring the function to make the <a href="https://design.tidyverse.org/inputs-explicit.html">inputs
+explicit</a>. If that’s not possible, use functions like
+<code>withr::local_options()</code> or
+<code>withr::local_envvar()</code> to temporarily change options and
+environment values within a test. Learn more in
+<code>vignette(&quot;test-fixtures&quot;)</code>.</p>
+<!-- FIXME: Consider adding a brief example showing the difference between implicit and explicit approaches - this would make the recommendation more concrete -->
+</div>
+<div id="random-numbers" class="section level2">
+<h2>Random numbers</h2>
+<p>What happens if you want to test a function that relies on randomness
+in some way? If you’re writing a random number generator, you probably
+want to generate a large quantity of random numbers and then apply some
+statistical test. But what if your function just happens to use a little
+bit of pre-existing randomness? How do you make your tests repeatable
+and reproducible? Under the hood, random number generators generate
+different numbers because they update a special
+<code>.Random.seed</code> variable stored in the global environment. You
+can temporarily set this seed to a known value to make your random
+numbers reproducible with <code>withr::local_seed()</code>, making
+random numbers a special case of test fixtures
+(<code>vignette(&quot;test-fixtures&quot;)</code>).</p>
+<p>Here’s a simple example showing how you might test the basic
+operation of a function that rolls a die:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>dice <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="fu">sample</span>(<span class="dv">6</span>, <span class="dv">1</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>}</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;dice returns different numbers&quot;</span>, {</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  withr<span class="sc">::</span><span class="fu">local_seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">dice</span>(), <span class="dv">4</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">dice</span>(), <span class="dv">2</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">dice</span>(), <span class="dv">6</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>})</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; Test passed with 3 successes 🥇.</span></span></code></pre></div>
+<p>Alternatively, you might want to mock
+(<code>vignette(&quot;mocking&quot;)</code>) the function to eliminate
+randomness.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>roll_three <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">dice</span>(), <span class="fu">dice</span>(), <span class="fu">dice</span>())</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>}</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;three dice adds values of individual calls&quot;</span>, {</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(<span class="at">dice =</span> <span class="fu">mock_output_sequence</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>))</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">roll_three</span>(), <span class="dv">6</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>})</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; Test passed with 1 success 🌈.</span></span></code></pre></div>
+<p>When should you set the seed and when should you use mocking? As a
+general rule of thumb, set the seed when you want to test the actual
+random behavior, and use mocking when you want to test the logic that
+uses the random results.</p>
+</div>
+<div id="some-tests-cant-be-run-in-some-circumstances" class="section level2">
+<h2>Some tests can’t be run in some circumstances</h2>
+<p>You can skip a test without it passing or failing if you can’t or
+don’t want to run it (e.g., it’s OS dependent, it only works
+interactively, or it shouldn’t be tested on CRAN). Learn more in
+<code>vignette(&quot;skipping&quot;)</code>.</p>
+</div>
+<div id="http-requests" class="section level2">
+<h2>HTTP requests</h2>
+<p>If you’re trying to test functions that rely on HTTP requests, we
+recommend using {vcr} or {httptest2}. These packages both allow you to
+interactively record HTTP responses and then later replay them in tests.
+This is a specialized type of mocking (<code>vignette(&quot;mocking&quot;)</code>)
+that works with {httr} and {httr2} to isolates your tests from failures
+in the underlying API.</p>
+<p>If your package is going to CRAN, you <strong>must</strong> either
+use one of these packages or use <code>skip_on_cran()</code> for all
+internet-facing tests. Otherwise, you are at high risk of failing
+<code>R CMD check</code> if the underlying API is temporarily down. This
+sort of failure causes extra work for the CRAN maintainers and extra
+hassle for you.</p>
+</div>
+<div id="graphics" class="section level2">
+<h2>Graphics</h2>
+<p>The only type of testing you can use for graphics is snapshot testing
+(<code>vignette(&quot;snapshotting&quot;)</code>) via
+<code>expect_snapshot_file()</code>. Graphical snapshot testing is
+surprisingly challenging because you need pixel-perfect rendering across
+multiple versions of multiple operating systems, and this is hard,
+mostly due to imperceptible differences in font rendering. Fortunately
+we’ve needed to overcome these challenges in order to test {ggplot2},
+and you can benefit from our experience by using {vdiffr} when testing
+graphical output.</p>
+</div>
+<div id="user-interaction" class="section level2">
+<h2>User interaction</h2>
+<p>If you’re testing a function that relies on user feedback (e.g. from
+<code>readline()</code>, <code>utils::menu()</code>, or
+<code>utils::askYesNo()</code>), you can use mocking
+(<code>vignette(&quot;mocking&quot;)</code>) to return fixed values within the
+test. For example, imagine that you’ve written the following function
+that asks the user if they want to continue:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>continue <span class="ot">&lt;-</span> <span class="cf">function</span>(prompt) {</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">cat</span>(prompt, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="cf">repeat</span> {</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    val <span class="ot">&lt;-</span> <span class="fu">readline</span>(<span class="st">&quot;Do you want to continue? (y/n) &quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="cf">if</span> (val <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;n&quot;</span>)) {</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>      <span class="fu">return</span>(val <span class="sc">==</span> <span class="st">&quot;y&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    }</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;! You must enter y or n</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  }  </span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>}</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>readline <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div>
+<p>You could test its behavior by mocking <code>readline()</code> and
+using a snapshot test:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;user must respond y or n&quot;</span>, {</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  mock_readline <span class="ot">&lt;-</span> <span class="fu">local</span>({</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    i <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="cf">function</span>(prompt) {</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>      i <span class="ot">&lt;&lt;-</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>      <span class="fu">cat</span>(prompt)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>      val <span class="ot">&lt;-</span> <span class="cf">if</span> (i <span class="sc">==</span> <span class="dv">1</span>) <span class="st">&quot;x&quot;</span> <span class="cf">else</span> <span class="st">&quot;y&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>      <span class="fu">cat</span>(val, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>      val</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    }</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  })</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(<span class="at">readline =</span> mock_readline)</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="fu">expect_snapshot</span>(val <span class="ot">&lt;-</span> <span class="fu">continue</span>(<span class="st">&quot;This is dangerous&quot;</span>))</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="fu">expect_true</span>(val)</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>})</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; ── Warning: user must respond y or n ───────────────────────────────────────────</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; Adding new snapshot:</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; Code</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt;   val &lt;- continue(&quot;This is dangerous&quot;)</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; Output</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt;   This is dangerous</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt;   Do you want to continue? (y/n) x</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt;   ! You must enter y or n</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt;   Do you want to continue? (y/n) y</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; Test passed with 2 successes 🎊.</span></span></code></pre></div>
+<p>If you don’t care about reproducing the output of
+<code>continue()</code> and just want to recreate its return value, you
+can use <code>mock_output_sequence()</code>. This creates a function
+that returns the input supplied to <code>mock_output_sequence()</code>
+in sequence: the first input at the first call, the second input at the
+second call, etc. The following code shows how it works and how you
+might use it to test <code>readline()</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">mock_output_sequence</span>(<span class="dv">1</span>, <span class="dv">12</span>, <span class="dv">123</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">f</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="fu">f</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; [1] 12</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">f</span>()</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; [1] 123</span></span></code></pre></div>
+<p>And</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;user must respond y or n&quot;</span>, {</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(<span class="at">readline =</span> <span class="fu">mock_output_sequence</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">continue</span>(<span class="st">&quot;This is dangerous&quot;</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>})</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; This is dangerous</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; ! You must enter y or n</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; Test passed with 1 success 😀.</span></span></code></pre></div>
+<p>If you were testing the behavior of some function that uses
+<code>continue()</code>, you might want to mock <code>continue()</code>
+instead of <code>readline()</code>. For example, the function below
+requires user confirmation before overwriting an existing file. In order
+to focus our tests on the behavior of just this function, we mock
+<code>continue()</code> to return either <code>TRUE</code> or
+<code>FALSE</code> without any user messaging.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="cf">function</span>(path, data) {</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">file.exists</span>(path)) {</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">continue</span>(<span class="st">&quot;`path` already exists&quot;</span>)) {</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot;Failed to continue&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    }</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  }</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="fu">writeLines</span>(data, path)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>}</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;save_file() requires confirmation to overwrite file&quot;</span>, {</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  path <span class="ot">&lt;-</span> withr<span class="sc">::</span><span class="fu">local_tempfile</span>(<span class="at">lines =</span> letters)</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(<span class="at">continue =</span> <span class="cf">function</span>(...) <span class="cn">TRUE</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="fu">save_file</span>(path, <span class="st">&quot;a&quot;</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">readLines</span>(path), <span class="st">&quot;a&quot;</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="fu">local_mocked_bindings</span>(<span class="at">continue =</span> <span class="cf">function</span>(...) <span class="cn">FALSE</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="fu">expect_snapshot</span>(<span class="fu">save_file</span>(path, <span class="st">&quot;a&quot;</span>), <span class="at">error =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>})</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; ── Warning: save_file() requires confirmation to overwrite file ────────────────</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; Adding new snapshot:</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; Code</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt;   save_file(path, &quot;a&quot;)</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt; Condition</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co">#&gt;   Error in `save_file()`:</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="co">#&gt;   ! Failed to continue</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt; Test passed with 2 successes 🥇.</span></span></code></pre></div>
+</div>
+<div id="user-facing-text" class="section level2">
+<h2>User-facing text</h2>
+<p>Errors, warnings, and other user-facing text should be tested to
+ensure they’re both actionable and consistent across the package.
+Obviously, it’s not possible to test this automatically, but you can use
+snapshots (<code>vignette(&quot;snapshotting&quot;)</code>) to ensure that
+user-facing messages are clearly shown in PRs and easily reviewed by
+another human.</p>
+</div>
+<div id="repeated-code" class="section level2">
+<h2>Repeated code</h2>
+<p>If you find yourself repeating the same set of expectations again and
+again across your test suite, it may be a sign that you should design
+your own expectation. Learn how in
+<code>vignette(&quot;custom-expectation&quot;)</code>.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

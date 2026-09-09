@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Tools for Working with Posterior Distributions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Tools for Working with Posterior Distributions
+<img class="toplogo" src="figures/logo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;posterior&rsquo; version 1.7.0</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../NEWS.md">Package NEWS</a></li>
+<li><a href="../README.md">Package README</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="# "> </a>
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#I">I</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#Q">Q</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#U">U</a>
+<a href="#V">V</a>
+<a href="#W">W</a>
+<a href="#misc">misc</a>
+</p>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="posterior-package.html">posterior-package</a></td>
+<td>Tools for working with posterior (and prior) distributions</td></tr>
+</table>
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">all.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">any.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="draws.html">as_draws</a></td>
+<td>Transform to 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">as_draws_array</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">as_draws_array.default</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">as_draws_array.draws_array</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">as_draws_array.draws_df</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">as_draws_array.draws_list</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">as_draws_array.draws_matrix</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">as_draws_array.draws_rvars</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">as_draws_array.mcmc</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">as_draws_array.mcmc.list</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df.data.frame</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df.default</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df.draws_array</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df.draws_df</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df.draws_list</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df.draws_matrix</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df.draws_rvars</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df.mcmc</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">as_draws_df.mcmc.list</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">as_draws_list</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">as_draws_list.default</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">as_draws_list.draws_array</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">as_draws_list.draws_df</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">as_draws_list.draws_list</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">as_draws_list.draws_matrix</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">as_draws_list.draws_rvars</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">as_draws_list.mcmc</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">as_draws_list.mcmc.list</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">as_draws_matrix</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">as_draws_matrix.default</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">as_draws_matrix.draws_array</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">as_draws_matrix.draws_df</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">as_draws_matrix.draws_list</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">as_draws_matrix.draws_matrix</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">as_draws_matrix.draws_rvars</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">as_draws_matrix.mcmc</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">as_draws_matrix.mcmc.list</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars.default</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars.draws_array</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars.draws_df</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars.draws_list</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars.draws_matrix</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars.draws_rvars</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars.list</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars.mcmc</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">as_draws_rvars.mcmc.list</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="as_rvar.html">as_rvar</a></td>
+<td>Coerce to a random variable</td></tr>
+<tr><td style="width: 25%;"><a href="as_rvar_factor.html">as_rvar_factor</a></td>
+<td>Coerce to a factor random variable</td></tr>
+<tr><td style="width: 25%;"><a href="as_rvar.html">as_rvar_integer</a></td>
+<td>Coerce to a random variable</td></tr>
+<tr><td style="width: 25%;"><a href="as_rvar.html">as_rvar_logical</a></td>
+<td>Coerce to a random variable</td></tr>
+<tr><td style="width: 25%;"><a href="as_rvar.html">as_rvar_numeric</a></td>
+<td>Coerce to a random variable</td></tr>
+<tr><td style="width: 25%;"><a href="as_rvar_factor.html">as_rvar_ordered</a></td>
+<td>Coerce to a factor random variable</td></tr>
+</table>
+
+<h2><a id="B">-- B --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="bind_draws.html">bind_draws</a></td>
+<td>Bind 'draws' objects together</td></tr>
+<tr><td style="width: 25%;"><a href="bind_draws.html">bind_draws.draws_array</a></td>
+<td>Bind 'draws' objects together</td></tr>
+<tr><td style="width: 25%;"><a href="bind_draws.html">bind_draws.draws_df</a></td>
+<td>Bind 'draws' objects together</td></tr>
+<tr><td style="width: 25%;"><a href="bind_draws.html">bind_draws.draws_list</a></td>
+<td>Bind 'draws' objects together</td></tr>
+<tr><td style="width: 25%;"><a href="bind_draws.html">bind_draws.draws_matrix</a></td>
+<td>Bind 'draws' objects together</td></tr>
+<tr><td style="width: 25%;"><a href="bind_draws.html">bind_draws.draws_rvars</a></td>
+<td>Bind 'draws' objects together</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-dist.html">cdf.rvar</a></td>
+<td>Density, CDF, and quantile functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-dist.html">cdf.rvar_factor</a></td>
+<td>Density, CDF, and quantile functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-dist.html">cdf.rvar_ordered</a></td>
+<td>Density, CDF, and quantile functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="draws-index.html">chain_ids</a></td>
+<td>Index 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="chol.rvar.html">chol.rvar</a></td>
+<td>Cholesky decomposition of random matrix</td></tr>
+<tr><td style="width: 25%;"><a href="diagnostics.html">convergence</a></td>
+<td>List of available convergence diagnostics</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="draws_summary.html">default_convergence_measures</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws_summary.html">default_mcse_measures</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws_summary.html">default_summary_measures</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-dist.html">density.rvar</a></td>
+<td>Density, CDF, and quantile functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-dist.html">density.rvar_factor</a></td>
+<td>Density, CDF, and quantile functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="diag-rvar-method.html">diag-method</a></td>
+<td>Matrix diagonals (including for random variables)</td></tr>
+<tr><td style="width: 25%;"><a href="diagnostics.html">diagnostics</a></td>
+<td>List of available convergence diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="dissent.html">dissent</a></td>
+<td>Dissention</td></tr>
+<tr><td style="width: 25%;"><a href="dissent.html">dissent.default</a></td>
+<td>Dissention</td></tr>
+<tr><td style="width: 25%;"><a href="dissent.html">dissent.rvar</a></td>
+<td>Dissention</td></tr>
+<tr><td style="width: 25%;"><a href="draws.html">draws</a></td>
+<td>Transform to 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws-index.html">draws-index</a></td>
+<td>Index 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">draws_array</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">draws_df</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">draws_list</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">draws_matrix</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_of.html">draws_of</a></td>
+<td>Get/set array of draws underlying a random variable</td></tr>
+<tr><td style="width: 25%;"><a href="draws_of.html">draws_of&lt;-</a></td>
+<td>Get/set array of draws underlying a random variable</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">draws_rvars</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_summary.html">draws_summary</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws-index.html">draw_ids</a></td>
+<td>Index 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="drop-rvar-method.html">drop-method</a></td>
+<td>Drop redundant dimensions</td></tr>
+</table>
+
+<h2><a id="E">-- E --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">E</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="entropy.html">entropy</a></td>
+<td>Normalized entropy</td></tr>
+<tr><td style="width: 25%;"><a href="entropy.html">entropy.default</a></td>
+<td>Normalized entropy</td></tr>
+<tr><td style="width: 25%;"><a href="entropy.html">entropy.rvar</a></td>
+<td>Normalized entropy</td></tr>
+<tr><td style="width: 25%;"><a href="ess_basic.html">ess_basic</a></td>
+<td>Basic version of the effective sample size</td></tr>
+<tr><td style="width: 25%;"><a href="ess_basic.html">ess_basic.default</a></td>
+<td>Basic version of the effective sample size</td></tr>
+<tr><td style="width: 25%;"><a href="ess_basic.html">ess_basic.rvar</a></td>
+<td>Basic version of the effective sample size</td></tr>
+<tr><td style="width: 25%;"><a href="ess_bulk.html">ess_bulk</a></td>
+<td>Bulk effective sample size (bulk-ESS)</td></tr>
+<tr><td style="width: 25%;"><a href="ess_bulk.html">ess_bulk.default</a></td>
+<td>Bulk effective sample size (bulk-ESS)</td></tr>
+<tr><td style="width: 25%;"><a href="ess_bulk.html">ess_bulk.rvar</a></td>
+<td>Bulk effective sample size (bulk-ESS)</td></tr>
+<tr><td style="width: 25%;"><a href="ess_mean.html">ess_mean</a></td>
+<td>Effective sample size for the mean</td></tr>
+<tr><td style="width: 25%;"><a href="ess_mean.html">ess_mean.default</a></td>
+<td>Effective sample size for the mean</td></tr>
+<tr><td style="width: 25%;"><a href="ess_mean.html">ess_mean.rvar</a></td>
+<td>Effective sample size for the mean</td></tr>
+<tr><td style="width: 25%;"><a href="ess_quantile.html">ess_median</a></td>
+<td>Effective sample sizes for quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="ess_quantile.html">ess_quantile</a></td>
+<td>Effective sample sizes for quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="ess_quantile.html">ess_quantile.default</a></td>
+<td>Effective sample sizes for quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="ess_quantile.html">ess_quantile.rvar</a></td>
+<td>Effective sample sizes for quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="ess_sd.html">ess_sd</a></td>
+<td>Effective sample size for the standard deviation</td></tr>
+<tr><td style="width: 25%;"><a href="ess_sd.html">ess_sd.default</a></td>
+<td>Effective sample size for the standard deviation</td></tr>
+<tr><td style="width: 25%;"><a href="ess_sd.html">ess_sd.rvar</a></td>
+<td>Effective sample size for the standard deviation</td></tr>
+<tr><td style="width: 25%;"><a href="ess_tail.html">ess_tail</a></td>
+<td>Tail effective sample size (tail-ESS)</td></tr>
+<tr><td style="width: 25%;"><a href="ess_tail.html">ess_tail.default</a></td>
+<td>Tail effective sample size (tail-ESS)</td></tr>
+<tr><td style="width: 25%;"><a href="ess_tail.html">ess_tail.rvar</a></td>
+<td>Tail effective sample size (tail-ESS)</td></tr>
+<tr><td style="width: 25%;"><a href="example_draws.html">example_draws</a></td>
+<td>Example 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="extract_list_of_variable_arrays.html">extract_list_of_variable_arrays</a></td>
+<td>Extract arrays of multiple variables</td></tr>
+<tr><td style="width: 25%;"><a href="extract_list_of_variable_arrays.html">extract_list_of_variable_arrays.default</a></td>
+<td>Extract arrays of multiple variables</td></tr>
+<tr><td style="width: 25%;"><a href="extract_list_of_variable_arrays.html">extract_list_of_variable_arrays.draws</a></td>
+<td>Extract arrays of multiple variables</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable.html">extract_variable</a></td>
+<td>Extract draws of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable.html">extract_variable.default</a></td>
+<td>Extract draws of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable.html">extract_variable.draws</a></td>
+<td>Extract draws of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable.html">extract_variable.draws_df</a></td>
+<td>Extract draws of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable.html">extract_variable.draws_list</a></td>
+<td>Extract draws of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable.html">extract_variable.draws_rvars</a></td>
+<td>Extract draws of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable_array.html">extract_variable_array</a></td>
+<td>Extract array of a single (possibly indexed) variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable_array.html">extract_variable_array.default</a></td>
+<td>Extract array of a single (possibly indexed) variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable_array.html">extract_variable_array.draws</a></td>
+<td>Extract array of a single (possibly indexed) variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable_matrix.html">extract_variable_matrix</a></td>
+<td>Extract matrix of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable_matrix.html">extract_variable_matrix.default</a></td>
+<td>Extract matrix of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable_matrix.html">extract_variable_matrix.draws</a></td>
+<td>Extract matrix of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable_matrix.html">extract_variable_matrix.draws_df</a></td>
+<td>Extract matrix of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable_matrix.html">extract_variable_matrix.draws_list</a></td>
+<td>Extract matrix of a single variable</td></tr>
+<tr><td style="width: 25%;"><a href="extract_variable_matrix.html">extract_variable_matrix.draws_rvars</a></td>
+<td>Extract matrix of a single variable</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="print.rvar.html">format.rvar</a></td>
+<td>Print or format a random variable</td></tr>
+<tr><td style="width: 25%;"><a href="for_each_draw.html">for_each_draw</a></td>
+<td>Loop over draws</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">is.finite.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">is.infinite.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">is.na.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">is.nan.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="draws.html">is_draws</a></td>
+<td>Transform to 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws_array.html">is_draws_array</a></td>
+<td>The 'draws_array' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_df.html">is_draws_df</a></td>
+<td>The 'draws_df' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_list.html">is_draws_list</a></td>
+<td>The 'draws_list' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_matrix.html">is_draws_matrix</a></td>
+<td>The 'draws_matrix' format</td></tr>
+<tr><td style="width: 25%;"><a href="draws_rvars.html">is_draws_rvars</a></td>
+<td>The 'draws_rvars' format</td></tr>
+<tr><td style="width: 25%;"><a href="is_rvar.html">is_rvar</a></td>
+<td>Is 'x' a random variable?</td></tr>
+<tr><td style="width: 25%;"><a href="is_rvar_factor.html">is_rvar_factor</a></td>
+<td>Is 'x' a factor random variable?</td></tr>
+<tr><td style="width: 25%;"><a href="is_rvar_factor.html">is_rvar_ordered</a></td>
+<td>Is 'x' a factor random variable?</td></tr>
+<tr><td style="width: 25%;"><a href="draws-index.html">iteration_ids</a></td>
+<td>Index 'draws' objects</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">mad</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">mad.default</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">mad.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">mad.rvar_ordered</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="match.html">match</a></td>
+<td>Value Matching</td></tr>
+<tr><td style="width: 25%;"><a href="match.html">match.default</a></td>
+<td>Value Matching</td></tr>
+<tr><td style="width: 25%;"><a href="match.html">match.rvar</a></td>
+<td>Value Matching</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-matmult.html">matrixOps.rvar</a></td>
+<td>Matrix multiplication of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">max.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_mean.html">mcse_mean</a></td>
+<td>Monte Carlo standard error for the mean</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_mean.html">mcse_mean.default</a></td>
+<td>Monte Carlo standard error for the mean</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_mean.html">mcse_mean.rvar</a></td>
+<td>Monte Carlo standard error for the mean</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_quantile.html">mcse_median</a></td>
+<td>Monte Carlo standard error for quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_quantile.html">mcse_quantile</a></td>
+<td>Monte Carlo standard error for quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_quantile.html">mcse_quantile.default</a></td>
+<td>Monte Carlo standard error for quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_quantile.html">mcse_quantile.rvar</a></td>
+<td>Monte Carlo standard error for quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_sd.html">mcse_sd</a></td>
+<td>Monte Carlo standard error for the standard deviation</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_sd.html">mcse_sd.default</a></td>
+<td>Monte Carlo standard error for the standard deviation</td></tr>
+<tr><td style="width: 25%;"><a href="mcse_sd.html">mcse_sd.rvar</a></td>
+<td>Monte Carlo standard error for the standard deviation</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">mean.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">median.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="merge_chains.html">merge_chains</a></td>
+<td>Merge chains of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="merge_chains.html">merge_chains.draws_array</a></td>
+<td>Merge chains of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="merge_chains.html">merge_chains.draws_df</a></td>
+<td>Merge chains of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="merge_chains.html">merge_chains.draws_list</a></td>
+<td>Merge chains of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="merge_chains.html">merge_chains.draws_matrix</a></td>
+<td>Merge chains of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="merge_chains.html">merge_chains.draws_rvars</a></td>
+<td>Merge chains of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="merge_chains.html">merge_chains.rvar</a></td>
+<td>Merge chains of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">min.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="modal_category.html">modal_category</a></td>
+<td>Modal category</td></tr>
+<tr><td style="width: 25%;"><a href="modal_category.html">modal_category.default</a></td>
+<td>Modal category</td></tr>
+<tr><td style="width: 25%;"><a href="modal_category.html">modal_category.rvar</a></td>
+<td>Modal category</td></tr>
+<tr><td style="width: 25%;"><a href="mutate_variables.html">mutate_variables</a></td>
+<td>Mutate variables in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="mutate_variables.html">mutate_variables.draws_array</a></td>
+<td>Mutate variables in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="mutate_variables.html">mutate_variables.draws_df</a></td>
+<td>Mutate variables in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="mutate_variables.html">mutate_variables.draws_list</a></td>
+<td>Mutate variables in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="mutate_variables.html">mutate_variables.draws_matrix</a></td>
+<td>Mutate variables in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="mutate_variables.html">mutate_variables.draws_rvars</a></td>
+<td>Mutate variables in 'draws' objects</td></tr>
+</table>
+
+<h2><a id="N">-- N --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="draws-index.html">nchains</a></td>
+<td>Index 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws-index.html">ndraws</a></td>
+<td>Index 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws-index.html">niterations</a></td>
+<td>Index 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables.html">nvariables</a></td>
+<td>Get variable names from 'draws' objects</td></tr>
+</table>
+
+<h2><a id="O">-- O --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="order_draws.html">order_draws</a></td>
+<td>Order 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="order_draws.html">order_draws.draws_array</a></td>
+<td>Order 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="order_draws.html">order_draws.draws_df</a></td>
+<td>Order 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="order_draws.html">order_draws.draws_list</a></td>
+<td>Order 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="order_draws.html">order_draws.draws_matrix</a></td>
+<td>Order 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="order_draws.html">order_draws.draws_rvars</a></td>
+<td>Order 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="order_draws.html">order_draws.rvar</a></td>
+<td>Order 'draws' objects</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_convergence_rate</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_convergence_rate.default</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_convergence_rate.rvar</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_diags</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_diags.default</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_diags.rvar</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_khat.html">pareto_khat</a></td>
+<td>Pareto khat diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_khat.html">pareto_khat.default</a></td>
+<td>Pareto khat diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_khat.html">pareto_khat.rvar</a></td>
+<td>Pareto khat diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_khat_threshold</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_khat_threshold.default</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_khat_threshold.rvar</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_min_ss</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_min_ss.default</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_diags.html">pareto_min_ss.rvar</a></td>
+<td>Pareto smoothing diagnostics</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_pit.html">pareto_pit</a></td>
+<td>Pareto-smoothed probability integral transform</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_pit.html">pareto_pit.default</a></td>
+<td>Pareto-smoothed probability integral transform</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_pit.html">pareto_pit.draws_matrix</a></td>
+<td>Pareto-smoothed probability integral transform</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_pit.html">pareto_pit.rvar</a></td>
+<td>Pareto-smoothed probability integral transform</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_smooth.html">pareto_smooth</a></td>
+<td>Pareto smoothing</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_smooth.html">pareto_smooth.default</a></td>
+<td>Pareto smoothing</td></tr>
+<tr><td style="width: 25%;"><a href="pareto_smooth.html">pareto_smooth.rvar</a></td>
+<td>Pareto smoothing</td></tr>
+<tr><td style="width: 25%;"><a href="pit.html">pit</a></td>
+<td>Probability integral transform</td></tr>
+<tr><td style="width: 25%;"><a href="pit.html">pit.default</a></td>
+<td>Probability integral transform</td></tr>
+<tr><td style="width: 25%;"><a href="pit.html">pit.draws_matrix</a></td>
+<td>Probability integral transform</td></tr>
+<tr><td style="width: 25%;"><a href="pit.html">pit.rvar</a></td>
+<td>Probability integral transform</td></tr>
+<tr><td style="width: 25%;"><a href="posterior-package.html">posterior</a></td>
+<td>Tools for working with posterior (and prior) distributions</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">Pr</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">Pr.default</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">Pr.logical</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">Pr.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="print.draws_array.html">print.draws_array</a></td>
+<td>Print 'draws_array' objects</td></tr>
+<tr><td style="width: 25%;"><a href="print.draws_df.html">print.draws_df</a></td>
+<td>Print 'draws_df' objects</td></tr>
+<tr><td style="width: 25%;"><a href="print.draws_list.html">print.draws_list</a></td>
+<td>Print 'draws_list' objects</td></tr>
+<tr><td style="width: 25%;"><a href="print.draws_matrix.html">print.draws_matrix</a></td>
+<td>Print 'draws_matrix' objects</td></tr>
+<tr><td style="width: 25%;"><a href="print.draws_rvars.html">print.draws_rvars</a></td>
+<td>Print 'draws_rvars' objects</td></tr>
+<tr><td style="width: 25%;"><a href="print.draws_summary.html">print.draws_summary</a></td>
+<td>Print summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="print.rvar.html">print.rvar</a></td>
+<td>Print or format a random variable</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">prod.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="ps_convergence_rate.html">ps_convergence_rate</a></td>
+<td>Pareto convergence rate</td></tr>
+<tr><td style="width: 25%;"><a href="ps_khat_threshold.html">ps_khat_threshold</a></td>
+<td>Pareto k-hat threshold</td></tr>
+<tr><td style="width: 25%;"><a href="ps_min_ss.html">ps_min_ss</a></td>
+<td>Pareto-smoothing minimum sample-size</td></tr>
+<tr><td style="width: 25%;"><a href="ps_tail.html">ps_tail</a></td>
+<td>Pareto smooth tail function to Pareto smooth the tail of a vector. Exported for usage in other packages, not by users.</td></tr>
+<tr><td style="width: 25%;"><a href="ps_tail_length.html">ps_tail_length</a></td>
+<td>Pareto tail length</td></tr>
+</table>
+
+<h2><a id="Q">-- Q --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-dist.html">quantile.rvar</a></td>
+<td>Density, CDF, and quantile functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-dist.html">quantile.rvar_factor</a></td>
+<td>Density, CDF, and quantile functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-dist.html">quantile.rvar_ordered</a></td>
+<td>Density, CDF, and quantile functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="quantile2.html">quantile2</a></td>
+<td>Compute Quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="quantile2.html">quantile2.default</a></td>
+<td>Compute Quantiles</td></tr>
+<tr><td style="width: 25%;"><a href="quantile2.html">quantile2.rvar</a></td>
+<td>Compute Quantiles</td></tr>
+</table>
+
+<h2><a id="R">-- R --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">range.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rdo.html">rdo</a></td>
+<td>Execute expressions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rename_variables.html">rename_variables</a></td>
+<td>Rename variables in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="rename_variables.html">rename_variables.draws</a></td>
+<td>Rename variables in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="repair_draws.html">repair_draws</a></td>
+<td>Repair indices of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="repair_draws.html">repair_draws.draws_array</a></td>
+<td>Repair indices of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="repair_draws.html">repair_draws.draws_df</a></td>
+<td>Repair indices of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="repair_draws.html">repair_draws.draws_list</a></td>
+<td>Repair indices of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="repair_draws.html">repair_draws.draws_matrix</a></td>
+<td>Repair indices of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="repair_draws.html">repair_draws.draws_rvars</a></td>
+<td>Repair indices of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="repair_draws.html">repair_draws.rvar</a></td>
+<td>Repair indices of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="resample_draws.html">resample_draws</a></td>
+<td>Resample 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="resample_draws.html">resample_draws.draws</a></td>
+<td>Resample 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="resample_draws.html">resample_draws.rvar</a></td>
+<td>Resample 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="reserved_variables.html">reserved_variables</a></td>
+<td>Reserved variables</td></tr>
+<tr><td style="width: 25%;"><a href="reserved_variables.html">reserved_variables.default</a></td>
+<td>Reserved variables</td></tr>
+<tr><td style="width: 25%;"><a href="reserved_variables.html">reserved_variables.draws_array</a></td>
+<td>Reserved variables</td></tr>
+<tr><td style="width: 25%;"><a href="reserved_variables.html">reserved_variables.draws_df</a></td>
+<td>Reserved variables</td></tr>
+<tr><td style="width: 25%;"><a href="reserved_variables.html">reserved_variables.draws_list</a></td>
+<td>Reserved variables</td></tr>
+<tr><td style="width: 25%;"><a href="reserved_variables.html">reserved_variables.draws_matrix</a></td>
+<td>Reserved variables</td></tr>
+<tr><td style="width: 25%;"><a href="reserved_variables.html">reserved_variables.draws_rvars</a></td>
+<td>Reserved variables</td></tr>
+<tr><td style="width: 25%;"><a href="rfun.html">rfun</a></td>
+<td>Create functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rhat.html">rhat</a></td>
+<td>Rhat convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rhat.html">rhat.default</a></td>
+<td>Rhat convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rhat.html">rhat.rvar</a></td>
+<td>Rhat convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rhat_basic.html">rhat_basic</a></td>
+<td>Basic version of the Rhat convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rhat_basic.html">rhat_basic.default</a></td>
+<td>Basic version of the Rhat convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rhat_basic.html">rhat_basic.rvar</a></td>
+<td>Basic version of the Rhat convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rhat_nested.html">rhat_nested</a></td>
+<td>Nested Rhat convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rhat_nested.html">rhat_nested.default</a></td>
+<td>Nested Rhat convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rhat_nested.html">rhat_nested.rvar</a></td>
+<td>Nested Rhat convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rstar.html">rstar</a></td>
+<td>Calculate R* convergence diagnostic</td></tr>
+<tr><td style="width: 25%;"><a href="rvar.html">rvar</a></td>
+<td>Random variables of arbitrary dimension</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-dist.html">rvar-dist</a></td>
+<td>Density, CDF, and quantile functions of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-matmult.html">rvar-matmult</a></td>
+<td>Matrix multiplication of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-slice.html">rvar-slice</a></td>
+<td>Random variable slicing</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">rvar-summaries-over-draws</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar-summaries-within-draws</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_all</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_any</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar_apply.html">rvar_apply</a></td>
+<td>Random variable resulting from a function applied over margins of an array or random variable</td></tr>
+<tr><td style="width: 25%;"><a href="rvar_factor.html">rvar_factor</a></td>
+<td>Factor random variables of arbitrary dimension</td></tr>
+<tr><td style="width: 25%;"><a href="rvar_ifelse.html">rvar_ifelse</a></td>
+<td>Random variable ifelse</td></tr>
+<tr><td style="width: 25%;"><a href="rvar_is_finite.html">rvar_is_finite</a></td>
+<td>Special value predicates for random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar_is_finite.html">rvar_is_infinite</a></td>
+<td>Special value predicates for random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar_is_finite.html">rvar_is_na</a></td>
+<td>Special value predicates for random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar_is_finite.html">rvar_is_nan</a></td>
+<td>Special value predicates for random variables</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_mad</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_max</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_mean</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_median</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_min</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar_factor.html">rvar_ordered</a></td>
+<td>Factor random variables of arbitrary dimension</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_prod</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_quantile</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_range</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar_rng.html">rvar_rng</a></td>
+<td>Create random variables from existing random number generators</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_sd</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_sum</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-within-draws.html">rvar_var</a></td>
+<td>Summaries of random variables over array elements, within draws</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">sd</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">sd.default</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">sd.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="variables-set.html">set_variables</a></td>
+<td>Set variable names in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="split_chains.html">split_chains</a></td>
+<td>Split Chains</td></tr>
+<tr><td style="width: 25%;"><a href="print.rvar.html">str.rvar</a></td>
+<td>Print or format a random variable</td></tr>
+<tr><td style="width: 25%;"><a href="subset_draws.html">subset.draws</a></td>
+<td>Subset 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="subset_draws.html">subset_draws</a></td>
+<td>Subset 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="subset_draws.html">subset_draws.draws_array</a></td>
+<td>Subset 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="subset_draws.html">subset_draws.draws_df</a></td>
+<td>Subset 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="subset_draws.html">subset_draws.draws_list</a></td>
+<td>Subset 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="subset_draws.html">subset_draws.draws_matrix</a></td>
+<td>Subset 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="subset_draws.html">subset_draws.draws_rvars</a></td>
+<td>Subset 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="subset_draws.html">subset_draws.rvar</a></td>
+<td>Subset 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">sum.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="draws_summary.html">summarise_draws</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws_summary.html">summarise_draws.draws</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws_summary.html">summarise_draws.rvar</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws_summary.html">summarize_draws</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="draws_summary.html">summary.draws</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">Summary.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="draws_summary.html">summary.rvar</a></td>
+<td>Summaries of 'draws' objects</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="thin_draws.html">thin</a></td>
+<td>Thin 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="thin_draws.html">thin_draws</a></td>
+<td>Thin 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="thin_draws.html">thin_draws.draws</a></td>
+<td>Thin 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="thin_draws.html">thin_draws.rvar</a></td>
+<td>Thin 'draws' objects</td></tr>
+</table>
+
+<h2><a id="U">-- U --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="uniformity_test.html">uniformity_test</a></td>
+<td>Uniformity test for PIT values</td></tr>
+</table>
+
+<h2><a id="V">-- V --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">var</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">var.default</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">var.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+<tr><td style="width: 25%;"><a href="variables.html">variables</a></td>
+<td>Get variable names from 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables.html">variables.draws_array</a></td>
+<td>Get variable names from 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables.html">variables.draws_df</a></td>
+<td>Get variable names from 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables.html">variables.draws_list</a></td>
+<td>Get variable names from 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables.html">variables.draws_matrix</a></td>
+<td>Get variable names from 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables.html">variables.draws_rvars</a></td>
+<td>Get variable names from 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables-set.html">variables&lt;-</a></td>
+<td>Set variable names in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables-set.html">variables&lt;-.draws_array</a></td>
+<td>Set variable names in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables-set.html">variables&lt;-.draws_df</a></td>
+<td>Set variable names in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables-set.html">variables&lt;-.draws_list</a></td>
+<td>Set variable names in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables-set.html">variables&lt;-.draws_matrix</a></td>
+<td>Set variable names in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="variables-set.html">variables&lt;-.draws_rvars</a></td>
+<td>Set variable names in 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-summaries-over-draws.html">variance.rvar</a></td>
+<td>Summaries of random variables within array elements, over draws</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="weights.draws.html">weights.draws</a></td>
+<td>Extract Weights from Draws Objects</td></tr>
+<tr><td style="width: 25%;"><a href="weight_draws.html">weight_draws</a></td>
+<td>Weight 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="weight_draws.html">weight_draws.draws_array</a></td>
+<td>Weight 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="weight_draws.html">weight_draws.draws_df</a></td>
+<td>Weight 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="weight_draws.html">weight_draws.draws_list</a></td>
+<td>Weight 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="weight_draws.html">weight_draws.draws_matrix</a></td>
+<td>Weight 'draws' objects</td></tr>
+<tr><td style="width: 25%;"><a href="weight_draws.html">weight_draws.draws_rvars</a></td>
+<td>Weight 'draws' objects</td></tr>
+</table>
+
+<h2><a id="misc">-- misc --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="rvar-matmult.html">%**%</a></td>
+<td>Matrix multiplication of random variables</td></tr>
+<tr><td style="width: 25%;"><a href="match.html">%in%</a></td>
+<td>Value Matching</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-slice.html">[.rvar</a></td>
+<td>Random variable slicing</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-slice.html">[&lt;-.rvar</a></td>
+<td>Random variable slicing</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-slice.html">[[.rvar</a></td>
+<td>Random variable slicing</td></tr>
+<tr><td style="width: 25%;"><a href="rvar-slice.html">[[&lt;-.rvar</a></td>
+<td>Random variable slicing</td></tr>
+</table>
+</div></body></html>

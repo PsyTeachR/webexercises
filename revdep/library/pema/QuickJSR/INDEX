@@ -1,0 +1,17 @@
+JSContext               JSContext object
+JSContext-method-assign
+                        Assign a value to a variable in the current
+                        context
+JSContext-method-call   Call a JS function in the current context
+JSContext-method-get    Get a variable from the current context
+JSContext-method-source
+                        Evaluate JS string or file in the current
+                        context
+JSContext-method-validate
+                        Assess validity of JS code without evaluating
+QuickJSR-package        The QuickJSR package.
+from_json               from_json
+qjs_eval                qjs_eval
+quickjs_flags           QuickJS-NG Compiler and Linker Flags
+quickjs_version         Get the version of the bundled QuickJS library
+to_json                 to_json

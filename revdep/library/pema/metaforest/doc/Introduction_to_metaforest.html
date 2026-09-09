@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Caspar J. van Lissa" />
+
+<meta name="date" content="2025-07-30" />
+
+<title>Introduction to metaforest</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to metaforest</h1>
+<h4 class="author">Caspar J. van Lissa</h4>
+<h4 class="date">2025-07-30</h4>
+
+
+
+<p><strong>This Vignette is based on the Open-Access book
+chapter:</strong></p>
+<p>Van Lissa, C. J. (2020). Small sample meta-analyses: Exploring
+heterogeneity using MetaForest. In R. Van De Schoot &amp; M. Miočević
+(Eds.), <em>Small Sample Size Solutions (Open Access): A Guide for
+Applied Researchers and Practitioners.</em> CRC Press. <a href="https://doi.org/10.4324/9780429273872-16" class="uri">https://doi.org/10.4324/9780429273872-16</a></p>
+<p><strong>Please refer to that chapter for a more in-depth explanation,
+and please cite the chapter.</strong></p>
+<p>One of the most common applications of meta-analysis in the social
+sciences is to summarize a body of literature on a specific topic. The
+literature typically covers similar research questions, investigated in
+different laboratories, using different methods, instruments, and
+samples. We typically do not know beforehand which of these moderators
+will affect the effect size found. MetaForest is a machine-learning
+based, exploratory approach to identify relevant moderators in
+meta-analysis. MetaForest is an adaptation of the random forests
+algorithm for meta-analysis: Weighted bootstrap sampling is used to
+ensure that more precise studies exert greater influence in the model
+building stage. These weights can be uniform (each study has equal
+probability of being selected into the bootstrap sample), fixed-effects
+(studies with smaller sampling variance have a larger probability of
+being selected), or random-effects based (studies with smaller sampling
+variance have a larger probability of being selected, but this advantage
+is diminished as the amount of between-studies heterogeneity increases).
+Internally, <code>metaforest</code> relies on the <code>ranger</code>
+R-package; a fast implementation of the random forests in C++.</p>
+<div id="tutorial-example" class="section level2">
+<h2>Tutorial example</h2>
+<p>To illustrate how to use MetaForest, I will re-analyze the published
+work of Fukkink and Lont (2007), who have graciously shared their data.
+The authors examined the effectiveness of training on the competency of
+childcare providers. The sample is small, consisting of 78 effect sizes
+derived from 17 unique samples.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Install the metaforest package. This needs to be done only once.</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;metaforest&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># Then, load the metaforest package</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(metaforest)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># Assign the fukkink_lont data, which is included in</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># the metaforest package, to an object called &quot;data&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>data <span class="ot">&lt;-</span> fukkink_lont</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># Because MetaForest uses the random number generator (for bootstrapping),</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co"># we set a random seed so analyses can be replicated exactly.</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">62</span>)</span></code></pre></div>
+<p>First, check model convergence by examining the cumulative mean
+squared out-of-bag prediction error (MSE) as a function of the number of
+trees in the model. When the MSE stabilizes, the model is said to have
+converged.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Run model with many trees to check convergence</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>check_conv <span class="ot">&lt;-</span> <span class="fu">MetaForest</span>(yi<span class="sc">~</span>.,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>                        <span class="at">data =</span> data,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>                        <span class="at">study =</span> <span class="st">&quot;id_exp&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>                        <span class="at">whichweights =</span> <span class="st">&quot;random&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>                        <span class="at">num.trees =</span> <span class="dv">20000</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># Plot convergence trajectory</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="fu">plot</span>(check_conv)</span></code></pre></div>
+<p>This model has converged within approximately 5000 trees. Thus, we
+will use this number of trees for subsequent analyses. We now apply
+recursive pre-selection using the <code>preselect</code> function. Using
+<code>preselect_vars</code>, we retain only those moderators for which a
+50% percentile interval of the variable importance metrics does not
+include zero.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Model with 5000 trees for replication</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>mf_rep <span class="ot">&lt;-</span> <span class="fu">MetaForest</span>(yi<span class="sc">~</span>.,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                        <span class="at">data =</span> data,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>                        <span class="at">study =</span> <span class="st">&quot;id_exp&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>                        <span class="at">whichweights =</span> <span class="st">&quot;random&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>                        <span class="at">num.trees =</span> <span class="dv">5000</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># Run recursive preselection, store results in object &#39;preselect&#39;</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>preselected <span class="ot">&lt;-</span> <span class="fu">preselect</span>(mf_rep,</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>                         <span class="at">replications =</span> <span class="dv">100</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>                         <span class="at">algorithm =</span> <span class="st">&quot;recursive&quot;</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="fu">plot</span>(preselected)</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co"># Retain only moderators with positive variable importance in more than</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co"># 50% of replications</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>retain_mods <span class="ot">&lt;-</span> <span class="fu">preselect_vars</span>(preselected, <span class="at">cutoff =</span> .<span class="dv">5</span>)</span></code></pre></div>
+<div id="tuning-parameters" class="section level3">
+<h3>Tuning parameters</h3>
+<p>MetaForest has several “tuning parameters”, whose optimal values must
+be determined empirically: 1) the number of candidate variables
+considered at each split of each tree; 2) the minimum number of cases
+that must remain in a post-split group within each tree; 3) the type of
+weights (uniform, fixed-, or random-effects). The optimal values for
+these tuning parameters are commonly determined using cross-validation,
+with the well-known machine learning R-package <code>caret</code>.</p>
+<p>Next, we tune the model using the R-package <code>caret</code>. The
+function <code>ModelInfo_mf</code> tells caret how to tune a MetaForest
+analysis. As tuning parameters, we consider all three types of weights
+(uniform, fixed-, and random-effects), number of candidate variables at
+each split from 2-6, and a minimum node size from 2-6. We select the
+model with smallest prediction error (RMSE) as final model, based on
+10-fold clustered cross-validation.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Load the caret library</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># Set up 10-fold grouped (=clustered) CV</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>grouped_cv <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">&quot;cv&quot;</span>, </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>                           <span class="at">index =</span> <span class="fu">groupKFold</span>(data<span class="sc">$</span>id_exp, <span class="at">k =</span> <span class="dv">10</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co"># Set up a tuning grid for the three tuning parameters of MetaForest</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>tuning_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">whichweights =</span> <span class="fu">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;fixed&quot;</span>, <span class="st">&quot;unif&quot;</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>                       <span class="at">mtry =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>                       <span class="at">min.node.size =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co"># X should contain only retained moderators, clustering variable, and vi</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>X <span class="ot">&lt;-</span> data[, <span class="fu">c</span>(<span class="st">&quot;id_exp&quot;</span>, <span class="st">&quot;vi&quot;</span>, retain_mods)]</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>mf_cv <span class="ot">&lt;-</span> <span class="fu">train</span>(<span class="at">y =</span> data<span class="sc">$</span>yi,</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>               <span class="at">x =</span> X,</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>               <span class="at">study =</span> <span class="st">&quot;id_exp&quot;</span>, <span class="co"># Name of the clustering variable</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>               <span class="at">method =</span> <span class="fu">ModelInfo_mf</span>(), </span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>               <span class="at">trControl =</span> grouped_cv,</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>               <span class="at">tuneGrid =</span> tuning_grid,</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>               <span class="at">num.trees =</span> <span class="dv">5000</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co"># Examine optimal tuning parameters</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>mf_cv<span class="sc">$</span>results[<span class="fu">which.min</span>(mf_cv<span class="sc">$</span>results<span class="sc">$</span>RMSE), ]</span></code></pre></div>
+<p>The object returned by <code>train</code> already contains the final
+model, estimated with the best combination of tuning parameters.
+Consequently, we can proceed directly to reporting the results. First,
+we examine convergence again . Then, we examine the <span class="math inline">\(R^2_{oob}\)</span>.</p>
+</div>
+<div id="inspecting-the-results" class="section level3">
+<h3>Inspecting the results</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># For convenience, extract final model</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>final <span class="ot">&lt;-</span> mf_cv<span class="sc">$</span>finalModel</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># Extract R^2_{oob} from the final model</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>r2_oob <span class="ot">&lt;-</span> final<span class="sc">$</span>forest<span class="sc">$</span>r.squared</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># Plot convergence</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">plot</span>(final)</span></code></pre></div>
+<p>We can conclude that the model has converged, and has a positive
+estimate of explained variance in new data. Now, we proceed to
+interpreting the model findings. We will plot the variable importance,
+and partial dependence plots.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Plot variable importance</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">VarImpPlot</span>(final)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co"># Sort the variable names by importance, so that the</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># partial dependence plots will be ranked by importance</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>ordered_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(final<span class="sc">$</span>forest<span class="sc">$</span>variable.importance)[</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="fu">order</span>(final<span class="sc">$</span>forest<span class="sc">$</span>variable.importance, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)]</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co"># Plot partial dependence</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="fu">PartialDependence</span>(final, <span class="at">vars =</span> ordered_vars,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>                  <span class="at">rawdata =</span> <span class="cn">TRUE</span>, <span class="at">pi =</span> .<span class="dv">95</span>)</span></code></pre></div>
+<p>Because this is an exploratory, non-parametric analysis, we cannot
+conclude whether any of these findings are “significant”. However, the
+<code>PartialDependence</code> function has two settings that help
+visualize the “importance” of a finding: <code>rawdata</code>, which
+plots the weighted raw data (studies with larger weights are plotted
+with a larger point size), thereby visualizing the variance around the
+mean prediction, and <code>pi</code>, which plots a (e.g., 95%)
+percentile interval of the predictions of individual trees in the model.
+This is not the same as a confidence interval, but it does show how
+variable or stable the model predictions are. This exploratory moderator
+analysis could be followed with a linear regression model, focusing only
+on relevant moderators identified by <code>MetaForest</code>.</p>
+</div>
+</div>
+<div id="more-information" class="section level2">
+<h2>More information</h2>
+<p>The following open-access book chapter has a more elaborate tutorial,
+including reporting guidelines:</p>
+<p>Van Lissa, C. J. (2020). Small sample meta-analyses: Exploring
+heterogeneity using MetaForest. In R. Van De Schoot &amp; M. Miočević
+(Eds.), <em>Small Sample Size Solutions (Open Access): A Guide for
+Applied Researchers and Practitioners.</em> CRC Press. <a href="https://doi.org/10.4324/9780429273872-16" class="uri">https://doi.org/10.4324/9780429273872-16</a></p>
+<p>Moreover, other applied examples of MetaForest analyses are available
+in published papers, some of which have open data and syntax. For
+instance, <a href="https://doi.org/10.1016/j.jesp.2018.02.014">Curry and
+colleagues (2019)</a> used MetaForest to examine moderators of the
+effect of acts of kindness on well-being, and found none. The full
+syntax and data are available on Github; <a href="https://github.com/cjvanlissa/kindness_meta-analysis" class="uri">https://github.com/cjvanlissa/kindness_meta-analysis</a>.
+Secondly, <a href="https://doi.org/10.1016/j.neubiorev.2019.04.021">Bonapersona and
+colleagues (2019)</a> used MetaForest to identify moderators of the
+effect of early life adversity on the behavioral phenotype of animal
+models. Their full syntax and data are available at <a href="https://osf.io/ra947/" class="uri">https://osf.io/ra947/</a>.
+Thirdly, <a href="https://doi.org/10.1002/ejsp.2889">Bialek and
+colleagues</a> used MetaForest to examine moderators of the “mere
+ownership” effect: People’s tendency to value what they own more than
+what they do not own. There studies illustrate different applications of
+MetaForest, and different reporting practices.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
